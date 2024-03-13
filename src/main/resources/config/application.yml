@@ -93,7 +93,7 @@ mongock:
 
 spring:
   application:
-    name: containerGoCodeGenerator
+    name: containerGoServer
   profiles:
     # The commented value for `active` can be replaced with valid Spring profiles to load.
     # Otherwise, it will be filled in by gradle when building the JAR file
@@ -116,13 +116,13 @@ spring:
       enabled: true
   task:
     execution:
-      thread-name-prefix: container-go-code-generator-task-
+      thread-name-prefix: container-go-server-task-
       pool:
         core-size: 2
         max-size: 50
         queue-capacity: 10000
     scheduling:
-      thread-name-prefix: container-go-code-generator-scheduling-
+      thread-name-prefix: container-go-server-scheduling-
       pool:
         size: 2
   thymeleaf:
@@ -153,7 +153,7 @@ info:
 
 jhipster:
   clientApp:
-    name: 'containerGoCodeGeneratorApp'
+    name: 'containerGoServerApp'
   # By default CORS is disabled. Uncomment to enable.
   # cors:
   #   allowed-origins: "http://localhost:8100,http://localhost:9000"
@@ -163,12 +163,12 @@ jhipster:
   #   allow-credentials: true
   #   max-age: 1800
   mail:
-    from: containerGoCodeGenerator@localhost
+    from: containerGoServer@localhost
   api-docs:
     default-include-pattern: /api/**
     management-include-pattern: /management/**
-    title: Container Go Code Generator API
-    description: Container Go Code Generator API documentation
+    title: Container Go Server API
+    description: Container Go Server API documentation
     version: 0.0.1
     terms-of-service-url:
     contact-name:

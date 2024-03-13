@@ -1,8 +1,8 @@
 {
-  "name": "container-go-code-generator",
+  "name": "container-go-server",
   "version": "0.0.1-SNAPSHOT",
   "private": true,
-  "description": "Description for Container Go Code Generator",
+  "description": "Description for Container Go Server",
   "license": "UNLICENSED",
   "scripts": {
     "app:start": "./gradlew",

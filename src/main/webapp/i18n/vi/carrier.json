@@ -1,0 +1,31 @@
+{
+  "containerGoServerApp": {
+    "carrier": {
+      "home": {
+        "title": "Carriers",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Carrier",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Carrier",
+        "notFound": "No Carriers found"
+      },
+      "created": "Một Carrier mới được tạo với định danh {{ param }}",
+      "updated": "Một Carrier cập nhật với định danh {{ param }}",
+      "deleted": "Một Carrier đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Carrier {{ id }}?"
+      },
+      "detail": {
+        "title": "Carrier"
+      },
+      "id": "Id",
+      "code": "Code",
+      "name": "Name",
+      "address": "Address",
+      "taxCode": "Tax Code",
+      "bankAccount": "Bank Account",
+      "bankName": "Bank Name",
+      "accountName": "Account Name",
+      "branchName": "Branch Name"
+    }
+  }
+}

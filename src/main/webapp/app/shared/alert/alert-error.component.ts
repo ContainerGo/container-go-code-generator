@@ -25,77 +25,74 @@ export class AlertErrorComponent implements OnDestroy {
     private eventManager: EventManager,
     translateService: TranslateService,
   ) {
-    this.errorListener = eventManager.subscribe('containerGoCodeGeneratorApp.error', (response: EventWithContent<unknown> | string) => {
+    this.errorListener = eventManager.subscribe('containerGoServerApp.error', (response: EventWithContent<unknown> | string) => {
       const errorResponse = (response as EventWithContent<AlertError>).content;
       this.addErrorAlert(errorResponse.message, errorResponse.key, errorResponse.params);
     });
 
-    this.httpErrorListener = eventManager.subscribe(
-      'containerGoCodeGeneratorApp.httpError',
-      (response: EventWithContent<unknown> | string) => {
-        const httpErrorResponse = (response as EventWithContent<HttpErrorResponse>).content;
-        switch (httpErrorResponse.status) {
-          // connection refused, server not reachable
-          case 0:
-            this.addErrorAlert('Server not reachable', 'error.server.not.reachable');
-            break;
+    this.httpErrorListener = eventManager.subscribe('containerGoServerApp.httpError', (response: EventWithContent<unknown> | string) => {
+      const httpErrorResponse = (response as EventWithContent<HttpErrorResponse>).content;
+      switch (httpErrorResponse.status) {
+        // connection refused, server not reachable
+        case 0:
+          this.addErrorAlert('Server not reachable', 'error.server.not.reachable');
+          break;
 
-          case 400: {
-            const arr = httpErrorResponse.headers.keys();
-            let errorHeader: string | null = null;
-            let entityKey: string | null = null;
-            for (const entry of arr) {
-              if (entry.toLowerCase().endsWith('app-error')) {
-                errorHeader = httpErrorResponse.headers.get(entry);
-              } else if (entry.toLowerCase().endsWith('app-params')) {
-                entityKey = httpErrorResponse.headers.get(entry);
-              }
+        case 400: {
+          const arr = httpErrorResponse.headers.keys();
+          let errorHeader: string | null = null;
+          let entityKey: string | null = null;
+          for (const entry of arr) {
+            if (entry.toLowerCase().endsWith('app-error')) {
+              errorHeader = httpErrorResponse.headers.get(entry);
+            } else if (entry.toLowerCase().endsWith('app-params')) {
+              entityKey = httpErrorResponse.headers.get(entry);
             }
-            if (errorHeader) {
-              const alertData = entityKey ? { entityName: translateService.instant(`global.menu.entities.${entityKey}`) } : undefined;
-              this.addErrorAlert(errorHeader, errorHeader, alertData);
-            } else if (httpErrorResponse.error !== '' && httpErrorResponse.error.fieldErrors) {
-              const fieldErrors = httpErrorResponse.error.fieldErrors;
-              for (const fieldError of fieldErrors) {
-                if (['Min', 'Max', 'DecimalMin', 'DecimalMax'].includes(fieldError.message)) {
-                  fieldError.message = 'Size';
-                }
-                // convert 'something[14].other[4].id' to 'something[].other[].id' so translations can be written to it
-                const convertedField: string = fieldError.field.replace(/\[\d*\]/g, '[]');
-                const fieldName: string = translateService.instant(
-                  `containerGoCodeGeneratorApp.${fieldError.objectName as string}.${convertedField}`,
-                );
-                this.addErrorAlert(`Error on field "${fieldName}"`, `error.${fieldError.message as string}`, { fieldName });
-              }
-            } else if (httpErrorResponse.error !== '' && httpErrorResponse.error.message) {
-              this.addErrorAlert(
-                httpErrorResponse.error.detail ?? httpErrorResponse.error.message,
-                httpErrorResponse.error.message,
-                httpErrorResponse.error.params,
-              );
-            } else {
-              this.addErrorAlert(httpErrorResponse.error, httpErrorResponse.error);
-            }
-            break;
           }
-
-          case 404:
-            this.addErrorAlert('Not found', 'error.url.not.found');
-            break;
-
-          default:
-            if (httpErrorResponse.error !== '' && httpErrorResponse.error.message) {
-              this.addErrorAlert(
-                httpErrorResponse.error.detail ?? httpErrorResponse.error.message,
-                httpErrorResponse.error.message,
-                httpErrorResponse.error.params,
+          if (errorHeader) {
+            const alertData = entityKey ? { entityName: translateService.instant(`global.menu.entities.${entityKey}`) } : undefined;
+            this.addErrorAlert(errorHeader, errorHeader, alertData);
+          } else if (httpErrorResponse.error !== '' && httpErrorResponse.error.fieldErrors) {
+            const fieldErrors = httpErrorResponse.error.fieldErrors;
+            for (const fieldError of fieldErrors) {
+              if (['Min', 'Max', 'DecimalMin', 'DecimalMax'].includes(fieldError.message)) {
+                fieldError.message = 'Size';
+              }
+              // convert 'something[14].other[4].id' to 'something[].other[].id' so translations can be written to it
+              const convertedField: string = fieldError.field.replace(/\[\d*\]/g, '[]');
+              const fieldName: string = translateService.instant(
+                `containerGoServerApp.${fieldError.objectName as string}.${convertedField}`,
               );
-            } else {
-              this.addErrorAlert(httpErrorResponse.error, httpErrorResponse.error);
+              this.addErrorAlert(`Error on field "${fieldName}"`, `error.${fieldError.message as string}`, { fieldName });
             }
+          } else if (httpErrorResponse.error !== '' && httpErrorResponse.error.message) {
+            this.addErrorAlert(
+              httpErrorResponse.error.detail ?? httpErrorResponse.error.message,
+              httpErrorResponse.error.message,
+              httpErrorResponse.error.params,
+            );
+          } else {
+            this.addErrorAlert(httpErrorResponse.error, httpErrorResponse.error);
+          }
+          break;
         }
-      },
-    );
+
+        case 404:
+          this.addErrorAlert('Not found', 'error.url.not.found');
+          break;
+
+        default:
+          if (httpErrorResponse.error !== '' && httpErrorResponse.error.message) {
+            this.addErrorAlert(
+              httpErrorResponse.error.detail ?? httpErrorResponse.error.message,
+              httpErrorResponse.error.message,
+              httpErrorResponse.error.params,
+            );
+          } else {
+            this.addErrorAlert(httpErrorResponse.error, httpErrorResponse.error);
+          }
+      }
+    });
   }
 
   setClasses(alert: Alert): { [key: string]: boolean } {

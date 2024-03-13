@@ -24,7 +24,7 @@ mongock:
 
 spring:
   application:
-    name: containerGoCodeGenerator
+    name: containerGoServer
   jackson:
     serialization:
       write-durations-as-timestamps: false
@@ -36,13 +36,13 @@ spring:
     basename: i18n/messages
   task:
     execution:
-      thread-name-prefix: container-go-code-generator-task-
+      thread-name-prefix: container-go-server-task-
       pool:
         core-size: 1
         max-size: 50
         queue-capacity: 10000
     scheduling:
-      thread-name-prefix: container-go-code-generator-scheduling-
+      thread-name-prefix: container-go-server-scheduling-
       pool:
         size: 20
   thymeleaf:
@@ -59,9 +59,9 @@ server:
 # ===================================================================
 jhipster:
   clientApp:
-    name: 'containerGoCodeGeneratorApp'
+    name: 'containerGoServerApp'
   mail:
-    from: containerGoCodeGenerator@localhost.com
+    from: containerGoServer@localhost.com
     base-url: http://127.0.0.1:8080
   logging:
     # To test json console appender

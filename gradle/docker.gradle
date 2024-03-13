@@ -9,7 +9,7 @@ jib {
         }
     }
     to {
-        image = "containergocodegenerator:latest"
+        image = "containergoserver:latest"
     }
     container {
         entrypoint = ["bash", "-c", "/entrypoint.sh"]

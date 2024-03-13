@@ -1,0 +1,28 @@
+{
+  "containerGoServerApp": {
+    "carrierAccount": {
+      "home": {
+        "title": "Carrier Accounts",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Carrier Account",
+        "createOrEditLabel": "Create or edit a Carrier Account",
+        "notFound": "No Carrier Accounts found"
+      },
+      "created": "A new Carrier Account is created with identifier {{ param }}",
+      "updated": "A Carrier Account is updated with identifier {{ param }}",
+      "deleted": "A Carrier Account is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Carrier Account {{ id }}?"
+      },
+      "detail": {
+        "title": "Carrier Account"
+      },
+      "id": "Id",
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address",
+      "carrier": "Carrier"
+    }
+  }
+}

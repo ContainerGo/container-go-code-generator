@@ -1,0 +1,28 @@
+{
+  "containerGoServerApp": {
+    "shipperAccount": {
+      "home": {
+        "title": "Shipper Accounts",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Shipper Account",
+        "createOrEditLabel": "Create or edit a Shipper Account",
+        "notFound": "No Shipper Accounts found"
+      },
+      "created": "A new Shipper Account is created with identifier {{ param }}",
+      "updated": "A Shipper Account is updated with identifier {{ param }}",
+      "deleted": "A Shipper Account is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Shipper Account {{ id }}?"
+      },
+      "detail": {
+        "title": "Shipper Account"
+      },
+      "id": "Id",
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address",
+      "shipper": "Shipper"
+    }
+  }
+}
