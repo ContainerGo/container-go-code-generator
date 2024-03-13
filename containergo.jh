@@ -1,0 +1,66 @@
+
+application {
+  config {
+    baseName containerGoServer
+    applicationType monolith
+    packageName vn.containergo
+    authenticationType jwt
+    prodDatabaseType mongodb
+    clientFramework angularX
+  }
+  entities *
+  filter *
+  paginate * with pagination
+  service all with serviceImpl
+  dto * with mapstruct
+}
+
+entity Shipper {
+	id Long,
+    code String required,
+    name String required,
+    address String required,
+    taxCode String,
+    bankAccount String,
+    bankName String,
+    accountName String,
+    branchName String
+}
+
+entity ShipperAccount {
+	id Long,
+    name String required,
+    phone String required,
+    email String,
+    address String
+}
+
+entity Carrier {
+	id Long,
+    code String required,
+    name String required,
+    address String required,
+    taxCode String,
+    bankAccount String,
+    bankName String,
+    accountName String,
+    branchName String
+}
+
+entity CarrierAccount {
+	id Long,
+    name String required,
+    phone String required,
+    email String,
+    address String
+}
+
+relationship ManyToOne {
+	CarrierAccount{carrier required} to Carrier
+    ShipperAccount{shipper required} to Shipper
+}
+
+relationship OneToOne {
+    ShipperAccount{user(user)} to User,
+    CarrierAccount{user(user)} to User
+}
