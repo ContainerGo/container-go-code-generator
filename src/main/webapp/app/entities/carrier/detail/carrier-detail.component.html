@@ -47,6 +47,14 @@
           <dd>
             <span>{{ carrier.branchName }}</span>
           </dd>
+          <dt><span jhiTranslate="containerGoServerApp.carrier.companySize">Company Size</span></dt>
+          <dd>
+            <span>{{ carrier.companySize }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.carrier.isApproved">Is Approved</span></dt>
+          <dd>
+            <span>{{ carrier.isApproved }}</span>
+          </dd>
         </dl>
 
         <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">

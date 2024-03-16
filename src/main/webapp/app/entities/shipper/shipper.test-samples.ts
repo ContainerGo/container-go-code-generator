@@ -1,39 +1,39 @@
 import { IShipper, NewShipper } from './shipper.model';
 
 export const sampleWithRequiredData: IShipper = {
-  id: 17402,
-  code: 'enraged',
-  name: 'ah',
-  address: 'across',
+  id: 8340,
+  code: 'ah ah candid',
+  name: 'cannibalize',
+  address: 'while an',
+  paymentType: 'broadly sleet where',
 };
 
 export const sampleWithPartialData: IShipper = {
-  id: 6656,
-  code: 'now',
-  name: 'an likable at',
-  address: 'where growing meh',
-  taxCode: 'sociable failing',
-  bankAccount: 'since',
-  bankName: 'even blah',
-  accountName: 'Savings Account',
+  id: 32158,
+  code: 'meh spanish',
+  name: 'failing furthermore abnormally',
+  address: 'being unlike fond',
+  paymentType: 'yearly',
 };
 
 export const sampleWithFullData: IShipper = {
-  id: 20698,
-  code: 'until lambast jeans',
-  name: 'methane till whoa',
-  address: 'amid prioritize of',
-  taxCode: 'round',
-  bankAccount: 'agonizing',
-  bankName: 'playfully',
-  accountName: 'Personal Loan Account',
-  branchName: 'disprove because limply',
+  id: 28248,
+  code: 'perfectly',
+  name: 'agitated remit past',
+  address: 'versus',
+  taxCode: 'of fully',
+  companySize: 24848,
+  paymentType: 'agonizing',
+  isApproved: true,
+  isBillingInformationComplete: true,
+  isProfileComplete: false,
 };
 
 export const sampleWithNewData: NewShipper = {
-  code: 'whoa mmm wavy',
-  name: 'gee',
-  address: 'brr freeze clean',
+  code: 'till dearly colorfully',
+  name: 'curly patrimony or',
+  address: 'positively private',
+  paymentType: 'individualize aha without',
   id: null,
 };
 

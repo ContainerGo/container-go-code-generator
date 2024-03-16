@@ -41,17 +41,20 @@ class ShipperResourceIT {
     private static final String DEFAULT_TAX_CODE = "AAAAAAAAAA";
     private static final String UPDATED_TAX_CODE = "BBBBBBBBBB";
 
-    private static final String DEFAULT_BANK_ACCOUNT = "AAAAAAAAAA";
-    private static final String UPDATED_BANK_ACCOUNT = "BBBBBBBBBB";
+    private static final Integer DEFAULT_COMPANY_SIZE = 1;
+    private static final Integer UPDATED_COMPANY_SIZE = 2;
 
-    private static final String DEFAULT_BANK_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_BANK_NAME = "BBBBBBBBBB";
+    private static final String DEFAULT_PAYMENT_TYPE = "AAAAAAAAAA";
+    private static final String UPDATED_PAYMENT_TYPE = "BBBBBBBBBB";
 
-    private static final String DEFAULT_ACCOUNT_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_ACCOUNT_NAME = "BBBBBBBBBB";
+    private static final Boolean DEFAULT_IS_APPROVED = false;
+    private static final Boolean UPDATED_IS_APPROVED = true;
 
-    private static final String DEFAULT_BRANCH_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_BRANCH_NAME = "BBBBBBBBBB";
+    private static final Boolean DEFAULT_IS_BILLING_INFORMATION_COMPLETE = false;
+    private static final Boolean UPDATED_IS_BILLING_INFORMATION_COMPLETE = true;
+
+    private static final Boolean DEFAULT_IS_PROFILE_COMPLETE = false;
+    private static final Boolean UPDATED_IS_PROFILE_COMPLETE = true;
 
     private static final String ENTITY_API_URL = "/api/shippers";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -82,10 +85,11 @@ class ShipperResourceIT {
             .name(DEFAULT_NAME)
             .address(DEFAULT_ADDRESS)
             .taxCode(DEFAULT_TAX_CODE)
-            .bankAccount(DEFAULT_BANK_ACCOUNT)
-            .bankName(DEFAULT_BANK_NAME)
-            .accountName(DEFAULT_ACCOUNT_NAME)
-            .branchName(DEFAULT_BRANCH_NAME);
+            .companySize(DEFAULT_COMPANY_SIZE)
+            .paymentType(DEFAULT_PAYMENT_TYPE)
+            .isApproved(DEFAULT_IS_APPROVED)
+            .isBillingInformationComplete(DEFAULT_IS_BILLING_INFORMATION_COMPLETE)
+            .isProfileComplete(DEFAULT_IS_PROFILE_COMPLETE);
         return shipper;
     }
 
@@ -101,10 +105,11 @@ class ShipperResourceIT {
             .name(UPDATED_NAME)
             .address(UPDATED_ADDRESS)
             .taxCode(UPDATED_TAX_CODE)
-            .bankAccount(UPDATED_BANK_ACCOUNT)
-            .bankName(UPDATED_BANK_NAME)
-            .accountName(UPDATED_ACCOUNT_NAME)
-            .branchName(UPDATED_BRANCH_NAME);
+            .companySize(UPDATED_COMPANY_SIZE)
+            .paymentType(UPDATED_PAYMENT_TYPE)
+            .isApproved(UPDATED_IS_APPROVED)
+            .isBillingInformationComplete(UPDATED_IS_BILLING_INFORMATION_COMPLETE)
+            .isProfileComplete(UPDATED_IS_PROFILE_COMPLETE);
         return shipper;
     }
 
@@ -131,10 +136,11 @@ class ShipperResourceIT {
         assertThat(testShipper.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testShipper.getAddress()).isEqualTo(DEFAULT_ADDRESS);
         assertThat(testShipper.getTaxCode()).isEqualTo(DEFAULT_TAX_CODE);
-        assertThat(testShipper.getBankAccount()).isEqualTo(DEFAULT_BANK_ACCOUNT);
-        assertThat(testShipper.getBankName()).isEqualTo(DEFAULT_BANK_NAME);
-        assertThat(testShipper.getAccountName()).isEqualTo(DEFAULT_ACCOUNT_NAME);
-        assertThat(testShipper.getBranchName()).isEqualTo(DEFAULT_BRANCH_NAME);
+        assertThat(testShipper.getCompanySize()).isEqualTo(DEFAULT_COMPANY_SIZE);
+        assertThat(testShipper.getPaymentType()).isEqualTo(DEFAULT_PAYMENT_TYPE);
+        assertThat(testShipper.getIsApproved()).isEqualTo(DEFAULT_IS_APPROVED);
+        assertThat(testShipper.getIsBillingInformationComplete()).isEqualTo(DEFAULT_IS_BILLING_INFORMATION_COMPLETE);
+        assertThat(testShipper.getIsProfileComplete()).isEqualTo(DEFAULT_IS_PROFILE_COMPLETE);
     }
 
     @Test
@@ -207,6 +213,23 @@ class ShipperResourceIT {
     }
 
     @Test
+    void checkPaymentTypeIsRequired() throws Exception {
+        int databaseSizeBeforeTest = shipperRepository.findAll().size();
+        // set the field null
+        shipper.setPaymentType(null);
+
+        // Create the Shipper, which fails.
+        ShipperDTO shipperDTO = shipperMapper.toDto(shipper);
+
+        restShipperMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(shipperDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<Shipper> shipperList = shipperRepository.findAll();
+        assertThat(shipperList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
     void getAllShippers() throws Exception {
         // Initialize the database
         shipperRepository.save(shipper);
@@ -221,10 +244,13 @@ class ShipperResourceIT {
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)))
             .andExpect(jsonPath("$.[*].taxCode").value(hasItem(DEFAULT_TAX_CODE)))
-            .andExpect(jsonPath("$.[*].bankAccount").value(hasItem(DEFAULT_BANK_ACCOUNT)))
-            .andExpect(jsonPath("$.[*].bankName").value(hasItem(DEFAULT_BANK_NAME)))
-            .andExpect(jsonPath("$.[*].accountName").value(hasItem(DEFAULT_ACCOUNT_NAME)))
-            .andExpect(jsonPath("$.[*].branchName").value(hasItem(DEFAULT_BRANCH_NAME)));
+            .andExpect(jsonPath("$.[*].companySize").value(hasItem(DEFAULT_COMPANY_SIZE)))
+            .andExpect(jsonPath("$.[*].paymentType").value(hasItem(DEFAULT_PAYMENT_TYPE)))
+            .andExpect(jsonPath("$.[*].isApproved").value(hasItem(DEFAULT_IS_APPROVED.booleanValue())))
+            .andExpect(
+                jsonPath("$.[*].isBillingInformationComplete").value(hasItem(DEFAULT_IS_BILLING_INFORMATION_COMPLETE.booleanValue()))
+            )
+            .andExpect(jsonPath("$.[*].isProfileComplete").value(hasItem(DEFAULT_IS_PROFILE_COMPLETE.booleanValue())));
     }
 
     @Test
@@ -242,10 +268,11 @@ class ShipperResourceIT {
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.address").value(DEFAULT_ADDRESS))
             .andExpect(jsonPath("$.taxCode").value(DEFAULT_TAX_CODE))
-            .andExpect(jsonPath("$.bankAccount").value(DEFAULT_BANK_ACCOUNT))
-            .andExpect(jsonPath("$.bankName").value(DEFAULT_BANK_NAME))
-            .andExpect(jsonPath("$.accountName").value(DEFAULT_ACCOUNT_NAME))
-            .andExpect(jsonPath("$.branchName").value(DEFAULT_BRANCH_NAME));
+            .andExpect(jsonPath("$.companySize").value(DEFAULT_COMPANY_SIZE))
+            .andExpect(jsonPath("$.paymentType").value(DEFAULT_PAYMENT_TYPE))
+            .andExpect(jsonPath("$.isApproved").value(DEFAULT_IS_APPROVED.booleanValue()))
+            .andExpect(jsonPath("$.isBillingInformationComplete").value(DEFAULT_IS_BILLING_INFORMATION_COMPLETE.booleanValue()))
+            .andExpect(jsonPath("$.isProfileComplete").value(DEFAULT_IS_PROFILE_COMPLETE.booleanValue()));
     }
 
     @Test
@@ -268,10 +295,11 @@ class ShipperResourceIT {
             .name(UPDATED_NAME)
             .address(UPDATED_ADDRESS)
             .taxCode(UPDATED_TAX_CODE)
-            .bankAccount(UPDATED_BANK_ACCOUNT)
-            .bankName(UPDATED_BANK_NAME)
-            .accountName(UPDATED_ACCOUNT_NAME)
-            .branchName(UPDATED_BRANCH_NAME);
+            .companySize(UPDATED_COMPANY_SIZE)
+            .paymentType(UPDATED_PAYMENT_TYPE)
+            .isApproved(UPDATED_IS_APPROVED)
+            .isBillingInformationComplete(UPDATED_IS_BILLING_INFORMATION_COMPLETE)
+            .isProfileComplete(UPDATED_IS_PROFILE_COMPLETE);
         ShipperDTO shipperDTO = shipperMapper.toDto(updatedShipper);
 
         restShipperMockMvc
@@ -290,10 +318,11 @@ class ShipperResourceIT {
         assertThat(testShipper.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testShipper.getAddress()).isEqualTo(UPDATED_ADDRESS);
         assertThat(testShipper.getTaxCode()).isEqualTo(UPDATED_TAX_CODE);
-        assertThat(testShipper.getBankAccount()).isEqualTo(UPDATED_BANK_ACCOUNT);
-        assertThat(testShipper.getBankName()).isEqualTo(UPDATED_BANK_NAME);
-        assertThat(testShipper.getAccountName()).isEqualTo(UPDATED_ACCOUNT_NAME);
-        assertThat(testShipper.getBranchName()).isEqualTo(UPDATED_BRANCH_NAME);
+        assertThat(testShipper.getCompanySize()).isEqualTo(UPDATED_COMPANY_SIZE);
+        assertThat(testShipper.getPaymentType()).isEqualTo(UPDATED_PAYMENT_TYPE);
+        assertThat(testShipper.getIsApproved()).isEqualTo(UPDATED_IS_APPROVED);
+        assertThat(testShipper.getIsBillingInformationComplete()).isEqualTo(UPDATED_IS_BILLING_INFORMATION_COMPLETE);
+        assertThat(testShipper.getIsProfileComplete()).isEqualTo(UPDATED_IS_PROFILE_COMPLETE);
     }
 
     @Test
@@ -369,7 +398,10 @@ class ShipperResourceIT {
         Shipper partialUpdatedShipper = new Shipper();
         partialUpdatedShipper.setId(shipper.getId());
 
-        partialUpdatedShipper.name(UPDATED_NAME).bankAccount(UPDATED_BANK_ACCOUNT).branchName(UPDATED_BRANCH_NAME);
+        partialUpdatedShipper
+            .name(UPDATED_NAME)
+            .companySize(UPDATED_COMPANY_SIZE)
+            .isBillingInformationComplete(UPDATED_IS_BILLING_INFORMATION_COMPLETE);
 
         restShipperMockMvc
             .perform(
@@ -387,10 +419,11 @@ class ShipperResourceIT {
         assertThat(testShipper.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testShipper.getAddress()).isEqualTo(DEFAULT_ADDRESS);
         assertThat(testShipper.getTaxCode()).isEqualTo(DEFAULT_TAX_CODE);
-        assertThat(testShipper.getBankAccount()).isEqualTo(UPDATED_BANK_ACCOUNT);
-        assertThat(testShipper.getBankName()).isEqualTo(DEFAULT_BANK_NAME);
-        assertThat(testShipper.getAccountName()).isEqualTo(DEFAULT_ACCOUNT_NAME);
-        assertThat(testShipper.getBranchName()).isEqualTo(UPDATED_BRANCH_NAME);
+        assertThat(testShipper.getCompanySize()).isEqualTo(UPDATED_COMPANY_SIZE);
+        assertThat(testShipper.getPaymentType()).isEqualTo(DEFAULT_PAYMENT_TYPE);
+        assertThat(testShipper.getIsApproved()).isEqualTo(DEFAULT_IS_APPROVED);
+        assertThat(testShipper.getIsBillingInformationComplete()).isEqualTo(UPDATED_IS_BILLING_INFORMATION_COMPLETE);
+        assertThat(testShipper.getIsProfileComplete()).isEqualTo(DEFAULT_IS_PROFILE_COMPLETE);
     }
 
     @Test
@@ -409,10 +442,11 @@ class ShipperResourceIT {
             .name(UPDATED_NAME)
             .address(UPDATED_ADDRESS)
             .taxCode(UPDATED_TAX_CODE)
-            .bankAccount(UPDATED_BANK_ACCOUNT)
-            .bankName(UPDATED_BANK_NAME)
-            .accountName(UPDATED_ACCOUNT_NAME)
-            .branchName(UPDATED_BRANCH_NAME);
+            .companySize(UPDATED_COMPANY_SIZE)
+            .paymentType(UPDATED_PAYMENT_TYPE)
+            .isApproved(UPDATED_IS_APPROVED)
+            .isBillingInformationComplete(UPDATED_IS_BILLING_INFORMATION_COMPLETE)
+            .isProfileComplete(UPDATED_IS_PROFILE_COMPLETE);
 
         restShipperMockMvc
             .perform(
@@ -430,10 +464,11 @@ class ShipperResourceIT {
         assertThat(testShipper.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testShipper.getAddress()).isEqualTo(UPDATED_ADDRESS);
         assertThat(testShipper.getTaxCode()).isEqualTo(UPDATED_TAX_CODE);
-        assertThat(testShipper.getBankAccount()).isEqualTo(UPDATED_BANK_ACCOUNT);
-        assertThat(testShipper.getBankName()).isEqualTo(UPDATED_BANK_NAME);
-        assertThat(testShipper.getAccountName()).isEqualTo(UPDATED_ACCOUNT_NAME);
-        assertThat(testShipper.getBranchName()).isEqualTo(UPDATED_BRANCH_NAME);
+        assertThat(testShipper.getCompanySize()).isEqualTo(UPDATED_COMPANY_SIZE);
+        assertThat(testShipper.getPaymentType()).isEqualTo(UPDATED_PAYMENT_TYPE);
+        assertThat(testShipper.getIsApproved()).isEqualTo(UPDATED_IS_APPROVED);
+        assertThat(testShipper.getIsBillingInformationComplete()).isEqualTo(UPDATED_IS_BILLING_INFORMATION_COMPLETE);
+        assertThat(testShipper.getIsProfileComplete()).isEqualTo(UPDATED_IS_PROFILE_COMPLETE);
     }
 
     @Test

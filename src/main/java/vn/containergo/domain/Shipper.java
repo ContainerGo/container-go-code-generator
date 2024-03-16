@@ -33,17 +33,21 @@ public class Shipper implements Serializable {
     @Field("tax_code")
     private String taxCode;
 
-    @Field("bank_account")
-    private String bankAccount;
+    @Field("company_size")
+    private Integer companySize;
 
-    @Field("bank_name")
-    private String bankName;
+    @NotNull
+    @Field("payment_type")
+    private String paymentType;
 
-    @Field("account_name")
-    private String accountName;
+    @Field("is_approved")
+    private Boolean isApproved;
 
-    @Field("branch_name")
-    private String branchName;
+    @Field("is_billing_information_complete")
+    private Boolean isBillingInformationComplete;
+
+    @Field("is_profile_complete")
+    private Boolean isProfileComplete;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -112,56 +116,69 @@ public class Shipper implements Serializable {
         this.taxCode = taxCode;
     }
 
-    public String getBankAccount() {
-        return this.bankAccount;
+    public Integer getCompanySize() {
+        return this.companySize;
     }
 
-    public Shipper bankAccount(String bankAccount) {
-        this.setBankAccount(bankAccount);
+    public Shipper companySize(Integer companySize) {
+        this.setCompanySize(companySize);
         return this;
     }
 
-    public void setBankAccount(String bankAccount) {
-        this.bankAccount = bankAccount;
+    public void setCompanySize(Integer companySize) {
+        this.companySize = companySize;
     }
 
-    public String getBankName() {
-        return this.bankName;
+    public String getPaymentType() {
+        return this.paymentType;
     }
 
-    public Shipper bankName(String bankName) {
-        this.setBankName(bankName);
+    public Shipper paymentType(String paymentType) {
+        this.setPaymentType(paymentType);
         return this;
     }
 
-    public void setBankName(String bankName) {
-        this.bankName = bankName;
+    public void setPaymentType(String paymentType) {
+        this.paymentType = paymentType;
     }
 
-    public String getAccountName() {
-        return this.accountName;
+    public Boolean getIsApproved() {
+        return this.isApproved;
     }
 
-    public Shipper accountName(String accountName) {
-        this.setAccountName(accountName);
+    public Shipper isApproved(Boolean isApproved) {
+        this.setIsApproved(isApproved);
         return this;
     }
 
-    public void setAccountName(String accountName) {
-        this.accountName = accountName;
+    public void setIsApproved(Boolean isApproved) {
+        this.isApproved = isApproved;
     }
 
-    public String getBranchName() {
-        return this.branchName;
+    public Boolean getIsBillingInformationComplete() {
+        return this.isBillingInformationComplete;
     }
 
-    public Shipper branchName(String branchName) {
-        this.setBranchName(branchName);
+    public Shipper isBillingInformationComplete(Boolean isBillingInformationComplete) {
+        this.setIsBillingInformationComplete(isBillingInformationComplete);
         return this;
     }
 
-    public void setBranchName(String branchName) {
-        this.branchName = branchName;
+    public void setIsBillingInformationComplete(Boolean isBillingInformationComplete) {
+        this.isBillingInformationComplete = isBillingInformationComplete;
+    }
+
+    public Boolean getIsProfileComplete() {
+        return this.isProfileComplete;
+    }
+
+    public Shipper isProfileComplete(Boolean isProfileComplete) {
+        this.setIsProfileComplete(isProfileComplete);
+        return this;
+    }
+
+    public void setIsProfileComplete(Boolean isProfileComplete) {
+        this.isProfileComplete = isProfileComplete;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
@@ -192,10 +209,11 @@ public class Shipper implements Serializable {
             ", name='" + getName() + "'" +
             ", address='" + getAddress() + "'" +
             ", taxCode='" + getTaxCode() + "'" +
-            ", bankAccount='" + getBankAccount() + "'" +
-            ", bankName='" + getBankName() + "'" +
-            ", accountName='" + getAccountName() + "'" +
-            ", branchName='" + getBranchName() + "'" +
+            ", companySize=" + getCompanySize() +
+            ", paymentType='" + getPaymentType() + "'" +
+            ", isApproved='" + getIsApproved() + "'" +
+            ", isBillingInformationComplete='" + getIsBillingInformationComplete() + "'" +
+            ", isProfileComplete='" + getIsProfileComplete() + "'" +
             "}";
     }
 }

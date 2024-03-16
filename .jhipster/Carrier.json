@@ -44,6 +44,14 @@
     {
       "fieldName": "branchName",
       "fieldType": "String"
+    },
+    {
+      "fieldName": "companySize",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "isApproved",
+      "fieldType": "Boolean"
     }
   ],
   "jpaMetamodelFiltering": false,

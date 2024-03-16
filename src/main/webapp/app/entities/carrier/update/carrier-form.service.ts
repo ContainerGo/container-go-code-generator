@@ -14,7 +14,7 @@ type PartialWithRequiredKeyOf<T extends { id: unknown }> = Partial<Omit<T, 'id'>
  */
 type CarrierFormGroupInput = ICarrier | PartialWithRequiredKeyOf<NewCarrier>;
 
-type CarrierFormDefaults = Pick<NewCarrier, 'id'>;
+type CarrierFormDefaults = Pick<NewCarrier, 'id' | 'isApproved'>;
 
 type CarrierFormGroupContent = {
   id: FormControl<ICarrier['id'] | NewCarrier['id']>;
@@ -26,6 +26,8 @@ type CarrierFormGroupContent = {
   bankName: FormControl<ICarrier['bankName']>;
   accountName: FormControl<ICarrier['accountName']>;
   branchName: FormControl<ICarrier['branchName']>;
+  companySize: FormControl<ICarrier['companySize']>;
+  isApproved: FormControl<ICarrier['isApproved']>;
 };
 
 export type CarrierFormGroup = FormGroup<CarrierFormGroupContent>;
@@ -59,6 +61,8 @@ export class CarrierFormService {
       bankName: new FormControl(carrierRawValue.bankName),
       accountName: new FormControl(carrierRawValue.accountName),
       branchName: new FormControl(carrierRawValue.branchName),
+      companySize: new FormControl(carrierRawValue.companySize),
+      isApproved: new FormControl(carrierRawValue.isApproved),
     });
   }
 
@@ -79,6 +83,7 @@ export class CarrierFormService {
   private getFormDefaults(): CarrierFormDefaults {
     return {
       id: null,
+      isApproved: false,
     };
   }
 }

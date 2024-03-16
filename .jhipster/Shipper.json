@@ -30,20 +30,25 @@
       "fieldType": "String"
     },
     {
-      "fieldName": "bankAccount",
-      "fieldType": "String"
+      "fieldName": "companySize",
+      "fieldType": "Integer"
     },
     {
-      "fieldName": "bankName",
-      "fieldType": "String"
+      "fieldName": "paymentType",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
     },
     {
-      "fieldName": "accountName",
-      "fieldType": "String"
+      "fieldName": "isApproved",
+      "fieldType": "Boolean"
     },
     {
-      "fieldName": "branchName",
-      "fieldType": "String"
+      "fieldName": "isBillingInformationComplete",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "isProfileComplete",
+      "fieldType": "Boolean"
     }
   ],
   "jpaMetamodelFiltering": false,

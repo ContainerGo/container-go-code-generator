@@ -1,0 +1,28 @@
+{
+  "containerGoServerApp": {
+    "carrierPerson": {
+      "home": {
+        "title": "Carrier People",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Carrier Person",
+        "createOrEditLabel": "Create or edit a Carrier Person",
+        "notFound": "No Carrier People found"
+      },
+      "created": "A new Carrier Person is created with identifier {{ param }}",
+      "updated": "A Carrier Person is updated with identifier {{ param }}",
+      "deleted": "A Carrier Person is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Carrier Person {{ id }}?"
+      },
+      "detail": {
+        "title": "Carrier Person"
+      },
+      "id": "Id",
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address",
+      "carrier": "Carrier"
+    }
+  }
+}

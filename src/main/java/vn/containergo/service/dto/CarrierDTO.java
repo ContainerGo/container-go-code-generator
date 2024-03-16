@@ -31,6 +31,10 @@ public class CarrierDTO implements Serializable {
 
     private String branchName;
 
+    private Integer companySize;
+
+    private Boolean isApproved;
+
     public Long getId() {
         return id;
     }
@@ -103,6 +107,22 @@ public class CarrierDTO implements Serializable {
         this.branchName = branchName;
     }
 
+    public Integer getCompanySize() {
+        return companySize;
+    }
+
+    public void setCompanySize(Integer companySize) {
+        this.companySize = companySize;
+    }
+
+    public Boolean getIsApproved() {
+        return isApproved;
+    }
+
+    public void setIsApproved(Boolean isApproved) {
+        this.isApproved = isApproved;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -137,6 +157,8 @@ public class CarrierDTO implements Serializable {
             ", bankName='" + getBankName() + "'" +
             ", accountName='" + getAccountName() + "'" +
             ", branchName='" + getBranchName() + "'" +
+            ", companySize=" + getCompanySize() +
+            ", isApproved='" + getIsApproved() + "'" +
             "}";
     }
 }

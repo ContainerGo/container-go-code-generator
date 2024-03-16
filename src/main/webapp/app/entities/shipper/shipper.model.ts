@@ -4,10 +4,11 @@ export interface IShipper {
   name?: string | null;
   address?: string | null;
   taxCode?: string | null;
-  bankAccount?: string | null;
-  bankName?: string | null;
-  accountName?: string | null;
-  branchName?: string | null;
+  companySize?: number | null;
+  paymentType?: string | null;
+  isApproved?: boolean | null;
+  isBillingInformationComplete?: boolean | null;
+  isProfileComplete?: boolean | null;
 }
 
 export type NewShipper = Omit<IShipper, 'id'> & { id: null };

@@ -24,10 +24,11 @@ describe('Shipper Form Service', () => {
             name: expect.any(Object),
             address: expect.any(Object),
             taxCode: expect.any(Object),
-            bankAccount: expect.any(Object),
-            bankName: expect.any(Object),
-            accountName: expect.any(Object),
-            branchName: expect.any(Object),
+            companySize: expect.any(Object),
+            paymentType: expect.any(Object),
+            isApproved: expect.any(Object),
+            isBillingInformationComplete: expect.any(Object),
+            isProfileComplete: expect.any(Object),
           }),
         );
       });
@@ -42,10 +43,11 @@ describe('Shipper Form Service', () => {
             name: expect.any(Object),
             address: expect.any(Object),
             taxCode: expect.any(Object),
-            bankAccount: expect.any(Object),
-            bankName: expect.any(Object),
-            accountName: expect.any(Object),
-            branchName: expect.any(Object),
+            companySize: expect.any(Object),
+            paymentType: expect.any(Object),
+            isApproved: expect.any(Object),
+            isBillingInformationComplete: expect.any(Object),
+            isProfileComplete: expect.any(Object),
           }),
         );
       });

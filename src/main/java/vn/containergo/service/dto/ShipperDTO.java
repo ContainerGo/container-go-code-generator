@@ -23,13 +23,16 @@ public class ShipperDTO implements Serializable {
 
     private String taxCode;
 
-    private String bankAccount;
+    private Integer companySize;
 
-    private String bankName;
+    @NotNull
+    private String paymentType;
 
-    private String accountName;
+    private Boolean isApproved;
 
-    private String branchName;
+    private Boolean isBillingInformationComplete;
+
+    private Boolean isProfileComplete;
 
     public Long getId() {
         return id;
@@ -71,36 +74,44 @@ public class ShipperDTO implements Serializable {
         this.taxCode = taxCode;
     }
 
-    public String getBankAccount() {
-        return bankAccount;
+    public Integer getCompanySize() {
+        return companySize;
     }
 
-    public void setBankAccount(String bankAccount) {
-        this.bankAccount = bankAccount;
+    public void setCompanySize(Integer companySize) {
+        this.companySize = companySize;
     }
 
-    public String getBankName() {
-        return bankName;
+    public String getPaymentType() {
+        return paymentType;
     }
 
-    public void setBankName(String bankName) {
-        this.bankName = bankName;
+    public void setPaymentType(String paymentType) {
+        this.paymentType = paymentType;
     }
 
-    public String getAccountName() {
-        return accountName;
+    public Boolean getIsApproved() {
+        return isApproved;
     }
 
-    public void setAccountName(String accountName) {
-        this.accountName = accountName;
+    public void setIsApproved(Boolean isApproved) {
+        this.isApproved = isApproved;
     }
 
-    public String getBranchName() {
-        return branchName;
+    public Boolean getIsBillingInformationComplete() {
+        return isBillingInformationComplete;
     }
 
-    public void setBranchName(String branchName) {
-        this.branchName = branchName;
+    public void setIsBillingInformationComplete(Boolean isBillingInformationComplete) {
+        this.isBillingInformationComplete = isBillingInformationComplete;
+    }
+
+    public Boolean getIsProfileComplete() {
+        return isProfileComplete;
+    }
+
+    public void setIsProfileComplete(Boolean isProfileComplete) {
+        this.isProfileComplete = isProfileComplete;
     }
 
     @Override
@@ -133,10 +144,11 @@ public class ShipperDTO implements Serializable {
             ", name='" + getName() + "'" +
             ", address='" + getAddress() + "'" +
             ", taxCode='" + getTaxCode() + "'" +
-            ", bankAccount='" + getBankAccount() + "'" +
-            ", bankName='" + getBankName() + "'" +
-            ", accountName='" + getAccountName() + "'" +
-            ", branchName='" + getBranchName() + "'" +
+            ", companySize=" + getCompanySize() +
+            ", paymentType='" + getPaymentType() + "'" +
+            ", isApproved='" + getIsApproved() + "'" +
+            ", isBillingInformationComplete='" + getIsBillingInformationComplete() + "'" +
+            ", isProfileComplete='" + getIsProfileComplete() + "'" +
             "}";
     }
 }

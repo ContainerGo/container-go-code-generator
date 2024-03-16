@@ -1,0 +1,46 @@
+{
+  "annotations": {
+    "changelogDate": "20240316093758"
+  },
+  "applications": ["containerGoServer"],
+  "dto": "mapstruct",
+  "entityTableName": "shipper_person",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "phone",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "email",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "address",
+      "fieldType": "String"
+    }
+  ],
+  "jpaMetamodelFiltering": false,
+  "name": "ShipperPerson",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "shipper",
+      "relationshipName": "shipper",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

@@ -98,6 +98,20 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="companySize">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.carrier.companySize">Company Size</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isApproved">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.carrier.isApproved">Is Approved</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -115,6 +129,8 @@
               <td>{{ carrier.bankName }}</td>
               <td>{{ carrier.accountName }}</td>
               <td>{{ carrier.branchName }}</td>
+              <td>{{ carrier.companySize }}</td>
+              <td>{{ carrier.isApproved }}</td>
               <td class="text-end">
                 <div class="btn-group">
                   <a [routerLink]="['/carrier', carrier.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">

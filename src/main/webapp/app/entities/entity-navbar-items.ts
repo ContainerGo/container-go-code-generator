@@ -21,4 +21,14 @@ export const EntityNavbarItems: NavbarItem[] = [
     route: '/carrier-account',
     translationKey: 'global.menu.entities.carrierAccount',
   },
+  {
+    name: 'ShipperPerson',
+    route: '/shipper-person',
+    translationKey: 'global.menu.entities.shipperPerson',
+  },
+  {
+    name: 'CarrierPerson',
+    route: '/carrier-person',
+    translationKey: 'global.menu.entities.carrierPerson',
+  },
 ];

@@ -8,6 +8,8 @@ export interface ICarrier {
   bankName?: string | null;
   accountName?: string | null;
   branchName?: string | null;
+  companySize?: number | null;
+  isApproved?: boolean | null;
 }
 
 export type NewCarrier = Omit<ICarrier, 'id'> & { id: null };

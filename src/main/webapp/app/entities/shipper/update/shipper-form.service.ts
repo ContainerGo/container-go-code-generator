@@ -14,7 +14,7 @@ type PartialWithRequiredKeyOf<T extends { id: unknown }> = Partial<Omit<T, 'id'>
  */
 type ShipperFormGroupInput = IShipper | PartialWithRequiredKeyOf<NewShipper>;
 
-type ShipperFormDefaults = Pick<NewShipper, 'id'>;
+type ShipperFormDefaults = Pick<NewShipper, 'id' | 'isApproved' | 'isBillingInformationComplete' | 'isProfileComplete'>;
 
 type ShipperFormGroupContent = {
   id: FormControl<IShipper['id'] | NewShipper['id']>;
@@ -22,10 +22,11 @@ type ShipperFormGroupContent = {
   name: FormControl<IShipper['name']>;
   address: FormControl<IShipper['address']>;
   taxCode: FormControl<IShipper['taxCode']>;
-  bankAccount: FormControl<IShipper['bankAccount']>;
-  bankName: FormControl<IShipper['bankName']>;
-  accountName: FormControl<IShipper['accountName']>;
-  branchName: FormControl<IShipper['branchName']>;
+  companySize: FormControl<IShipper['companySize']>;
+  paymentType: FormControl<IShipper['paymentType']>;
+  isApproved: FormControl<IShipper['isApproved']>;
+  isBillingInformationComplete: FormControl<IShipper['isBillingInformationComplete']>;
+  isProfileComplete: FormControl<IShipper['isProfileComplete']>;
 };
 
 export type ShipperFormGroup = FormGroup<ShipperFormGroupContent>;
@@ -55,10 +56,13 @@ export class ShipperFormService {
         validators: [Validators.required],
       }),
       taxCode: new FormControl(shipperRawValue.taxCode),
-      bankAccount: new FormControl(shipperRawValue.bankAccount),
-      bankName: new FormControl(shipperRawValue.bankName),
-      accountName: new FormControl(shipperRawValue.accountName),
-      branchName: new FormControl(shipperRawValue.branchName),
+      companySize: new FormControl(shipperRawValue.companySize),
+      paymentType: new FormControl(shipperRawValue.paymentType, {
+        validators: [Validators.required],
+      }),
+      isApproved: new FormControl(shipperRawValue.isApproved),
+      isBillingInformationComplete: new FormControl(shipperRawValue.isBillingInformationComplete),
+      isProfileComplete: new FormControl(shipperRawValue.isProfileComplete),
     });
   }
 
@@ -79,6 +83,9 @@ export class ShipperFormService {
   private getFormDefaults(): ShipperFormDefaults {
     return {
       id: null,
+      isApproved: false,
+      isBillingInformationComplete: false,
+      isProfileComplete: false,
     };
   }
 }

@@ -28,6 +28,8 @@ describe('Carrier Form Service', () => {
             bankName: expect.any(Object),
             accountName: expect.any(Object),
             branchName: expect.any(Object),
+            companySize: expect.any(Object),
+            isApproved: expect.any(Object),
           }),
         );
       });
@@ -46,6 +48,8 @@ describe('Carrier Form Service', () => {
             bankName: expect.any(Object),
             accountName: expect.any(Object),
             branchName: expect.any(Object),
+            companySize: expect.any(Object),
+            isApproved: expect.any(Object),
           }),
         );
       });

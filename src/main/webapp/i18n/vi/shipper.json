@@ -22,10 +22,11 @@
       "name": "Name",
       "address": "Address",
       "taxCode": "Tax Code",
-      "bankAccount": "Bank Account",
-      "bankName": "Bank Name",
-      "accountName": "Account Name",
-      "branchName": "Branch Name"
+      "companySize": "Company Size",
+      "paymentType": "Payment Type",
+      "isApproved": "Is Approved",
+      "isBillingInformationComplete": "Is Billing Information Complete",
+      "isProfileComplete": "Is Profile Complete"
     }
   }
 }

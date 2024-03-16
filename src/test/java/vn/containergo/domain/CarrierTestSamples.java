@@ -2,12 +2,14 @@ package vn.containergo.domain;
 
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class CarrierTestSamples {
 
     private static final Random random = new Random();
     private static final AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+    private static final AtomicInteger intCount = new AtomicInteger(random.nextInt() + (2 * Short.MAX_VALUE));
 
     public static Carrier getCarrierSample1() {
         return new Carrier()
@@ -19,7 +21,8 @@ public class CarrierTestSamples {
             .bankAccount("bankAccount1")
             .bankName("bankName1")
             .accountName("accountName1")
-            .branchName("branchName1");
+            .branchName("branchName1")
+            .companySize(1);
     }
 
     public static Carrier getCarrierSample2() {
@@ -32,7 +35,8 @@ public class CarrierTestSamples {
             .bankAccount("bankAccount2")
             .bankName("bankName2")
             .accountName("accountName2")
-            .branchName("branchName2");
+            .branchName("branchName2")
+            .companySize(2);
     }
 
     public static Carrier getCarrierRandomSampleGenerator() {
@@ -45,6 +49,7 @@ public class CarrierTestSamples {
             .bankAccount(UUID.randomUUID().toString())
             .bankName(UUID.randomUUID().toString())
             .accountName(UUID.randomUUID().toString())
-            .branchName(UUID.randomUUID().toString());
+            .branchName(UUID.randomUUID().toString())
+            .companySize(intCount.incrementAndGet());
     }
 }
