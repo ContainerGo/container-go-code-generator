@@ -31,6 +31,16 @@ const routes: Routes = [
     data: { pageTitle: 'containerGoServerApp.carrierPerson.home.title' },
     loadChildren: () => import('./carrier-person/carrier-person.routes'),
   },
+  {
+    path: 'center-person',
+    data: { pageTitle: 'containerGoServerApp.centerPerson.home.title' },
+    loadChildren: () => import('./center-person/center-person.routes'),
+  },
+  {
+    path: 'center-person-group',
+    data: { pageTitle: 'containerGoServerApp.centerPersonGroup.home.title' },
+    loadChildren: () => import('./center-person-group/center-person-group.routes'),
+  },
   /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
 ];
 

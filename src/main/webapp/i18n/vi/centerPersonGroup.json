@@ -1,0 +1,26 @@
+{
+  "containerGoServerApp": {
+    "centerPersonGroup": {
+      "home": {
+        "title": "Center Person Groups",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Center Person Group",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Center Person Group",
+        "notFound": "No Center Person Groups found"
+      },
+      "created": "Một Center Person Group mới được tạo với định danh {{ param }}",
+      "updated": "Một Center Person Group cập nhật với định danh {{ param }}",
+      "deleted": "Một Center Person Group đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Center Person Group {{ id }}?"
+      },
+      "detail": {
+        "title": "Center Person Group"
+      },
+      "id": "Id",
+      "name": "Name",
+      "description": "Description",
+      "users": "Users"
+    }
+  }
+}

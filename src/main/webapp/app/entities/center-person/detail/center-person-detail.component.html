@@ -1,0 +1,57 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (centerPerson) {
+      <div>
+        <h2 data-cy="centerPersonDetailsHeading">
+          <span jhiTranslate="containerGoServerApp.centerPerson.detail.title">Center Person</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="containerGoServerApp.centerPerson.id">Id</span></dt>
+          <dd>
+            <span>{{ centerPerson.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.centerPerson.name">Name</span></dt>
+          <dd>
+            <span>{{ centerPerson.name }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.centerPerson.phone">Phone</span></dt>
+          <dd>
+            <span>{{ centerPerson.phone }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.centerPerson.email">Email</span></dt>
+          <dd>
+            <span>{{ centerPerson.email }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.centerPerson.address">Address</span></dt>
+          <dd>
+            <span>{{ centerPerson.address }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.centerPerson.groups">Groups</span></dt>
+          <dd>
+            @for (groups of centerPerson.groups; track $index; let last = $last) {
+              <span>
+                <a [routerLink]="['/center-person-group', groups.id, 'view']">{{ groups.id }}</a
+                >{{ last ? '' : ', ' }}
+              </span>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
+        </button>
+
+        <button type="button" [routerLink]="['/center-person', centerPerson.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>
