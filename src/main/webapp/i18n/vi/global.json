@@ -13,7 +13,9 @@
         "carrier": "Carrier",
         "carrierAccount": "Carrier Account",
         "shipperPerson": "Shipper Person",
-        "carrierPerson": "Carrier Person"
+        "carrierPerson": "Carrier Person",
+        "centerPerson": "Center Person",
+        "centerPersonGroup": "Center Person Group"
       },
       "account": {
         "main": "Tài khoản",

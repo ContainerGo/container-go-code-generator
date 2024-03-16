@@ -1,0 +1,26 @@
+{
+  "containerGoServerApp": {
+    "centerPersonGroup": {
+      "home": {
+        "title": "Center Person Groups",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Center Person Group",
+        "createOrEditLabel": "Create or edit a Center Person Group",
+        "notFound": "No Center Person Groups found"
+      },
+      "created": "A new Center Person Group is created with identifier {{ param }}",
+      "updated": "A Center Person Group is updated with identifier {{ param }}",
+      "deleted": "A Center Person Group is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Center Person Group {{ id }}?"
+      },
+      "detail": {
+        "title": "Center Person Group"
+      },
+      "id": "Id",
+      "name": "Name",
+      "description": "Description",
+      "users": "Users"
+    }
+  }
+}

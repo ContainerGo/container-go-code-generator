@@ -31,4 +31,14 @@ export const EntityNavbarItems: NavbarItem[] = [
     route: '/carrier-person',
     translationKey: 'global.menu.entities.carrierPerson',
   },
+  {
+    name: 'CenterPerson',
+    route: '/center-person',
+    translationKey: 'global.menu.entities.centerPerson',
+  },
+  {
+    name: 'CenterPersonGroup',
+    route: '/center-person-group',
+    translationKey: 'global.menu.entities.centerPersonGroup',
+  },
 ];

@@ -1,0 +1,28 @@
+{
+  "containerGoServerApp": {
+    "centerPerson": {
+      "home": {
+        "title": "Center People",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Center Person",
+        "createOrEditLabel": "Create or edit a Center Person",
+        "notFound": "No Center People found"
+      },
+      "created": "A new Center Person is created with identifier {{ param }}",
+      "updated": "A Center Person is updated with identifier {{ param }}",
+      "deleted": "A Center Person is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Center Person {{ id }}?"
+      },
+      "detail": {
+        "title": "Center Person"
+      },
+      "id": "Id",
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address",
+      "groups": "Groups"
+    }
+  }
+}
