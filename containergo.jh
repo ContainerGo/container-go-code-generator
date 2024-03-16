@@ -58,8 +58,26 @@ entity CarrierPerson {
     address String
 }
 
+entity CenterPerson {
+	id Long,
+    name String required,
+    phone String required,
+    email String,
+    address String
+}
+
+entity CenterPersonGroup {
+	id Long,
+    name String required,
+    description String
+}
+
 relationship ManyToOne {
 	CarrierPerson{carrier required} to Carrier
     ShipperPerson{shipper required} to Shipper
+}
+
+relationship ManyToMany {
+    CenterPerson{groups} to CenterPersonGroup{users}
 }
 
