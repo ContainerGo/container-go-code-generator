@@ -45,6 +45,12 @@ public class Carrier implements Serializable {
     @Field("branch_name")
     private String branchName;
 
+    @Field("company_size")
+    private Integer companySize;
+
+    @Field("is_approved")
+    private Boolean isApproved;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -164,6 +170,32 @@ public class Carrier implements Serializable {
         this.branchName = branchName;
     }
 
+    public Integer getCompanySize() {
+        return this.companySize;
+    }
+
+    public Carrier companySize(Integer companySize) {
+        this.setCompanySize(companySize);
+        return this;
+    }
+
+    public void setCompanySize(Integer companySize) {
+        this.companySize = companySize;
+    }
+
+    public Boolean getIsApproved() {
+        return this.isApproved;
+    }
+
+    public Carrier isApproved(Boolean isApproved) {
+        this.setIsApproved(isApproved);
+        return this;
+    }
+
+    public void setIsApproved(Boolean isApproved) {
+        this.isApproved = isApproved;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -196,6 +228,8 @@ public class Carrier implements Serializable {
             ", bankName='" + getBankName() + "'" +
             ", accountName='" + getAccountName() + "'" +
             ", branchName='" + getBranchName() + "'" +
+            ", companySize=" + getCompanySize() +
+            ", isApproved='" + getIsApproved() + "'" +
             "}";
     }
 }

@@ -70,30 +70,37 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="bankAccount">
+            <th scope="col" jhiSortBy="companySize">
               <div class="d-flex">
-                <span jhiTranslate="containerGoServerApp.shipper.bankAccount">Bank Account</span>
+                <span jhiTranslate="containerGoServerApp.shipper.companySize">Company Size</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="bankName">
+            <th scope="col" jhiSortBy="paymentType">
               <div class="d-flex">
-                <span jhiTranslate="containerGoServerApp.shipper.bankName">Bank Name</span>
+                <span jhiTranslate="containerGoServerApp.shipper.paymentType">Payment Type</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="accountName">
+            <th scope="col" jhiSortBy="isApproved">
               <div class="d-flex">
-                <span jhiTranslate="containerGoServerApp.shipper.accountName">Account Name</span>
+                <span jhiTranslate="containerGoServerApp.shipper.isApproved">Is Approved</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="branchName">
+            <th scope="col" jhiSortBy="isBillingInformationComplete">
               <div class="d-flex">
-                <span jhiTranslate="containerGoServerApp.shipper.branchName">Branch Name</span>
+                <span jhiTranslate="containerGoServerApp.shipper.isBillingInformationComplete">Is Billing Information Complete</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isProfileComplete">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.shipper.isProfileComplete">Is Profile Complete</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
@@ -111,10 +118,11 @@
               <td>{{ shipper.name }}</td>
               <td>{{ shipper.address }}</td>
               <td>{{ shipper.taxCode }}</td>
-              <td>{{ shipper.bankAccount }}</td>
-              <td>{{ shipper.bankName }}</td>
-              <td>{{ shipper.accountName }}</td>
-              <td>{{ shipper.branchName }}</td>
+              <td>{{ shipper.companySize }}</td>
+              <td>{{ shipper.paymentType }}</td>
+              <td>{{ shipper.isApproved }}</td>
+              <td>{{ shipper.isBillingInformationComplete }}</td>
+              <td>{{ shipper.isProfileComplete }}</td>
               <td class="text-end">
                 <div class="btn-group">
                   <a [routerLink]="['/shipper', shipper.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">

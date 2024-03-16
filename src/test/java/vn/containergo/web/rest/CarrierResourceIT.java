@@ -53,6 +53,12 @@ class CarrierResourceIT {
     private static final String DEFAULT_BRANCH_NAME = "AAAAAAAAAA";
     private static final String UPDATED_BRANCH_NAME = "BBBBBBBBBB";
 
+    private static final Integer DEFAULT_COMPANY_SIZE = 1;
+    private static final Integer UPDATED_COMPANY_SIZE = 2;
+
+    private static final Boolean DEFAULT_IS_APPROVED = false;
+    private static final Boolean UPDATED_IS_APPROVED = true;
+
     private static final String ENTITY_API_URL = "/api/carriers";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -85,7 +91,9 @@ class CarrierResourceIT {
             .bankAccount(DEFAULT_BANK_ACCOUNT)
             .bankName(DEFAULT_BANK_NAME)
             .accountName(DEFAULT_ACCOUNT_NAME)
-            .branchName(DEFAULT_BRANCH_NAME);
+            .branchName(DEFAULT_BRANCH_NAME)
+            .companySize(DEFAULT_COMPANY_SIZE)
+            .isApproved(DEFAULT_IS_APPROVED);
         return carrier;
     }
 
@@ -104,7 +112,9 @@ class CarrierResourceIT {
             .bankAccount(UPDATED_BANK_ACCOUNT)
             .bankName(UPDATED_BANK_NAME)
             .accountName(UPDATED_ACCOUNT_NAME)
-            .branchName(UPDATED_BRANCH_NAME);
+            .branchName(UPDATED_BRANCH_NAME)
+            .companySize(UPDATED_COMPANY_SIZE)
+            .isApproved(UPDATED_IS_APPROVED);
         return carrier;
     }
 
@@ -135,6 +145,8 @@ class CarrierResourceIT {
         assertThat(testCarrier.getBankName()).isEqualTo(DEFAULT_BANK_NAME);
         assertThat(testCarrier.getAccountName()).isEqualTo(DEFAULT_ACCOUNT_NAME);
         assertThat(testCarrier.getBranchName()).isEqualTo(DEFAULT_BRANCH_NAME);
+        assertThat(testCarrier.getCompanySize()).isEqualTo(DEFAULT_COMPANY_SIZE);
+        assertThat(testCarrier.getIsApproved()).isEqualTo(DEFAULT_IS_APPROVED);
     }
 
     @Test
@@ -224,7 +236,9 @@ class CarrierResourceIT {
             .andExpect(jsonPath("$.[*].bankAccount").value(hasItem(DEFAULT_BANK_ACCOUNT)))
             .andExpect(jsonPath("$.[*].bankName").value(hasItem(DEFAULT_BANK_NAME)))
             .andExpect(jsonPath("$.[*].accountName").value(hasItem(DEFAULT_ACCOUNT_NAME)))
-            .andExpect(jsonPath("$.[*].branchName").value(hasItem(DEFAULT_BRANCH_NAME)));
+            .andExpect(jsonPath("$.[*].branchName").value(hasItem(DEFAULT_BRANCH_NAME)))
+            .andExpect(jsonPath("$.[*].companySize").value(hasItem(DEFAULT_COMPANY_SIZE)))
+            .andExpect(jsonPath("$.[*].isApproved").value(hasItem(DEFAULT_IS_APPROVED.booleanValue())));
     }
 
     @Test
@@ -245,7 +259,9 @@ class CarrierResourceIT {
             .andExpect(jsonPath("$.bankAccount").value(DEFAULT_BANK_ACCOUNT))
             .andExpect(jsonPath("$.bankName").value(DEFAULT_BANK_NAME))
             .andExpect(jsonPath("$.accountName").value(DEFAULT_ACCOUNT_NAME))
-            .andExpect(jsonPath("$.branchName").value(DEFAULT_BRANCH_NAME));
+            .andExpect(jsonPath("$.branchName").value(DEFAULT_BRANCH_NAME))
+            .andExpect(jsonPath("$.companySize").value(DEFAULT_COMPANY_SIZE))
+            .andExpect(jsonPath("$.isApproved").value(DEFAULT_IS_APPROVED.booleanValue()));
     }
 
     @Test
@@ -271,7 +287,9 @@ class CarrierResourceIT {
             .bankAccount(UPDATED_BANK_ACCOUNT)
             .bankName(UPDATED_BANK_NAME)
             .accountName(UPDATED_ACCOUNT_NAME)
-            .branchName(UPDATED_BRANCH_NAME);
+            .branchName(UPDATED_BRANCH_NAME)
+            .companySize(UPDATED_COMPANY_SIZE)
+            .isApproved(UPDATED_IS_APPROVED);
         CarrierDTO carrierDTO = carrierMapper.toDto(updatedCarrier);
 
         restCarrierMockMvc
@@ -294,6 +312,8 @@ class CarrierResourceIT {
         assertThat(testCarrier.getBankName()).isEqualTo(UPDATED_BANK_NAME);
         assertThat(testCarrier.getAccountName()).isEqualTo(UPDATED_ACCOUNT_NAME);
         assertThat(testCarrier.getBranchName()).isEqualTo(UPDATED_BRANCH_NAME);
+        assertThat(testCarrier.getCompanySize()).isEqualTo(UPDATED_COMPANY_SIZE);
+        assertThat(testCarrier.getIsApproved()).isEqualTo(UPDATED_IS_APPROVED);
     }
 
     @Test
@@ -373,7 +393,8 @@ class CarrierResourceIT {
             .code(UPDATED_CODE)
             .taxCode(UPDATED_TAX_CODE)
             .accountName(UPDATED_ACCOUNT_NAME)
-            .branchName(UPDATED_BRANCH_NAME);
+            .branchName(UPDATED_BRANCH_NAME)
+            .companySize(UPDATED_COMPANY_SIZE);
 
         restCarrierMockMvc
             .perform(
@@ -395,6 +416,8 @@ class CarrierResourceIT {
         assertThat(testCarrier.getBankName()).isEqualTo(DEFAULT_BANK_NAME);
         assertThat(testCarrier.getAccountName()).isEqualTo(UPDATED_ACCOUNT_NAME);
         assertThat(testCarrier.getBranchName()).isEqualTo(UPDATED_BRANCH_NAME);
+        assertThat(testCarrier.getCompanySize()).isEqualTo(UPDATED_COMPANY_SIZE);
+        assertThat(testCarrier.getIsApproved()).isEqualTo(DEFAULT_IS_APPROVED);
     }
 
     @Test
@@ -416,7 +439,9 @@ class CarrierResourceIT {
             .bankAccount(UPDATED_BANK_ACCOUNT)
             .bankName(UPDATED_BANK_NAME)
             .accountName(UPDATED_ACCOUNT_NAME)
-            .branchName(UPDATED_BRANCH_NAME);
+            .branchName(UPDATED_BRANCH_NAME)
+            .companySize(UPDATED_COMPANY_SIZE)
+            .isApproved(UPDATED_IS_APPROVED);
 
         restCarrierMockMvc
             .perform(
@@ -438,6 +463,8 @@ class CarrierResourceIT {
         assertThat(testCarrier.getBankName()).isEqualTo(UPDATED_BANK_NAME);
         assertThat(testCarrier.getAccountName()).isEqualTo(UPDATED_ACCOUNT_NAME);
         assertThat(testCarrier.getBranchName()).isEqualTo(UPDATED_BRANCH_NAME);
+        assertThat(testCarrier.getCompanySize()).isEqualTo(UPDATED_COMPANY_SIZE);
+        assertThat(testCarrier.getIsApproved()).isEqualTo(UPDATED_IS_APPROVED);
     }
 
     @Test

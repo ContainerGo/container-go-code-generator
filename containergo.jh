@@ -21,13 +21,14 @@ entity Shipper {
     name String required,
     address String required,
     taxCode String,
-    bankAccount String,
-    bankName String,
-    accountName String,
-    branchName String
+    companySize Integer,
+    paymentType String required,
+    isApproved Boolean,
+    isBillingInformationComplete Boolean,
+    isProfileComplete Boolean
 }
 
-entity ShipperAccount {
+entity ShipperPerson {
 	id Long,
     name String required,
     phone String required,
@@ -44,10 +45,12 @@ entity Carrier {
     bankAccount String,
     bankName String,
     accountName String,
-    branchName String
+    branchName String,
+    companySize Integer,
+    isApproved Boolean
 }
 
-entity CarrierAccount {
+entity CarrierPerson {
 	id Long,
     name String required,
     phone String required,
@@ -56,7 +59,7 @@ entity CarrierAccount {
 }
 
 relationship ManyToOne {
-	CarrierAccount{carrier required} to Carrier
-    ShipperAccount{shipper required} to Shipper
+	CarrierPerson{carrier required} to Carrier
+    ShipperPerson{shipper required} to Shipper
 }
 

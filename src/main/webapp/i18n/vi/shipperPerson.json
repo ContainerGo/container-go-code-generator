@@ -1,0 +1,28 @@
+{
+  "containerGoServerApp": {
+    "shipperPerson": {
+      "home": {
+        "title": "Shipper People",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Shipper Person",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Shipper Person",
+        "notFound": "No Shipper People found"
+      },
+      "created": "Một Shipper Person mới được tạo với định danh {{ param }}",
+      "updated": "Một Shipper Person cập nhật với định danh {{ param }}",
+      "deleted": "Một Shipper Person đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Shipper Person {{ id }}?"
+      },
+      "detail": {
+        "title": "Shipper Person"
+      },
+      "id": "Id",
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address",
+      "shipper": "Shipper"
+    }
+  }
+}

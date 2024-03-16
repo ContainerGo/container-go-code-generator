@@ -25,7 +25,9 @@
       "bankAccount": "Bank Account",
       "bankName": "Bank Name",
       "accountName": "Account Name",
-      "branchName": "Branch Name"
+      "branchName": "Branch Name",
+      "companySize": "Company Size",
+      "isApproved": "Is Approved"
     }
   }
 }

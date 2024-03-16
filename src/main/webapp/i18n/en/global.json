@@ -11,7 +11,9 @@
         "shipper": "Shipper",
         "shipperAccount": "Shipper Account",
         "carrier": "Carrier",
-        "carrierAccount": "Carrier Account"
+        "carrierAccount": "Carrier Account",
+        "shipperPerson": "Shipper Person",
+        "carrierPerson": "Carrier Person"
       },
       "account": {
         "main": "Account",

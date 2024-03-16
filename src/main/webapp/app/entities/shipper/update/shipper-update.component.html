@@ -57,43 +57,76 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipper.bankAccount" for="field_bankAccount">Bank Account</label>
+          <label class="form-label" jhiTranslate="containerGoServerApp.shipper.companySize" for="field_companySize">Company Size</label>
           <input
-            type="text"
+            type="number"
             class="form-control"
-            name="bankAccount"
-            id="field_bankAccount"
-            data-cy="bankAccount"
-            formControlName="bankAccount"
+            name="companySize"
+            id="field_companySize"
+            data-cy="companySize"
+            formControlName="companySize"
           />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipper.bankName" for="field_bankName">Bank Name</label>
-          <input type="text" class="form-control" name="bankName" id="field_bankName" data-cy="bankName" formControlName="bankName" />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipper.accountName" for="field_accountName">Account Name</label>
+          <label class="form-label" jhiTranslate="containerGoServerApp.shipper.paymentType" for="field_paymentType">Payment Type</label>
           <input
             type="text"
             class="form-control"
-            name="accountName"
-            id="field_accountName"
-            data-cy="accountName"
-            formControlName="accountName"
+            name="paymentType"
+            id="field_paymentType"
+            data-cy="paymentType"
+            formControlName="paymentType"
+          />
+          @if (editForm.get('paymentType')!.invalid && (editForm.get('paymentType')!.dirty || editForm.get('paymentType')!.touched)) {
+            <div>
+              @if (editForm.get('paymentType')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.shipper.isApproved" for="field_isApproved">Is Approved</label>
+          <input
+            type="checkbox"
+            class="form-check"
+            name="isApproved"
+            id="field_isApproved"
+            data-cy="isApproved"
+            formControlName="isApproved"
           />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipper.branchName" for="field_branchName">Branch Name</label>
+          <label
+            class="form-label"
+            jhiTranslate="containerGoServerApp.shipper.isBillingInformationComplete"
+            for="field_isBillingInformationComplete"
+            >Is Billing Information Complete</label
+          >
           <input
-            type="text"
-            class="form-control"
-            name="branchName"
-            id="field_branchName"
-            data-cy="branchName"
-            formControlName="branchName"
+            type="checkbox"
+            class="form-check"
+            name="isBillingInformationComplete"
+            id="field_isBillingInformationComplete"
+            data-cy="isBillingInformationComplete"
+            formControlName="isBillingInformationComplete"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.shipper.isProfileComplete" for="field_isProfileComplete"
+            >Is Profile Complete</label
+          >
+          <input
+            type="checkbox"
+            class="form-check"
+            name="isProfileComplete"
+            id="field_isProfileComplete"
+            data-cy="isProfileComplete"
+            formControlName="isProfileComplete"
           />
         </div>
       </div>
