@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "container-go-code-generator": {
+    "container-go-server": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -76,15 +76,15 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "buildTarget": "container-go-code-generator:build:development",
+            "buildTarget": "container-go-server:build:development",
             "port": 4200
           },
           "configurations": {
             "production": {
-              "buildTarget": "container-go-code-generator:build:production"
+              "buildTarget": "container-go-server:build:production"
             },
             "development": {
-              "buildTarget": "container-go-code-generator:build:development"
+              "buildTarget": "container-go-server:build:development"
             }
           },
           "defaultConfiguration": "development"

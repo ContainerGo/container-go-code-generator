@@ -1,0 +1,31 @@
+{
+  "containerGoServerApp": {
+    "shipper": {
+      "home": {
+        "title": "Shippers",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Shipper",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Shipper",
+        "notFound": "No Shippers found"
+      },
+      "created": "Một Shipper mới được tạo với định danh {{ param }}",
+      "updated": "Một Shipper cập nhật với định danh {{ param }}",
+      "deleted": "Một Shipper đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Shipper {{ id }}?"
+      },
+      "detail": {
+        "title": "Shipper"
+      },
+      "id": "Id",
+      "code": "Code",
+      "name": "Name",
+      "address": "Address",
+      "taxCode": "Tax Code",
+      "bankAccount": "Bank Account",
+      "bankName": "Bank Name",
+      "accountName": "Account Name",
+      "branchName": "Branch Name"
+    }
+  }
+}

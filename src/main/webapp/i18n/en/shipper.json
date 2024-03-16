@@ -1,0 +1,31 @@
+{
+  "containerGoServerApp": {
+    "shipper": {
+      "home": {
+        "title": "Shippers",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Shipper",
+        "createOrEditLabel": "Create or edit a Shipper",
+        "notFound": "No Shippers found"
+      },
+      "created": "A new Shipper is created with identifier {{ param }}",
+      "updated": "A Shipper is updated with identifier {{ param }}",
+      "deleted": "A Shipper is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Shipper {{ id }}?"
+      },
+      "detail": {
+        "title": "Shipper"
+      },
+      "id": "Id",
+      "code": "Code",
+      "name": "Name",
+      "address": "Address",
+      "taxCode": "Tax Code",
+      "bankAccount": "Bank Account",
+      "bankName": "Bank Name",
+      "accountName": "Account Name",
+      "branchName": "Branch Name"
+    }
+  }
+}

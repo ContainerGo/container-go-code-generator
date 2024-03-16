@@ -1,0 +1,56 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (carrierAccount) {
+      <div>
+        <h2 data-cy="carrierAccountDetailsHeading">
+          <span jhiTranslate="containerGoServerApp.carrierAccount.detail.title">Carrier Account</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="containerGoServerApp.carrierAccount.id">Id</span></dt>
+          <dd>
+            <span>{{ carrierAccount.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.carrierAccount.name">Name</span></dt>
+          <dd>
+            <span>{{ carrierAccount.name }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.carrierAccount.phone">Phone</span></dt>
+          <dd>
+            <span>{{ carrierAccount.phone }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.carrierAccount.email">Email</span></dt>
+          <dd>
+            <span>{{ carrierAccount.email }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.carrierAccount.address">Address</span></dt>
+          <dd>
+            <span>{{ carrierAccount.address }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.carrierAccount.carrier">Carrier</span></dt>
+          <dd>
+            @if (carrierAccount.carrier) {
+              <div>
+                <a [routerLink]="['/carrier', carrierAccount.carrier.id, 'view']">{{ carrierAccount.carrier.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
+        </button>
+
+        <button type="button" [routerLink]="['/carrier-account', carrierAccount.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

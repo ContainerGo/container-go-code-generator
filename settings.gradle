@@ -17,4 +17,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "container-go-code-generator"
+rootProject.name = "container-go-server"

@@ -1,0 +1,62 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (shipper) {
+      <div>
+        <h2 data-cy="shipperDetailsHeading"><span jhiTranslate="containerGoServerApp.shipper.detail.title">Shipper</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="containerGoServerApp.shipper.id">Id</span></dt>
+          <dd>
+            <span>{{ shipper.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.shipper.code">Code</span></dt>
+          <dd>
+            <span>{{ shipper.code }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.shipper.name">Name</span></dt>
+          <dd>
+            <span>{{ shipper.name }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.shipper.address">Address</span></dt>
+          <dd>
+            <span>{{ shipper.address }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.shipper.taxCode">Tax Code</span></dt>
+          <dd>
+            <span>{{ shipper.taxCode }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.shipper.bankAccount">Bank Account</span></dt>
+          <dd>
+            <span>{{ shipper.bankAccount }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.shipper.bankName">Bank Name</span></dt>
+          <dd>
+            <span>{{ shipper.bankName }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.shipper.accountName">Account Name</span></dt>
+          <dd>
+            <span>{{ shipper.accountName }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.shipper.branchName">Branch Name</span></dt>
+          <dd>
+            <span>{{ shipper.branchName }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
+        </button>
+
+        <button type="button" [routerLink]="['/shipper', shipper.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>
