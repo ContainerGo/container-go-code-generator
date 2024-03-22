@@ -1,0 +1,26 @@
+{
+  "containerGoServerApp": {
+    "containerType": {
+      "home": {
+        "title": "Container Types",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Container Type",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Container Type",
+        "notFound": "No Container Types found"
+      },
+      "created": "Một Container Type mới được tạo với định danh {{ param }}",
+      "updated": "Một Container Type cập nhật với định danh {{ param }}",
+      "deleted": "Một Container Type đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Container Type {{ id }}?"
+      },
+      "detail": {
+        "title": "Container Type"
+      },
+      "id": "Id",
+      "code": "Code",
+      "name": "Name",
+      "description": "Description"
+    }
+  }
+}

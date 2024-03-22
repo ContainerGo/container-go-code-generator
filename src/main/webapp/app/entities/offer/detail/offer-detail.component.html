@@ -1,0 +1,66 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (offer) {
+      <div>
+        <h2 data-cy="offerDetailsHeading"><span jhiTranslate="containerGoServerApp.offer.detail.title">Offer</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="containerGoServerApp.offer.id">Id</span></dt>
+          <dd>
+            <span>{{ offer.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.offer.message">Message</span></dt>
+          <dd>
+            <span>{{ offer.message }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.offer.pickupFromDate">Pickup From Date</span></dt>
+          <dd>
+            <span>{{ offer.pickupFromDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.offer.pickupUntilDate">Pickup Until Date</span></dt>
+          <dd>
+            <span>{{ offer.pickupUntilDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.offer.dropoffFromDate">Dropoff From Date</span></dt>
+          <dd>
+            <span>{{ offer.dropoffFromDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.offer.dropoffUntilDate">Dropoff Until Date</span></dt>
+          <dd>
+            <span>{{ offer.dropoffUntilDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.offer.price">Price</span></dt>
+          <dd>
+            <span>{{ offer.price }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.offer.carrierId">Carrier Id</span></dt>
+          <dd>
+            <span>{{ offer.carrierId }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.offer.container">Container</span></dt>
+          <dd>
+            @if (offer.container) {
+              <div>
+                <a [routerLink]="['/container', offer.container.id, 'view']">{{ offer.container.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
+        </button>
+
+        <button type="button" [routerLink]="['/offer', offer.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

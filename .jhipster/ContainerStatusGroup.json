@@ -1,0 +1,42 @@
+{
+  "annotations": {
+    "changelogDate": "20240322065401"
+  },
+  "applications": ["containerGoServer"],
+  "dto": "mapstruct",
+  "entityTableName": "container_status_group",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "code",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    }
+  ],
+  "jpaMetamodelFiltering": false,
+  "name": "ContainerStatusGroup",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "containerStatus",
+      "otherEntityRelationshipName": "group",
+      "relationshipName": "containerStatus",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

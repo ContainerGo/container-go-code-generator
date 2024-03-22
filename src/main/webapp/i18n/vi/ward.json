@@ -1,0 +1,26 @@
+{
+  "containerGoServerApp": {
+    "ward": {
+      "home": {
+        "title": "Wards",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Ward",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Ward",
+        "notFound": "No Wards found"
+      },
+      "created": "Một Ward mới được tạo với định danh {{ param }}",
+      "updated": "Một Ward cập nhật với định danh {{ param }}",
+      "deleted": "Một Ward đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Ward {{ id }}?"
+      },
+      "detail": {
+        "title": "Ward"
+      },
+      "id": "Id",
+      "code": "Code",
+      "name": "Name",
+      "description": "Description"
+    }
+  }
+}

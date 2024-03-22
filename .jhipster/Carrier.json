@@ -52,6 +52,18 @@
     {
       "fieldName": "isApproved",
       "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "vehicles",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "shipmentsLeftForDay",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "verifiedSince",
+      "fieldType": "Instant"
     }
   ],
   "jpaMetamodelFiltering": false,

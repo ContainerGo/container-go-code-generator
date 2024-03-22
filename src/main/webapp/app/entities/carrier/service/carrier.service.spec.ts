@@ -4,10 +4,11 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { ICarrier } from '../carrier.model';
 import { sampleWithRequiredData, sampleWithNewData, sampleWithPartialData, sampleWithFullData } from '../carrier.test-samples';
 
-import { CarrierService } from './carrier.service';
+import { CarrierService, RestCarrier } from './carrier.service';
 
-const requireRestSample: ICarrier = {
+const requireRestSample: RestCarrier = {
   ...sampleWithRequiredData,
+  verifiedSince: sampleWithRequiredData.verifiedSince?.toJSON(),
 };
 
 describe('Carrier Service', () => {

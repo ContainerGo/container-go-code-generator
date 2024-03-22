@@ -1,0 +1,166 @@
+<div>
+  <h2 id="page-heading" data-cy="OfferHeading">
+    <span jhiTranslate="containerGoServerApp.offer.home.title">Offers</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="containerGoServerApp.offer.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-offer"
+        [routerLink]="['/offer/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="containerGoServerApp.offer.home.createLabel">Thêm mới một Offer</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (offers?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="containerGoServerApp.offer.home.notFound">No Offers found</span>
+    </div>
+  }
+
+  @if (offers && offers.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.offer.id">Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="message">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.offer.message">Message</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="pickupFromDate">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.offer.pickupFromDate">Pickup From Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="pickupUntilDate">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.offer.pickupUntilDate">Pickup Until Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dropoffFromDate">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.offer.dropoffFromDate">Dropoff From Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dropoffUntilDate">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.offer.dropoffUntilDate">Dropoff Until Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="price">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.offer.price">Price</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="carrierId">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.offer.carrierId">Carrier Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="container.id">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.offer.container">Container</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (offer of offers; track trackId) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/offer', offer.id, 'view']">{{ offer.id }}</a>
+              </td>
+              <td>{{ offer.message }}</td>
+              <td>{{ offer.pickupFromDate | formatMediumDatetime }}</td>
+              <td>{{ offer.pickupUntilDate | formatMediumDatetime }}</td>
+              <td>{{ offer.dropoffFromDate | formatMediumDatetime }}</td>
+              <td>{{ offer.dropoffUntilDate | formatMediumDatetime }}</td>
+              <td>{{ offer.price }}</td>
+              <td>{{ offer.carrierId }}</td>
+              <td>
+                @if (offer.container) {
+                  <div>
+                    <a [routerLink]="['/container', offer.container.id, 'view']">{{ offer.container.id }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/offer', offer.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Xem</span>
+                  </a>
+
+                  <a [routerLink]="['/offer', offer.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Sửa</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(offer)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Xóa</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (offers && offers.length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</div>

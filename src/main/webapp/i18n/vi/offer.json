@@ -1,0 +1,31 @@
+{
+  "containerGoServerApp": {
+    "offer": {
+      "home": {
+        "title": "Offers",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Offer",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Offer",
+        "notFound": "No Offers found"
+      },
+      "created": "Một Offer mới được tạo với định danh {{ param }}",
+      "updated": "Một Offer cập nhật với định danh {{ param }}",
+      "deleted": "Một Offer đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Offer {{ id }}?"
+      },
+      "detail": {
+        "title": "Offer"
+      },
+      "id": "Id",
+      "message": "Message",
+      "pickupFromDate": "Pickup From Date",
+      "pickupUntilDate": "Pickup Until Date",
+      "dropoffFromDate": "Dropoff From Date",
+      "dropoffUntilDate": "Dropoff Until Date",
+      "price": "Price",
+      "carrierId": "Carrier Id",
+      "container": "Container"
+    }
+  }
+}

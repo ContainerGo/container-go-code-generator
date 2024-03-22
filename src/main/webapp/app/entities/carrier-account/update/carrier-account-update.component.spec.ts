@@ -50,10 +50,10 @@ describe('CarrierAccount Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call Carrier query and add missing value', () => {
       const carrierAccount: ICarrierAccount = { id: 456 };
-      const carrier: ICarrier = { id: 8627 };
+      const carrier: ICarrier = { id: 11421 };
       carrierAccount.carrier = carrier;
 
-      const carrierCollection: ICarrier[] = [{ id: 23861 }];
+      const carrierCollection: ICarrier[] = [{ id: 21577 }];
       jest.spyOn(carrierService, 'query').mockReturnValue(of(new HttpResponse({ body: carrierCollection })));
       const additionalCarriers = [carrier];
       const expectedCollection: ICarrier[] = [...additionalCarriers, ...carrierCollection];
@@ -72,7 +72,7 @@ describe('CarrierAccount Management Update Component', () => {
 
     it('Should update editForm', () => {
       const carrierAccount: ICarrierAccount = { id: 456 };
-      const carrier: ICarrier = { id: 32722 };
+      const carrier: ICarrier = { id: 19408 };
       carrierAccount.carrier = carrier;
 
       activatedRoute.data = of({ carrierAccount });

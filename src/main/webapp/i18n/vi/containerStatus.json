@@ -1,0 +1,27 @@
+{
+  "containerGoServerApp": {
+    "containerStatus": {
+      "home": {
+        "title": "Container Statuses",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Container Status",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Container Status",
+        "notFound": "No Container Statuses found"
+      },
+      "created": "Một Container Status mới được tạo với định danh {{ param }}",
+      "updated": "Một Container Status cập nhật với định danh {{ param }}",
+      "deleted": "Một Container Status đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Container Status {{ id }}?"
+      },
+      "detail": {
+        "title": "Container Status"
+      },
+      "id": "Id",
+      "code": "Code",
+      "name": "Name",
+      "description": "Description",
+      "group": "Group"
+    }
+  }
+}

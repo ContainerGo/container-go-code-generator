@@ -15,7 +15,17 @@
         "shipperPerson": "Shipper Person",
         "carrierPerson": "Carrier Person",
         "centerPerson": "Center Person",
-        "centerPersonGroup": "Center Person Group"
+        "centerPersonGroup": "Center Person Group",
+        "provice": "Provice",
+        "district": "District",
+        "ward": "Ward",
+        "truckType": "Truck Type",
+        "truck": "Truck",
+        "containerStatus": "Container Status",
+        "containerStatusGroup": "Container Status Group",
+        "containerType": "Container Type",
+        "container": "Container",
+        "offer": "Offer"
       },
       "account": {
         "main": "Tài khoản",

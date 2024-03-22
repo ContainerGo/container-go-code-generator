@@ -30,6 +30,9 @@ describe('Carrier Form Service', () => {
             branchName: expect.any(Object),
             companySize: expect.any(Object),
             isApproved: expect.any(Object),
+            vehicles: expect.any(Object),
+            shipmentsLeftForDay: expect.any(Object),
+            verifiedSince: expect.any(Object),
           }),
         );
       });
@@ -50,6 +53,9 @@ describe('Carrier Form Service', () => {
             branchName: expect.any(Object),
             companySize: expect.any(Object),
             isApproved: expect.any(Object),
+            vehicles: expect.any(Object),
+            shipmentsLeftForDay: expect.any(Object),
+            verifiedSince: expect.any(Object),
           }),
         );
       });

@@ -1,0 +1,463 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-container-heading"
+        data-cy="ContainerCreateUpdateHeading"
+        jhiTranslate="containerGoServerApp.container.home.createOrEditLabel"
+      >
+        Thêm mới hoặc cập nhật Container
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" jhiTranslate="containerGoServerApp.container.id" for="field_id">Id</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.contNo" for="field_contNo">Cont No</label>
+          <input type="text" class="form-control" name="contNo" id="field_contNo" data-cy="contNo" formControlName="contNo" />
+          @if (editForm.get('contNo')!.invalid && (editForm.get('contNo')!.dirty || editForm.get('contNo')!.touched)) {
+            <div>
+              @if (editForm.get('contNo')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.estimatedPrice" for="field_estimatedPrice"
+            >Estimated Price</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            name="estimatedPrice"
+            id="field_estimatedPrice"
+            data-cy="estimatedPrice"
+            formControlName="estimatedPrice"
+          />
+          @if (
+            editForm.get('estimatedPrice')!.invalid && (editForm.get('estimatedPrice')!.dirty || editForm.get('estimatedPrice')!.touched)
+          ) {
+            <div>
+              @if (editForm.get('estimatedPrice')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('estimatedPrice')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Trường này phải là một số.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.distance" for="field_distance">Distance</label>
+          <input type="number" class="form-control" name="distance" id="field_distance" data-cy="distance" formControlName="distance" />
+          @if (editForm.get('distance')!.invalid && (editForm.get('distance')!.dirty || editForm.get('distance')!.touched)) {
+            <div>
+              @if (editForm.get('distance')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('distance')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Trường này phải là một số.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.desiredPrice" for="field_desiredPrice"
+            >Desired Price</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            name="desiredPrice"
+            id="field_desiredPrice"
+            data-cy="desiredPrice"
+            formControlName="desiredPrice"
+          />
+          @if (editForm.get('desiredPrice')!.invalid && (editForm.get('desiredPrice')!.dirty || editForm.get('desiredPrice')!.touched)) {
+            <div>
+              @if (editForm.get('desiredPrice')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('desiredPrice')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Trường này phải là một số.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.additionalRequirements" for="field_additionalRequirements"
+            >Additional Requirements</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="additionalRequirements"
+            id="field_additionalRequirements"
+            data-cy="additionalRequirements"
+            formControlName="additionalRequirements"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffContact" for="field_dropoffContact"
+            >Dropoff Contact</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="dropoffContact"
+            id="field_dropoffContact"
+            data-cy="dropoffContact"
+            formControlName="dropoffContact"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffContactPhone" for="field_dropoffContactPhone"
+            >Dropoff Contact Phone</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="dropoffContactPhone"
+            id="field_dropoffContactPhone"
+            data-cy="dropoffContactPhone"
+            formControlName="dropoffContactPhone"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffAddress" for="field_dropoffAddress"
+            >Dropoff Address</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="dropoffAddress"
+            id="field_dropoffAddress"
+            data-cy="dropoffAddress"
+            formControlName="dropoffAddress"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffLat" for="field_dropoffLat">Dropoff Lat</label>
+          <input
+            type="number"
+            class="form-control"
+            name="dropoffLat"
+            id="field_dropoffLat"
+            data-cy="dropoffLat"
+            formControlName="dropoffLat"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffLng" for="field_dropoffLng">Dropoff Lng</label>
+          <input
+            type="number"
+            class="form-control"
+            name="dropoffLng"
+            id="field_dropoffLng"
+            data-cy="dropoffLng"
+            formControlName="dropoffLng"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffUntilDate" for="field_dropoffUntilDate"
+            >Dropoff Until Date</label
+          >
+          <div class="d-flex">
+            <input
+              id="field_dropoffUntilDate"
+              data-cy="dropoffUntilDate"
+              type="datetime-local"
+              class="form-control"
+              name="dropoffUntilDate"
+              formControlName="dropoffUntilDate"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.state" for="field_state">State</label>
+          <select class="form-control" name="state" formControlName="state" id="field_state" data-cy="state">
+            <option [ngValue]="null">{{ 'containerGoServerApp.ContainerState.null' | translate }}</option>
+            @for (containerState of containerStateValues; track $index) {
+              <option [value]="containerState">{{ 'containerGoServerApp.ContainerState.' + containerState | translate }}</option>
+            }
+          </select>
+          @if (editForm.get('state')!.invalid && (editForm.get('state')!.dirty || editForm.get('state')!.touched)) {
+            <div>
+              @if (editForm.get('state')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.shipperId" for="field_shipperId">Shipper Id</label>
+          <input type="number" class="form-control" name="shipperId" id="field_shipperId" data-cy="shipperId" formControlName="shipperId" />
+          @if (editForm.get('shipperId')!.invalid && (editForm.get('shipperId')!.dirty || editForm.get('shipperId')!.touched)) {
+            <div>
+              @if (editForm.get('shipperId')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('shipperId')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Trường này phải là một số.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.carrierId" for="field_carrierId">Carrier Id</label>
+          <input type="number" class="form-control" name="carrierId" id="field_carrierId" data-cy="carrierId" formControlName="carrierId" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.totalWeight" for="field_totalWeight">Total Weight</label>
+          <input
+            type="number"
+            class="form-control"
+            name="totalWeight"
+            id="field_totalWeight"
+            data-cy="totalWeight"
+            formControlName="totalWeight"
+          />
+          @if (editForm.get('totalWeight')!.invalid && (editForm.get('totalWeight')!.dirty || editForm.get('totalWeight')!.touched)) {
+            <div>
+              @if (editForm.get('totalWeight')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('totalWeight')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Trường này phải là một số.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.pickupFromDate" for="field_pickupFromDate"
+            >Pickup From Date</label
+          >
+          <div class="d-flex">
+            <input
+              id="field_pickupFromDate"
+              data-cy="pickupFromDate"
+              type="datetime-local"
+              class="form-control"
+              name="pickupFromDate"
+              formControlName="pickupFromDate"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.biddingFromDate" for="field_biddingFromDate"
+            >Bidding From Date</label
+          >
+          <div class="d-flex">
+            <input
+              id="field_biddingFromDate"
+              data-cy="biddingFromDate"
+              type="datetime-local"
+              class="form-control"
+              name="biddingFromDate"
+              formControlName="biddingFromDate"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.biddingUntilDate" for="field_biddingUntilDate"
+            >Bidding Until Date</label
+          >
+          <div class="d-flex">
+            <input
+              id="field_biddingUntilDate"
+              data-cy="biddingUntilDate"
+              type="datetime-local"
+              class="form-control"
+              name="biddingUntilDate"
+              formControlName="biddingUntilDate"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffProvice" for="field_dropoffProvice"
+            >Dropoff Provice</label
+          >
+          <select
+            class="form-control"
+            id="field_dropoffProvice"
+            data-cy="dropoffProvice"
+            name="dropoffProvice"
+            formControlName="dropoffProvice"
+            [compareWith]="compareProvice"
+          >
+            <option [ngValue]="null"></option>
+            @for (proviceOption of provicesSharedCollection; track $index) {
+              <option [ngValue]="proviceOption">{{ proviceOption.id }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffDistrict" for="field_dropoffDistrict"
+            >Dropoff District</label
+          >
+          <select
+            class="form-control"
+            id="field_dropoffDistrict"
+            data-cy="dropoffDistrict"
+            name="dropoffDistrict"
+            formControlName="dropoffDistrict"
+            [compareWith]="compareDistrict"
+          >
+            <option [ngValue]="null"></option>
+            @for (districtOption of districtsSharedCollection; track $index) {
+              <option [ngValue]="districtOption">{{ districtOption.id }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffWard" for="field_dropoffWard">Dropoff Ward</label>
+          <select
+            class="form-control"
+            id="field_dropoffWard"
+            data-cy="dropoffWard"
+            name="dropoffWard"
+            formControlName="dropoffWard"
+            [compareWith]="compareWard"
+          >
+            <option [ngValue]="null"></option>
+            @for (wardOption of wardsSharedCollection; track $index) {
+              <option [ngValue]="wardOption">{{ wardOption.id }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.type" for="field_type">Type</label>
+          <select
+            class="form-control"
+            id="field_type"
+            data-cy="type"
+            name="type"
+            formControlName="type"
+            [compareWith]="compareContainerType"
+          >
+            @if (!editForm.get('type')!.value) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (containerTypeOption of containerTypesSharedCollection; track $index) {
+              <option [ngValue]="containerTypeOption">{{ containerTypeOption.id }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['type'])!.invalid && (editForm.get(['type'])!.dirty || editForm.get(['type'])!.touched)) {
+          <div>
+            @if (editForm.get(['type'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+            }
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.status" for="field_status">Status</label>
+          <select
+            class="form-control"
+            id="field_status"
+            data-cy="status"
+            name="status"
+            formControlName="status"
+            [compareWith]="compareContainerStatus"
+          >
+            @if (!editForm.get('status')!.value) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (containerStatusOption of containerStatusesSharedCollection; track $index) {
+              <option [ngValue]="containerStatusOption">{{ containerStatusOption.id }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['status'])!.invalid && (editForm.get(['status'])!.dirty || editForm.get(['status'])!.touched)) {
+          <div>
+            @if (editForm.get(['status'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+            }
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.truckType" for="field_truckType">Truck Type</label>
+          <select
+            class="form-control"
+            id="field_truckType"
+            data-cy="truckType"
+            name="truckType"
+            formControlName="truckType"
+            [compareWith]="compareTruckType"
+          >
+            <option [ngValue]="null"></option>
+            @for (truckTypeOption of truckTypesSharedCollection; track $index) {
+              <option [ngValue]="truckTypeOption">{{ truckTypeOption.id }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Hủy</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Lưu</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

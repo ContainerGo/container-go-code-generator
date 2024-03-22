@@ -1,0 +1,26 @@
+{
+  "containerGoServerApp": {
+    "containerType": {
+      "home": {
+        "title": "Container Types",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Container Type",
+        "createOrEditLabel": "Create or edit a Container Type",
+        "notFound": "No Container Types found"
+      },
+      "created": "A new Container Type is created with identifier {{ param }}",
+      "updated": "A Container Type is updated with identifier {{ param }}",
+      "deleted": "A Container Type is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Container Type {{ id }}?"
+      },
+      "detail": {
+        "title": "Container Type"
+      },
+      "id": "Id",
+      "code": "Code",
+      "name": "Name",
+      "description": "Description"
+    }
+  }
+}

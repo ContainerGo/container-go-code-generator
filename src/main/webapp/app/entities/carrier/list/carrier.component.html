@@ -112,6 +112,27 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="vehicles">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.carrier.vehicles">Vehicles</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="shipmentsLeftForDay">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.carrier.shipmentsLeftForDay">Shipments Left For Day</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="verifiedSince">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.carrier.verifiedSince">Verified Since</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -131,6 +152,9 @@
               <td>{{ carrier.branchName }}</td>
               <td>{{ carrier.companySize }}</td>
               <td>{{ carrier.isApproved }}</td>
+              <td>{{ carrier.vehicles }}</td>
+              <td>{{ carrier.shipmentsLeftForDay }}</td>
+              <td>{{ carrier.verifiedSince | formatMediumDatetime }}</td>
               <td class="text-end">
                 <div class="btn-group">
                   <a [routerLink]="['/carrier', carrier.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">

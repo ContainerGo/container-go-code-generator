@@ -1,0 +1,47 @@
+{
+  "containerGoServerApp": {
+    "container": {
+      "home": {
+        "title": "Containers",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Container",
+        "createOrEditLabel": "Create or edit a Container",
+        "notFound": "No Containers found"
+      },
+      "created": "A new Container is created with identifier {{ param }}",
+      "updated": "A Container is updated with identifier {{ param }}",
+      "deleted": "A Container is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Container {{ id }}?"
+      },
+      "detail": {
+        "title": "Container"
+      },
+      "id": "Id",
+      "contNo": "Cont No",
+      "estimatedPrice": "Estimated Price",
+      "distance": "Distance",
+      "desiredPrice": "Desired Price",
+      "additionalRequirements": "Additional Requirements",
+      "dropoffContact": "Dropoff Contact",
+      "dropoffContactPhone": "Dropoff Contact Phone",
+      "dropoffAddress": "Dropoff Address",
+      "dropoffLat": "Dropoff Lat",
+      "dropoffLng": "Dropoff Lng",
+      "dropoffUntilDate": "Dropoff Until Date",
+      "state": "State",
+      "shipperId": "Shipper Id",
+      "carrierId": "Carrier Id",
+      "totalWeight": "Total Weight",
+      "pickupFromDate": "Pickup From Date",
+      "biddingFromDate": "Bidding From Date",
+      "biddingUntilDate": "Bidding Until Date",
+      "dropoffProvice": "Dropoff Provice",
+      "dropoffDistrict": "Dropoff District",
+      "dropoffWard": "Dropoff Ward",
+      "type": "Type",
+      "status": "Status",
+      "truckType": "Truck Type"
+    }
+  }
+}

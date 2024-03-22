@@ -27,7 +27,10 @@
       "accountName": "Account Name",
       "branchName": "Branch Name",
       "companySize": "Company Size",
-      "isApproved": "Is Approved"
+      "isApproved": "Is Approved",
+      "vehicles": "Vehicles",
+      "shipmentsLeftForDay": "Shipments Left For Day",
+      "verifiedSince": "Verified Since"
     }
   }
 }

@@ -55,6 +55,18 @@
           <dd>
             <span>{{ carrier.isApproved }}</span>
           </dd>
+          <dt><span jhiTranslate="containerGoServerApp.carrier.vehicles">Vehicles</span></dt>
+          <dd>
+            <span>{{ carrier.vehicles }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.carrier.shipmentsLeftForDay">Shipments Left For Day</span></dt>
+          <dd>
+            <span>{{ carrier.shipmentsLeftForDay }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.carrier.verifiedSince">Verified Since</span></dt>
+          <dd>
+            <span>{{ carrier.verifiedSince | formatMediumDatetime }}</span>
+          </dd>
         </dl>
 
         <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">

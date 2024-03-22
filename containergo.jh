@@ -15,6 +15,29 @@ application {
   dto * with mapstruct
 }
 
+// Common
+entity Provice {
+	id Long,
+    code String required,
+    name String required,
+    description String
+}
+
+entity District {
+	id Long,
+    code String required,
+    name String required,
+    description String
+}
+
+entity Ward {
+	id Long,
+    code String required,
+    name String required,
+    description String
+}
+
+// Shipper
 entity Shipper {
 	id Long,
     code String required,
@@ -36,6 +59,26 @@ entity ShipperPerson {
     address String
 }
 
+// Carrier
+entity TruckType {
+	id Long,
+    code String required,
+    name String required,
+    category String,
+    height Integer,
+    length Integer,
+    maxSpeed Double,
+    type String,
+    weight Integer,
+    width Integer
+}
+
+entity Truck {
+	id Long,
+    code String required,
+    name String required
+}
+
 entity Carrier {
 	id Long,
     code String required,
@@ -47,7 +90,10 @@ entity Carrier {
     accountName String,
     branchName String,
     companySize Integer,
-    isApproved Boolean
+    isApproved Boolean,
+    vehicles Integer,
+    shipmentsLeftForDay Integer,
+    verifiedSince Instant
 }
 
 entity CarrierPerson {
@@ -72,9 +118,92 @@ entity CenterPersonGroup {
     description String
 }
 
+// Container
+enum ContainerState {
+    NEW,
+	BIDDING,
+    WAITING_FOR_OFFERS,
+    OFFER_CHOSEN,
+    SHIPMENT_PLAN_SENT,
+    SHIPMENT_IN_PROGRESS,
+    SHIPMENT_SUCCESS,
+    SHIPMENT_FAIL,
+    SHIPMENT_POD_APPROVED
+}
+
+enum ShipmentStatus {
+    NEW
+}
+
+entity ContainerStatus {
+	id Long,
+    code String required,
+    name String required,
+    description String
+}
+
+entity ContainerStatusGroup {
+	id Long,
+    code String required,
+    name String required,
+    description String
+}
+
+entity ContainerType {
+	id Long,
+    code String required,
+    name String required,
+    description String
+}
+
+entity Container {
+	id Long,
+    contNo String required,
+    estimatedPrice Double required,
+    distance Double required,
+    desiredPrice Double required,
+    additionalRequirements String,
+    dropoffContact String,
+    dropoffContactPhone String,
+    dropoffAddress String,
+    dropoffLat Double,
+    dropoffLng Double,
+    dropoffUntilDate Instant,
+    state ContainerState required,
+    shipperId Long required,
+    carrierId Long,
+    totalWeight Double required,
+    pickupFromDate Instant,
+    biddingFromDate Instant,
+    biddingUntilDate Instant
+}
+
+// Offer
+entity Offer {
+	id Long,
+    message String,
+    pickupFromDate Instant required,
+    pickupUntilDate Instant required,
+    dropoffFromDate Instant required,
+    dropoffUntilDate Instant required,
+    price Double required,
+    carrierId Long required
+}
+
 relationship ManyToOne {
 	CarrierPerson{carrier required} to Carrier
     ShipperPerson{shipper required} to Shipper
+    Container{dropoffProvice} to Provice
+    Container{dropoffDistrict} to District
+    Container{dropoffWard} to Ward
+    Container{type required} to ContainerType
+    Container{status required} to ContainerStatus
+    Container{truckType} to TruckType
+    Offer{container required} to Container
+}
+
+relationship OneToMany {
+	ContainerStatusGroup to ContainerStatus{group}
 }
 
 relationship ManyToMany {
