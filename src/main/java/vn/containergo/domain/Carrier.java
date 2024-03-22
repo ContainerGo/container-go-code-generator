@@ -1,9 +1,13 @@
 package vn.containergo.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -60,6 +64,16 @@ public class Carrier implements Serializable {
 
     @Field("verified_since")
     private Instant verifiedSince;
+
+    @DBRef
+    @Field("truck")
+    @JsonIgnoreProperties(value = { "type", "carrier" }, allowSetters = true)
+    private Set<Truck> trucks = new HashSet<>();
+
+    @DBRef
+    @Field("carrierPerson")
+    @JsonIgnoreProperties(value = { "carrier" }, allowSetters = true)
+    private Set<CarrierPerson> carrierPeople = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -243,6 +257,68 @@ public class Carrier implements Serializable {
 
     public void setVerifiedSince(Instant verifiedSince) {
         this.verifiedSince = verifiedSince;
+    }
+
+    public Set<Truck> getTrucks() {
+        return this.trucks;
+    }
+
+    public void setTrucks(Set<Truck> trucks) {
+        if (this.trucks != null) {
+            this.trucks.forEach(i -> i.setCarrier(null));
+        }
+        if (trucks != null) {
+            trucks.forEach(i -> i.setCarrier(this));
+        }
+        this.trucks = trucks;
+    }
+
+    public Carrier trucks(Set<Truck> trucks) {
+        this.setTrucks(trucks);
+        return this;
+    }
+
+    public Carrier addTruck(Truck truck) {
+        this.trucks.add(truck);
+        truck.setCarrier(this);
+        return this;
+    }
+
+    public Carrier removeTruck(Truck truck) {
+        this.trucks.remove(truck);
+        truck.setCarrier(null);
+        return this;
+    }
+
+    public Set<CarrierPerson> getCarrierPeople() {
+        return this.carrierPeople;
+    }
+
+    public void setCarrierPeople(Set<CarrierPerson> carrierPeople) {
+        if (this.carrierPeople != null) {
+            this.carrierPeople.forEach(i -> i.setCarrier(null));
+        }
+        if (carrierPeople != null) {
+            carrierPeople.forEach(i -> i.setCarrier(this));
+        }
+        this.carrierPeople = carrierPeople;
+    }
+
+    public Carrier carrierPeople(Set<CarrierPerson> carrierPeople) {
+        this.setCarrierPeople(carrierPeople);
+        return this;
+    }
+
+    public Carrier addCarrierPerson(CarrierPerson carrierPerson) {
+        this.carrierPeople.add(carrierPerson);
+        carrierPerson.setCarrier(this);
+        return this;
+    }
+
+    public Carrier removeCarrierPerson(CarrierPerson carrierPerson) {
+        this.carrierPeople.remove(carrierPerson);
+        carrierPerson.setCarrier(null);
+        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

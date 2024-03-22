@@ -17,6 +17,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import vn.containergo.IntegrationTest;
 import vn.containergo.domain.Truck;
+import vn.containergo.domain.TruckType;
+import vn.containergo.domain.enumeration.TruckStatus;
 import vn.containergo.repository.TruckRepository;
 import vn.containergo.service.dto.TruckDTO;
 import vn.containergo.service.mapper.TruckMapper;
@@ -34,6 +36,27 @@ class TruckResourceIT {
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
+
+    private static final String DEFAULT_MODEL = "AAAAAAAAAA";
+    private static final String UPDATED_MODEL = "BBBBBBBBBB";
+
+    private static final String DEFAULT_MANUFACTURER = "AAAAAAAAAA";
+    private static final String UPDATED_MANUFACTURER = "BBBBBBBBBB";
+
+    private static final Integer DEFAULT_YEAR = 1;
+    private static final Integer UPDATED_YEAR = 2;
+
+    private static final Double DEFAULT_CAPACITY = 1D;
+    private static final Double UPDATED_CAPACITY = 2D;
+
+    private static final TruckStatus DEFAULT_STATUS = TruckStatus.AVAILABLE;
+    private static final TruckStatus UPDATED_STATUS = TruckStatus.IN_TRANSIT;
+
+    private static final Double DEFAULT_MILEAGE = 1D;
+    private static final Double UPDATED_MILEAGE = 2D;
+
+    private static final String DEFAULT_NUMBER_PLATE = "AAAAAAAAAA";
+    private static final String UPDATED_NUMBER_PLATE = "BBBBBBBBBB";
 
     private static final String ENTITY_API_URL = "/api/trucks";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -59,7 +82,21 @@ class TruckResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Truck createEntity() {
-        Truck truck = new Truck().code(DEFAULT_CODE).name(DEFAULT_NAME);
+        Truck truck = new Truck()
+            .code(DEFAULT_CODE)
+            .name(DEFAULT_NAME)
+            .model(DEFAULT_MODEL)
+            .manufacturer(DEFAULT_MANUFACTURER)
+            .year(DEFAULT_YEAR)
+            .capacity(DEFAULT_CAPACITY)
+            .status(DEFAULT_STATUS)
+            .mileage(DEFAULT_MILEAGE)
+            .numberPlate(DEFAULT_NUMBER_PLATE);
+        // Add required entity
+        TruckType truckType;
+        truckType = TruckTypeResourceIT.createEntity();
+        truckType.setId("fixed-id-for-tests");
+        truck.setType(truckType);
         return truck;
     }
 
@@ -70,7 +107,21 @@ class TruckResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Truck createUpdatedEntity() {
-        Truck truck = new Truck().code(UPDATED_CODE).name(UPDATED_NAME);
+        Truck truck = new Truck()
+            .code(UPDATED_CODE)
+            .name(UPDATED_NAME)
+            .model(UPDATED_MODEL)
+            .manufacturer(UPDATED_MANUFACTURER)
+            .year(UPDATED_YEAR)
+            .capacity(UPDATED_CAPACITY)
+            .status(UPDATED_STATUS)
+            .mileage(UPDATED_MILEAGE)
+            .numberPlate(UPDATED_NUMBER_PLATE);
+        // Add required entity
+        TruckType truckType;
+        truckType = TruckTypeResourceIT.createUpdatedEntity();
+        truckType.setId("fixed-id-for-tests");
+        truck.setType(truckType);
         return truck;
     }
 
@@ -95,6 +146,13 @@ class TruckResourceIT {
         Truck testTruck = truckList.get(truckList.size() - 1);
         assertThat(testTruck.getCode()).isEqualTo(DEFAULT_CODE);
         assertThat(testTruck.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(testTruck.getModel()).isEqualTo(DEFAULT_MODEL);
+        assertThat(testTruck.getManufacturer()).isEqualTo(DEFAULT_MANUFACTURER);
+        assertThat(testTruck.getYear()).isEqualTo(DEFAULT_YEAR);
+        assertThat(testTruck.getCapacity()).isEqualTo(DEFAULT_CAPACITY);
+        assertThat(testTruck.getStatus()).isEqualTo(DEFAULT_STATUS);
+        assertThat(testTruck.getMileage()).isEqualTo(DEFAULT_MILEAGE);
+        assertThat(testTruck.getNumberPlate()).isEqualTo(DEFAULT_NUMBER_PLATE);
     }
 
     @Test
@@ -150,6 +208,40 @@ class TruckResourceIT {
     }
 
     @Test
+    void checkStatusIsRequired() throws Exception {
+        int databaseSizeBeforeTest = truckRepository.findAll().size();
+        // set the field null
+        truck.setStatus(null);
+
+        // Create the Truck, which fails.
+        TruckDTO truckDTO = truckMapper.toDto(truck);
+
+        restTruckMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(truckDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<Truck> truckList = truckRepository.findAll();
+        assertThat(truckList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    void checkNumberPlateIsRequired() throws Exception {
+        int databaseSizeBeforeTest = truckRepository.findAll().size();
+        // set the field null
+        truck.setNumberPlate(null);
+
+        // Create the Truck, which fails.
+        TruckDTO truckDTO = truckMapper.toDto(truck);
+
+        restTruckMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(truckDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<Truck> truckList = truckRepository.findAll();
+        assertThat(truckList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
     void getAllTrucks() throws Exception {
         // Initialize the database
         truckRepository.save(truck);
@@ -161,7 +253,14 @@ class TruckResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(truck.getId().intValue())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)));
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].model").value(hasItem(DEFAULT_MODEL)))
+            .andExpect(jsonPath("$.[*].manufacturer").value(hasItem(DEFAULT_MANUFACTURER)))
+            .andExpect(jsonPath("$.[*].year").value(hasItem(DEFAULT_YEAR)))
+            .andExpect(jsonPath("$.[*].capacity").value(hasItem(DEFAULT_CAPACITY.doubleValue())))
+            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
+            .andExpect(jsonPath("$.[*].mileage").value(hasItem(DEFAULT_MILEAGE.doubleValue())))
+            .andExpect(jsonPath("$.[*].numberPlate").value(hasItem(DEFAULT_NUMBER_PLATE)));
     }
 
     @Test
@@ -176,7 +275,14 @@ class TruckResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(truck.getId().intValue()))
             .andExpect(jsonPath("$.code").value(DEFAULT_CODE))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME));
+            .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
+            .andExpect(jsonPath("$.model").value(DEFAULT_MODEL))
+            .andExpect(jsonPath("$.manufacturer").value(DEFAULT_MANUFACTURER))
+            .andExpect(jsonPath("$.year").value(DEFAULT_YEAR))
+            .andExpect(jsonPath("$.capacity").value(DEFAULT_CAPACITY.doubleValue()))
+            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
+            .andExpect(jsonPath("$.mileage").value(DEFAULT_MILEAGE.doubleValue()))
+            .andExpect(jsonPath("$.numberPlate").value(DEFAULT_NUMBER_PLATE));
     }
 
     @Test
@@ -194,7 +300,16 @@ class TruckResourceIT {
 
         // Update the truck
         Truck updatedTruck = truckRepository.findById(truck.getId()).orElseThrow();
-        updatedTruck.code(UPDATED_CODE).name(UPDATED_NAME);
+        updatedTruck
+            .code(UPDATED_CODE)
+            .name(UPDATED_NAME)
+            .model(UPDATED_MODEL)
+            .manufacturer(UPDATED_MANUFACTURER)
+            .year(UPDATED_YEAR)
+            .capacity(UPDATED_CAPACITY)
+            .status(UPDATED_STATUS)
+            .mileage(UPDATED_MILEAGE)
+            .numberPlate(UPDATED_NUMBER_PLATE);
         TruckDTO truckDTO = truckMapper.toDto(updatedTruck);
 
         restTruckMockMvc
@@ -211,6 +326,13 @@ class TruckResourceIT {
         Truck testTruck = truckList.get(truckList.size() - 1);
         assertThat(testTruck.getCode()).isEqualTo(UPDATED_CODE);
         assertThat(testTruck.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testTruck.getModel()).isEqualTo(UPDATED_MODEL);
+        assertThat(testTruck.getManufacturer()).isEqualTo(UPDATED_MANUFACTURER);
+        assertThat(testTruck.getYear()).isEqualTo(UPDATED_YEAR);
+        assertThat(testTruck.getCapacity()).isEqualTo(UPDATED_CAPACITY);
+        assertThat(testTruck.getStatus()).isEqualTo(UPDATED_STATUS);
+        assertThat(testTruck.getMileage()).isEqualTo(UPDATED_MILEAGE);
+        assertThat(testTruck.getNumberPlate()).isEqualTo(UPDATED_NUMBER_PLATE);
     }
 
     @Test
@@ -286,7 +408,7 @@ class TruckResourceIT {
         Truck partialUpdatedTruck = new Truck();
         partialUpdatedTruck.setId(truck.getId());
 
-        partialUpdatedTruck.name(UPDATED_NAME);
+        partialUpdatedTruck.name(UPDATED_NAME).year(UPDATED_YEAR).mileage(UPDATED_MILEAGE).numberPlate(UPDATED_NUMBER_PLATE);
 
         restTruckMockMvc
             .perform(
@@ -302,6 +424,13 @@ class TruckResourceIT {
         Truck testTruck = truckList.get(truckList.size() - 1);
         assertThat(testTruck.getCode()).isEqualTo(DEFAULT_CODE);
         assertThat(testTruck.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testTruck.getModel()).isEqualTo(DEFAULT_MODEL);
+        assertThat(testTruck.getManufacturer()).isEqualTo(DEFAULT_MANUFACTURER);
+        assertThat(testTruck.getYear()).isEqualTo(UPDATED_YEAR);
+        assertThat(testTruck.getCapacity()).isEqualTo(DEFAULT_CAPACITY);
+        assertThat(testTruck.getStatus()).isEqualTo(DEFAULT_STATUS);
+        assertThat(testTruck.getMileage()).isEqualTo(UPDATED_MILEAGE);
+        assertThat(testTruck.getNumberPlate()).isEqualTo(UPDATED_NUMBER_PLATE);
     }
 
     @Test
@@ -315,7 +444,16 @@ class TruckResourceIT {
         Truck partialUpdatedTruck = new Truck();
         partialUpdatedTruck.setId(truck.getId());
 
-        partialUpdatedTruck.code(UPDATED_CODE).name(UPDATED_NAME);
+        partialUpdatedTruck
+            .code(UPDATED_CODE)
+            .name(UPDATED_NAME)
+            .model(UPDATED_MODEL)
+            .manufacturer(UPDATED_MANUFACTURER)
+            .year(UPDATED_YEAR)
+            .capacity(UPDATED_CAPACITY)
+            .status(UPDATED_STATUS)
+            .mileage(UPDATED_MILEAGE)
+            .numberPlate(UPDATED_NUMBER_PLATE);
 
         restTruckMockMvc
             .perform(
@@ -331,6 +469,13 @@ class TruckResourceIT {
         Truck testTruck = truckList.get(truckList.size() - 1);
         assertThat(testTruck.getCode()).isEqualTo(UPDATED_CODE);
         assertThat(testTruck.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testTruck.getModel()).isEqualTo(UPDATED_MODEL);
+        assertThat(testTruck.getManufacturer()).isEqualTo(UPDATED_MANUFACTURER);
+        assertThat(testTruck.getYear()).isEqualTo(UPDATED_YEAR);
+        assertThat(testTruck.getCapacity()).isEqualTo(UPDATED_CAPACITY);
+        assertThat(testTruck.getStatus()).isEqualTo(UPDATED_STATUS);
+        assertThat(testTruck.getMileage()).isEqualTo(UPDATED_MILEAGE);
+        assertThat(testTruck.getNumberPlate()).isEqualTo(UPDATED_NUMBER_PLATE);
     }
 
     @Test

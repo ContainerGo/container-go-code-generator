@@ -19,6 +19,8 @@ import { IContainerStatus } from 'app/entities/container-status/container-status
 import { ContainerStatusService } from 'app/entities/container-status/service/container-status.service';
 import { ITruckType } from 'app/entities/truck-type/truck-type.model';
 import { TruckTypeService } from 'app/entities/truck-type/service/truck-type.service';
+import { ITruck } from 'app/entities/truck/truck.model';
+import { TruckService } from 'app/entities/truck/service/truck.service';
 import { ContainerState } from 'app/entities/enumerations/container-state.model';
 import { ContainerService } from '../service/container.service';
 import { IContainer } from '../container.model';
@@ -41,6 +43,7 @@ export class ContainerUpdateComponent implements OnInit {
   containerTypesSharedCollection: IContainerType[] = [];
   containerStatusesSharedCollection: IContainerStatus[] = [];
   truckTypesSharedCollection: ITruckType[] = [];
+  trucksSharedCollection: ITruck[] = [];
 
   editForm: ContainerFormGroup = this.containerFormService.createContainerFormGroup();
 
@@ -53,6 +56,7 @@ export class ContainerUpdateComponent implements OnInit {
     protected containerTypeService: ContainerTypeService,
     protected containerStatusService: ContainerStatusService,
     protected truckTypeService: TruckTypeService,
+    protected truckService: TruckService,
     protected activatedRoute: ActivatedRoute,
   ) {}
 
@@ -69,6 +73,8 @@ export class ContainerUpdateComponent implements OnInit {
     this.containerStatusService.compareContainerStatus(o1, o2);
 
   compareTruckType = (o1: ITruckType | null, o2: ITruckType | null): boolean => this.truckTypeService.compareTruckType(o1, o2);
+
+  compareTruck = (o1: ITruck | null, o2: ITruck | null): boolean => this.truckService.compareTruck(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ container }) => {
@@ -139,6 +145,7 @@ export class ContainerUpdateComponent implements OnInit {
       this.truckTypesSharedCollection,
       container.truckType,
     );
+    this.trucksSharedCollection = this.truckService.addTruckToCollectionIfMissing<ITruck>(this.trucksSharedCollection, container.truck);
   }
 
   protected loadRelationshipsOptions(): void {
@@ -197,5 +204,11 @@ export class ContainerUpdateComponent implements OnInit {
         ),
       )
       .subscribe((truckTypes: ITruckType[]) => (this.truckTypesSharedCollection = truckTypes));
+
+    this.truckService
+      .query()
+      .pipe(map((res: HttpResponse<ITruck[]>) => res.body ?? []))
+      .pipe(map((trucks: ITruck[]) => this.truckService.addTruckToCollectionIfMissing<ITruck>(trucks, this.container?.truck)))
+      .subscribe((trucks: ITruck[]) => (this.trucksSharedCollection = trucks));
   }
 }

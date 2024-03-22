@@ -1,5 +1,6 @@
 package vn.containergo.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import org.springframework.data.annotation.Id;
@@ -35,6 +36,7 @@ public class ShipperPerson implements Serializable {
 
     @DBRef
     @Field("shipper")
+    @JsonIgnoreProperties(value = { "shipperPeople" }, allowSetters = true)
     private Shipper shipper;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

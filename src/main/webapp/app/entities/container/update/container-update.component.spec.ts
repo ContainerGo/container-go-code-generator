@@ -18,6 +18,8 @@ import { IContainerStatus } from 'app/entities/container-status/container-status
 import { ContainerStatusService } from 'app/entities/container-status/service/container-status.service';
 import { ITruckType } from 'app/entities/truck-type/truck-type.model';
 import { TruckTypeService } from 'app/entities/truck-type/service/truck-type.service';
+import { ITruck } from 'app/entities/truck/truck.model';
+import { TruckService } from 'app/entities/truck/service/truck.service';
 import { IContainer } from '../container.model';
 import { ContainerService } from '../service/container.service';
 import { ContainerFormService } from './container-form.service';
@@ -36,6 +38,7 @@ describe('Container Management Update Component', () => {
   let containerTypeService: ContainerTypeService;
   let containerStatusService: ContainerStatusService;
   let truckTypeService: TruckTypeService;
+  let truckService: TruckService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -63,6 +66,7 @@ describe('Container Management Update Component', () => {
     containerTypeService = TestBed.inject(ContainerTypeService);
     containerStatusService = TestBed.inject(ContainerStatusService);
     truckTypeService = TestBed.inject(TruckTypeService);
+    truckService = TestBed.inject(TruckService);
 
     comp = fixture.componentInstance;
   });
@@ -180,10 +184,10 @@ describe('Container Management Update Component', () => {
 
     it('Should call TruckType query and add missing value', () => {
       const container: IContainer = { id: 456 };
-      const truckType: ITruckType = { id: 18773 };
+      const truckType: ITruckType = { id: 8535 };
       container.truckType = truckType;
 
-      const truckTypeCollection: ITruckType[] = [{ id: 18107 }];
+      const truckTypeCollection: ITruckType[] = [{ id: 13844 }];
       jest.spyOn(truckTypeService, 'query').mockReturnValue(of(new HttpResponse({ body: truckTypeCollection })));
       const additionalTruckTypes = [truckType];
       const expectedCollection: ITruckType[] = [...additionalTruckTypes, ...truckTypeCollection];
@@ -200,6 +204,28 @@ describe('Container Management Update Component', () => {
       expect(comp.truckTypesSharedCollection).toEqual(expectedCollection);
     });
 
+    it('Should call Truck query and add missing value', () => {
+      const container: IContainer = { id: 456 };
+      const truck: ITruck = { id: 14658 };
+      container.truck = truck;
+
+      const truckCollection: ITruck[] = [{ id: 14789 }];
+      jest.spyOn(truckService, 'query').mockReturnValue(of(new HttpResponse({ body: truckCollection })));
+      const additionalTrucks = [truck];
+      const expectedCollection: ITruck[] = [...additionalTrucks, ...truckCollection];
+      jest.spyOn(truckService, 'addTruckToCollectionIfMissing').mockReturnValue(expectedCollection);
+
+      activatedRoute.data = of({ container });
+      comp.ngOnInit();
+
+      expect(truckService.query).toHaveBeenCalled();
+      expect(truckService.addTruckToCollectionIfMissing).toHaveBeenCalledWith(
+        truckCollection,
+        ...additionalTrucks.map(expect.objectContaining),
+      );
+      expect(comp.trucksSharedCollection).toEqual(expectedCollection);
+    });
+
     it('Should update editForm', () => {
       const container: IContainer = { id: 456 };
       const dropoffProvice: IProvice = { id: 22168 };
@@ -212,8 +238,10 @@ describe('Container Management Update Component', () => {
       container.type = type;
       const status: IContainerStatus = { id: 32335 };
       container.status = status;
-      const truckType: ITruckType = { id: 24745 };
+      const truckType: ITruckType = { id: 30712 };
       container.truckType = truckType;
+      const truck: ITruck = { id: 3042 };
+      container.truck = truck;
 
       activatedRoute.data = of({ container });
       comp.ngOnInit();
@@ -224,6 +252,7 @@ describe('Container Management Update Component', () => {
       expect(comp.containerTypesSharedCollection).toContain(type);
       expect(comp.containerStatusesSharedCollection).toContain(status);
       expect(comp.truckTypesSharedCollection).toContain(truckType);
+      expect(comp.trucksSharedCollection).toContain(truck);
       expect(comp.container).toEqual(container);
     });
   });
@@ -354,6 +383,16 @@ describe('Container Management Update Component', () => {
         jest.spyOn(truckTypeService, 'compareTruckType');
         comp.compareTruckType(entity, entity2);
         expect(truckTypeService.compareTruckType).toHaveBeenCalledWith(entity, entity2);
+      });
+    });
+
+    describe('compareTruck', () => {
+      it('Should forward to truckService', () => {
+        const entity = { id: 123 };
+        const entity2 = { id: 456 };
+        jest.spyOn(truckService, 'compareTruck');
+        comp.compareTruck(entity, entity2);
+        expect(truckService.compareTruck).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

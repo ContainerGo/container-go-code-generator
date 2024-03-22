@@ -69,7 +69,22 @@
   "jpaMetamodelFiltering": false,
   "name": "Carrier",
   "pagination": "pagination",
-  "relationships": [],
+  "relationships": [
+    {
+      "otherEntityName": "truck",
+      "otherEntityRelationshipName": "carrier",
+      "relationshipName": "truck",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "carrierPerson",
+      "otherEntityRelationshipName": "carrier",
+      "relationshipName": "carrierPerson",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    }
+  ],
   "searchEngine": "no",
   "service": "serviceImpl"
 }

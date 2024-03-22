@@ -30,7 +30,9 @@
       "isApproved": "Is Approved",
       "vehicles": "Vehicles",
       "shipmentsLeftForDay": "Shipments Left For Day",
-      "verifiedSince": "Verified Since"
+      "verifiedSince": "Verified Since",
+      "truck": "Truck",
+      "carrierPerson": "Carrier Person"
     }
   }
 }

@@ -135,6 +135,14 @@
               </div>
             }
           </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.truck">Truck</span></dt>
+          <dd>
+            @if (container.truck) {
+              <div>
+                <a [routerLink]="['/truck', container.truck.id, 'view']">{{ container.truck.id }}</a>
+              </div>
+            }
+          </dd>
         </dl>
 
         <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">

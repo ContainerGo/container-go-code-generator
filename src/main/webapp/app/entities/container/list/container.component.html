@@ -204,6 +204,12 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="truck.id">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.truck">Truck</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -270,6 +276,13 @@
                 @if (container.truckType) {
                   <div>
                     <a [routerLink]="['/truck-type', container.truckType.id, 'view']">{{ container.truckType.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (container.truck) {
+                  <div>
+                    <a [routerLink]="['/truck', container.truck.id, 'view']">{{ container.truck.id }}</a>
                   </div>
                 }
               </td>

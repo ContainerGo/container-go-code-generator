@@ -61,6 +61,7 @@ type ContainerFormGroupContent = {
   type: FormControl<ContainerFormRawValue['type']>;
   status: FormControl<ContainerFormRawValue['status']>;
   truckType: FormControl<ContainerFormRawValue['truckType']>;
+  truck: FormControl<ContainerFormRawValue['truck']>;
 };
 
 export type ContainerFormGroup = FormGroup<ContainerFormGroupContent>;
@@ -122,6 +123,7 @@ export class ContainerFormService {
         validators: [Validators.required],
       }),
       truckType: new FormControl(containerRawValue.truckType),
+      truck: new FormControl(containerRawValue.truck),
     });
   }
 

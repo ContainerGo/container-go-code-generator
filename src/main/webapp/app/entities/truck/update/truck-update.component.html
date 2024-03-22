@@ -38,6 +38,110 @@
             </div>
           }
         </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.truck.model" for="field_model">Model</label>
+          <input type="text" class="form-control" name="model" id="field_model" data-cy="model" formControlName="model" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.truck.manufacturer" for="field_manufacturer">Manufacturer</label>
+          <input
+            type="text"
+            class="form-control"
+            name="manufacturer"
+            id="field_manufacturer"
+            data-cy="manufacturer"
+            formControlName="manufacturer"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.truck.year" for="field_year">Year</label>
+          <input type="number" class="form-control" name="year" id="field_year" data-cy="year" formControlName="year" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.truck.capacity" for="field_capacity">Capacity</label>
+          <input type="number" class="form-control" name="capacity" id="field_capacity" data-cy="capacity" formControlName="capacity" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.truck.status" for="field_status">Status</label>
+          <select class="form-control" name="status" formControlName="status" id="field_status" data-cy="status">
+            <option [ngValue]="null">{{ 'containerGoServerApp.TruckStatus.null' | translate }}</option>
+            @for (truckStatus of truckStatusValues; track $index) {
+              <option [value]="truckStatus">{{ 'containerGoServerApp.TruckStatus.' + truckStatus | translate }}</option>
+            }
+          </select>
+          @if (editForm.get('status')!.invalid && (editForm.get('status')!.dirty || editForm.get('status')!.touched)) {
+            <div>
+              @if (editForm.get('status')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.truck.mileage" for="field_mileage">Mileage</label>
+          <input type="number" class="form-control" name="mileage" id="field_mileage" data-cy="mileage" formControlName="mileage" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.truck.numberPlate" for="field_numberPlate">Number Plate</label>
+          <input
+            type="text"
+            class="form-control"
+            name="numberPlate"
+            id="field_numberPlate"
+            data-cy="numberPlate"
+            formControlName="numberPlate"
+          />
+          @if (editForm.get('numberPlate')!.invalid && (editForm.get('numberPlate')!.dirty || editForm.get('numberPlate')!.touched)) {
+            <div>
+              @if (editForm.get('numberPlate')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.truck.type" for="field_type">Type</label>
+          <select class="form-control" id="field_type" data-cy="type" name="type" formControlName="type" [compareWith]="compareTruckType">
+            @if (!editForm.get('type')!.value) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (truckTypeOption of truckTypesSharedCollection; track $index) {
+              <option [ngValue]="truckTypeOption">{{ truckTypeOption.id }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['type'])!.invalid && (editForm.get(['type'])!.dirty || editForm.get(['type'])!.touched)) {
+          <div>
+            @if (editForm.get(['type'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+            }
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.truck.carrier" for="field_carrier">Carrier</label>
+          <select
+            class="form-control"
+            id="field_carrier"
+            data-cy="carrier"
+            name="carrier"
+            formControlName="carrier"
+            [compareWith]="compareCarrier"
+          >
+            <option [ngValue]="null"></option>
+            @for (carrierOption of carriersSharedCollection; track $index) {
+              <option [ngValue]="carrierOption">{{ carrierOption.id }}</option>
+            }
+          </select>
+        </div>
       </div>
 
       <div>

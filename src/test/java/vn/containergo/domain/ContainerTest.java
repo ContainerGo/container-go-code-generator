@@ -6,6 +6,7 @@ import static vn.containergo.domain.ContainerTestSamples.*;
 import static vn.containergo.domain.ContainerTypeTestSamples.*;
 import static vn.containergo.domain.DistrictTestSamples.*;
 import static vn.containergo.domain.ProviceTestSamples.*;
+import static vn.containergo.domain.TruckTestSamples.*;
 import static vn.containergo.domain.TruckTypeTestSamples.*;
 import static vn.containergo.domain.WardTestSamples.*;
 
@@ -98,5 +99,17 @@ class ContainerTest {
 
         container.truckType(null);
         assertThat(container.getTruckType()).isNull();
+    }
+
+    @Test
+    void truckTest() throws Exception {
+        Container container = getContainerRandomSampleGenerator();
+        Truck truckBack = getTruckRandomSampleGenerator();
+
+        container.setTruck(truckBack);
+        assertThat(container.getTruck()).isEqualTo(truckBack);
+
+        container.truck(null);
+        assertThat(container.getTruck()).isNull();
     }
 }

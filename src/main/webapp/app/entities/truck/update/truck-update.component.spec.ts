@@ -6,8 +6,12 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, Subject, from } from 'rxjs';
 
-import { TruckService } from '../service/truck.service';
+import { ITruckType } from 'app/entities/truck-type/truck-type.model';
+import { TruckTypeService } from 'app/entities/truck-type/service/truck-type.service';
+import { ICarrier } from 'app/entities/carrier/carrier.model';
+import { CarrierService } from 'app/entities/carrier/service/carrier.service';
 import { ITruck } from '../truck.model';
+import { TruckService } from '../service/truck.service';
 import { TruckFormService } from './truck-form.service';
 
 import { TruckUpdateComponent } from './truck-update.component';
@@ -18,6 +22,8 @@ describe('Truck Management Update Component', () => {
   let activatedRoute: ActivatedRoute;
   let truckFormService: TruckFormService;
   let truckService: TruckService;
+  let truckTypeService: TruckTypeService;
+  let carrierService: CarrierService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -39,17 +45,69 @@ describe('Truck Management Update Component', () => {
     activatedRoute = TestBed.inject(ActivatedRoute);
     truckFormService = TestBed.inject(TruckFormService);
     truckService = TestBed.inject(TruckService);
+    truckTypeService = TestBed.inject(TruckTypeService);
+    carrierService = TestBed.inject(CarrierService);
 
     comp = fixture.componentInstance;
   });
 
   describe('ngOnInit', () => {
-    it('Should update editForm', () => {
+    it('Should call TruckType query and add missing value', () => {
       const truck: ITruck = { id: 456 };
+      const type: ITruckType = { id: 18773 };
+      truck.type = type;
+
+      const truckTypeCollection: ITruckType[] = [{ id: 18107 }];
+      jest.spyOn(truckTypeService, 'query').mockReturnValue(of(new HttpResponse({ body: truckTypeCollection })));
+      const additionalTruckTypes = [type];
+      const expectedCollection: ITruckType[] = [...additionalTruckTypes, ...truckTypeCollection];
+      jest.spyOn(truckTypeService, 'addTruckTypeToCollectionIfMissing').mockReturnValue(expectedCollection);
 
       activatedRoute.data = of({ truck });
       comp.ngOnInit();
 
+      expect(truckTypeService.query).toHaveBeenCalled();
+      expect(truckTypeService.addTruckTypeToCollectionIfMissing).toHaveBeenCalledWith(
+        truckTypeCollection,
+        ...additionalTruckTypes.map(expect.objectContaining),
+      );
+      expect(comp.truckTypesSharedCollection).toEqual(expectedCollection);
+    });
+
+    it('Should call Carrier query and add missing value', () => {
+      const truck: ITruck = { id: 456 };
+      const carrier: ICarrier = { id: 16359 };
+      truck.carrier = carrier;
+
+      const carrierCollection: ICarrier[] = [{ id: 4001 }];
+      jest.spyOn(carrierService, 'query').mockReturnValue(of(new HttpResponse({ body: carrierCollection })));
+      const additionalCarriers = [carrier];
+      const expectedCollection: ICarrier[] = [...additionalCarriers, ...carrierCollection];
+      jest.spyOn(carrierService, 'addCarrierToCollectionIfMissing').mockReturnValue(expectedCollection);
+
+      activatedRoute.data = of({ truck });
+      comp.ngOnInit();
+
+      expect(carrierService.query).toHaveBeenCalled();
+      expect(carrierService.addCarrierToCollectionIfMissing).toHaveBeenCalledWith(
+        carrierCollection,
+        ...additionalCarriers.map(expect.objectContaining),
+      );
+      expect(comp.carriersSharedCollection).toEqual(expectedCollection);
+    });
+
+    it('Should update editForm', () => {
+      const truck: ITruck = { id: 456 };
+      const type: ITruckType = { id: 24745 };
+      truck.type = type;
+      const carrier: ICarrier = { id: 115 };
+      truck.carrier = carrier;
+
+      activatedRoute.data = of({ truck });
+      comp.ngOnInit();
+
+      expect(comp.truckTypesSharedCollection).toContain(type);
+      expect(comp.carriersSharedCollection).toContain(carrier);
       expect(comp.truck).toEqual(truck);
     });
   });
@@ -119,6 +177,28 @@ describe('Truck Management Update Component', () => {
       expect(truckService.update).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Compare relationships', () => {
+    describe('compareTruckType', () => {
+      it('Should forward to truckTypeService', () => {
+        const entity = { id: 123 };
+        const entity2 = { id: 456 };
+        jest.spyOn(truckTypeService, 'compareTruckType');
+        comp.compareTruckType(entity, entity2);
+        expect(truckTypeService.compareTruckType).toHaveBeenCalledWith(entity, entity2);
+      });
+    });
+
+    describe('compareCarrier', () => {
+      it('Should forward to carrierService', () => {
+        const entity = { id: 123 };
+        const entity2 = { id: 456 };
+        jest.spyOn(carrierService, 'compareCarrier');
+        comp.compareCarrier(entity, entity2);
+        expect(carrierService.compareCarrier).toHaveBeenCalledWith(entity, entity2);
+      });
     });
   });
 });

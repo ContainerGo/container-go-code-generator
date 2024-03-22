@@ -41,7 +41,8 @@
       "dropoffWard": "Dropoff Ward",
       "type": "Type",
       "status": "Status",
-      "truckType": "Truck Type"
+      "truckType": "Truck Type",
+      "truck": "Truck"
     }
   }
 }

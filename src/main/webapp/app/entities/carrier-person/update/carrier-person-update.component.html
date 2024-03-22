@@ -63,21 +63,12 @@
             formControlName="carrier"
             [compareWith]="compareCarrier"
           >
-            @if (!editForm.get('carrier')!.value) {
-              <option [ngValue]="null" selected></option>
-            }
+            <option [ngValue]="null"></option>
             @for (carrierOption of carriersSharedCollection; track $index) {
               <option [ngValue]="carrierOption">{{ carrierOption.id }}</option>
             }
           </select>
         </div>
-        @if (editForm.get(['carrier'])!.invalid && (editForm.get(['carrier'])!.dirty || editForm.get(['carrier'])!.touched)) {
-          <div>
-            @if (editForm.get(['carrier'])?.errors?.required) {
-              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
-            }
-          </div>
-        }
       </div>
 
       <div>

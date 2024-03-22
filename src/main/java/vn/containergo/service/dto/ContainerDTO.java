@@ -69,6 +69,8 @@ public class ContainerDTO implements Serializable {
 
     private TruckTypeDTO truckType;
 
+    private TruckDTO truck;
+
     public Long getId() {
         return id;
     }
@@ -269,6 +271,14 @@ public class ContainerDTO implements Serializable {
         this.truckType = truckType;
     }
 
+    public TruckDTO getTruck() {
+        return truck;
+    }
+
+    public void setTruck(TruckDTO truck) {
+        this.truck = truck;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -319,6 +329,7 @@ public class ContainerDTO implements Serializable {
             ", type=" + getType() +
             ", status=" + getStatus() +
             ", truckType=" + getTruckType() +
+            ", truck=" + getTruck() +
             "}";
     }
 }

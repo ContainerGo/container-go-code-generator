@@ -36,9 +36,8 @@
     {
       "otherEntityName": "carrier",
       "relationshipName": "carrier",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one",
-      "relationshipValidateRules": "required"
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
     }
   ],
   "searchEngine": "no",

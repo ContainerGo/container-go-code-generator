@@ -23,6 +23,50 @@
           <dd>
             <span>{{ truck.name }}</span>
           </dd>
+          <dt><span jhiTranslate="containerGoServerApp.truck.model">Model</span></dt>
+          <dd>
+            <span>{{ truck.model }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.truck.manufacturer">Manufacturer</span></dt>
+          <dd>
+            <span>{{ truck.manufacturer }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.truck.year">Year</span></dt>
+          <dd>
+            <span>{{ truck.year }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.truck.capacity">Capacity</span></dt>
+          <dd>
+            <span>{{ truck.capacity }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.truck.status">Status</span></dt>
+          <dd>
+            <span jhiTranslate="{{ 'containerGoServerApp.TruckStatus.' + truck.status }}">{{ truck.status }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.truck.mileage">Mileage</span></dt>
+          <dd>
+            <span>{{ truck.mileage }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.truck.numberPlate">Number Plate</span></dt>
+          <dd>
+            <span>{{ truck.numberPlate }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.truck.type">Type</span></dt>
+          <dd>
+            @if (truck.type) {
+              <div>
+                <a [routerLink]="['/truck-type', truck.type.id, 'view']">{{ truck.type.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.truck.carrier">Carrier</span></dt>
+          <dd>
+            @if (truck.carrier) {
+              <div>
+                <a [routerLink]="['/carrier', truck.carrier.id, 'view']">{{ truck.carrier.id }}</a>
+              </div>
+            }
+          </dd>
         </dl>
 
         <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">

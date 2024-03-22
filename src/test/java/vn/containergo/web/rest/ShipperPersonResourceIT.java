@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import vn.containergo.IntegrationTest;
-import vn.containergo.domain.Shipper;
 import vn.containergo.domain.ShipperPerson;
 import vn.containergo.repository.ShipperPersonRepository;
 import vn.containergo.service.dto.ShipperPersonDTO;
@@ -71,11 +70,6 @@ class ShipperPersonResourceIT {
             .phone(DEFAULT_PHONE)
             .email(DEFAULT_EMAIL)
             .address(DEFAULT_ADDRESS);
-        // Add required entity
-        Shipper shipper;
-        shipper = ShipperResourceIT.createEntity();
-        shipper.setId("fixed-id-for-tests");
-        shipperPerson.setShipper(shipper);
         return shipperPerson;
     }
 
@@ -91,11 +85,6 @@ class ShipperPersonResourceIT {
             .phone(UPDATED_PHONE)
             .email(UPDATED_EMAIL)
             .address(UPDATED_ADDRESS);
-        // Add required entity
-        Shipper shipper;
-        shipper = ShipperResourceIT.createUpdatedEntity();
-        shipper.setId("fixed-id-for-tests");
-        shipperPerson.setShipper(shipper);
         return shipperPerson;
     }
 

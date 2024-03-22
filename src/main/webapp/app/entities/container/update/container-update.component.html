@@ -441,6 +441,16 @@
             }
           </select>
         </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.truck" for="field_truck">Truck</label>
+          <select class="form-control" id="field_truck" data-cy="truck" name="truck" formControlName="truck" [compareWith]="compareTruck">
+            <option [ngValue]="null"></option>
+            @for (truckOption of trucksSharedCollection; track $index) {
+              <option [ngValue]="truckOption">{{ truckOption.id }}</option>
+            }
+          </select>
+        </div>
       </div>
 
       <div>

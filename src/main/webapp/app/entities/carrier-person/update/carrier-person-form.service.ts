@@ -50,9 +50,7 @@ export class CarrierPersonFormService {
       }),
       email: new FormControl(carrierPersonRawValue.email),
       address: new FormControl(carrierPersonRawValue.address),
-      carrier: new FormControl(carrierPersonRawValue.carrier, {
-        validators: [Validators.required],
-      }),
+      carrier: new FormControl(carrierPersonRawValue.carrier),
     });
   }
 

@@ -54,7 +54,15 @@
   "jpaMetamodelFiltering": false,
   "name": "Shipper",
   "pagination": "pagination",
-  "relationships": [],
+  "relationships": [
+    {
+      "otherEntityName": "shipperPerson",
+      "otherEntityRelationshipName": "shipper",
+      "relationshipName": "shipperPerson",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    }
+  ],
   "searchEngine": "no",
   "service": "serviceImpl"
 }

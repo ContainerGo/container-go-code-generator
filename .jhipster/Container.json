@@ -132,6 +132,12 @@
       "relationshipName": "truckType",
       "relationshipSide": "left",
       "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "truck",
+      "relationshipName": "truck",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
     }
   ],
   "searchEngine": "no",

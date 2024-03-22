@@ -44,6 +44,7 @@ describe('Container Form Service', () => {
             type: expect.any(Object),
             status: expect.any(Object),
             truckType: expect.any(Object),
+            truck: expect.any(Object),
           }),
         );
       });
@@ -78,6 +79,7 @@ describe('Container Form Service', () => {
             type: expect.any(Object),
             status: expect.any(Object),
             truckType: expect.any(Object),
+            truck: expect.any(Object),
           }),
         );
       });
