@@ -56,6 +56,67 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="model">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truck.model">Model</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="manufacturer">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truck.manufacturer">Manufacturer</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="year">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truck.year">Year</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="capacity">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truck.capacity">Capacity</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="status">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truck.status">Status</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="mileage">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truck.mileage">Mileage</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="numberPlate">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truck.numberPlate">Number Plate</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="type.id">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truck.type">Type</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="carrier.id">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truck.carrier">Carrier</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -67,6 +128,27 @@
               </td>
               <td>{{ truck.code }}</td>
               <td>{{ truck.name }}</td>
+              <td>{{ truck.model }}</td>
+              <td>{{ truck.manufacturer }}</td>
+              <td>{{ truck.year }}</td>
+              <td>{{ truck.capacity }}</td>
+              <td jhiTranslate="{{ 'containerGoServerApp.TruckStatus.' + truck.status }}">{{ truck.status }}</td>
+              <td>{{ truck.mileage }}</td>
+              <td>{{ truck.numberPlate }}</td>
+              <td>
+                @if (truck.type) {
+                  <div>
+                    <a [routerLink]="['/truck-type', truck.type.id, 'view']">{{ truck.type.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (truck.carrier) {
+                  <div>
+                    <a [routerLink]="['/carrier', truck.carrier.id, 'view']">{{ truck.carrier.id }}</a>
+                  </div>
+                }
+              </td>
               <td class="text-end">
                 <div class="btn-group">
                   <a [routerLink]="['/truck', truck.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">

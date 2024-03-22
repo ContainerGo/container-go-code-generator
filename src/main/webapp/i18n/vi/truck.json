@@ -19,7 +19,16 @@
       },
       "id": "Id",
       "code": "Code",
-      "name": "Name"
+      "name": "Name",
+      "model": "Model",
+      "manufacturer": "Manufacturer",
+      "year": "Year",
+      "capacity": "Capacity",
+      "status": "Status",
+      "mileage": "Mileage",
+      "numberPlate": "Number Plate",
+      "type": "Type",
+      "carrier": "Carrier"
     }
   }
 }

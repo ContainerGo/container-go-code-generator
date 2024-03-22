@@ -20,6 +20,15 @@ type TruckFormGroupContent = {
   id: FormControl<ITruck['id'] | NewTruck['id']>;
   code: FormControl<ITruck['code']>;
   name: FormControl<ITruck['name']>;
+  model: FormControl<ITruck['model']>;
+  manufacturer: FormControl<ITruck['manufacturer']>;
+  year: FormControl<ITruck['year']>;
+  capacity: FormControl<ITruck['capacity']>;
+  status: FormControl<ITruck['status']>;
+  mileage: FormControl<ITruck['mileage']>;
+  numberPlate: FormControl<ITruck['numberPlate']>;
+  type: FormControl<ITruck['type']>;
+  carrier: FormControl<ITruck['carrier']>;
 };
 
 export type TruckFormGroup = FormGroup<TruckFormGroupContent>;
@@ -45,6 +54,21 @@ export class TruckFormService {
       name: new FormControl(truckRawValue.name, {
         validators: [Validators.required],
       }),
+      model: new FormControl(truckRawValue.model),
+      manufacturer: new FormControl(truckRawValue.manufacturer),
+      year: new FormControl(truckRawValue.year),
+      capacity: new FormControl(truckRawValue.capacity),
+      status: new FormControl(truckRawValue.status, {
+        validators: [Validators.required],
+      }),
+      mileage: new FormControl(truckRawValue.mileage),
+      numberPlate: new FormControl(truckRawValue.numberPlate, {
+        validators: [Validators.required],
+      }),
+      type: new FormControl(truckRawValue.type, {
+        validators: [Validators.required],
+      }),
+      carrier: new FormControl(truckRawValue.carrier),
     });
   }
 

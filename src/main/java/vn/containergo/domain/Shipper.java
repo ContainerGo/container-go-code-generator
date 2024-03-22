@@ -1,8 +1,12 @@
 package vn.containergo.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -48,6 +52,11 @@ public class Shipper implements Serializable {
 
     @Field("is_profile_complete")
     private Boolean isProfileComplete;
+
+    @DBRef
+    @Field("shipperPerson")
+    @JsonIgnoreProperties(value = { "shipper" }, allowSetters = true)
+    private Set<ShipperPerson> shipperPeople = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -179,6 +188,37 @@ public class Shipper implements Serializable {
 
     public void setIsProfileComplete(Boolean isProfileComplete) {
         this.isProfileComplete = isProfileComplete;
+    }
+
+    public Set<ShipperPerson> getShipperPeople() {
+        return this.shipperPeople;
+    }
+
+    public void setShipperPeople(Set<ShipperPerson> shipperPeople) {
+        if (this.shipperPeople != null) {
+            this.shipperPeople.forEach(i -> i.setShipper(null));
+        }
+        if (shipperPeople != null) {
+            shipperPeople.forEach(i -> i.setShipper(this));
+        }
+        this.shipperPeople = shipperPeople;
+    }
+
+    public Shipper shipperPeople(Set<ShipperPerson> shipperPeople) {
+        this.setShipperPeople(shipperPeople);
+        return this;
+    }
+
+    public Shipper addShipperPerson(ShipperPerson shipperPerson) {
+        this.shipperPeople.add(shipperPerson);
+        shipperPerson.setShipper(this);
+        return this;
+    }
+
+    public Shipper removeShipperPerson(ShipperPerson shipperPerson) {
+        this.shipperPeople.remove(shipperPerson);
+        shipperPerson.setShipper(null);
+        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

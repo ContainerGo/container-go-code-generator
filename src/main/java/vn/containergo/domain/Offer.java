@@ -51,7 +51,7 @@ public class Offer implements Serializable {
     @DBRef
     @Field("container")
     @JsonIgnoreProperties(
-        value = { "dropoffProvice", "dropoffDistrict", "dropoffWard", "type", "status", "truckType" },
+        value = { "dropoffProvice", "dropoffDistrict", "dropoffWard", "type", "status", "truckType", "truck" },
         allowSetters = true
     )
     private Container container;

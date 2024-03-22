@@ -19,12 +19,57 @@
       "fieldName": "name",
       "fieldType": "String",
       "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "model",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "manufacturer",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "year",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "capacity",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "TruckStatus",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "AVAILABLE,IN_TRANSIT,UNDER_MAINTENANCE,OUT_OF_SERVICE"
+    },
+    {
+      "fieldName": "mileage",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "numberPlate",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
     }
   ],
   "jpaMetamodelFiltering": false,
   "name": "Truck",
   "pagination": "pagination",
-  "relationships": [],
+  "relationships": [
+    {
+      "otherEntityName": "truckType",
+      "relationshipName": "type",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityName": "carrier",
+      "relationshipName": "carrier",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ],
   "searchEngine": "no",
   "service": "serviceImpl"
 }

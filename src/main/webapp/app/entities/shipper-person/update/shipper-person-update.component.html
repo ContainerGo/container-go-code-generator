@@ -63,21 +63,12 @@
             formControlName="shipper"
             [compareWith]="compareShipper"
           >
-            @if (!editForm.get('shipper')!.value) {
-              <option [ngValue]="null" selected></option>
-            }
+            <option [ngValue]="null"></option>
             @for (shipperOption of shippersSharedCollection; track $index) {
               <option [ngValue]="shipperOption">{{ shipperOption.id }}</option>
             }
           </select>
         </div>
-        @if (editForm.get(['shipper'])!.invalid && (editForm.get(['shipper'])!.dirty || editForm.get(['shipper'])!.touched)) {
-          <div>
-            @if (editForm.get(['shipper'])?.errors?.required) {
-              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
-            }
-          </div>
-        }
       </div>
 
       <div>

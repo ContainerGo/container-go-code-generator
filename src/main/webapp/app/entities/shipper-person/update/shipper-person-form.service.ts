@@ -50,9 +50,7 @@ export class ShipperPersonFormService {
       }),
       email: new FormControl(shipperPersonRawValue.email),
       address: new FormControl(shipperPersonRawValue.address),
-      shipper: new FormControl(shipperPersonRawValue.shipper, {
-        validators: [Validators.required],
-      }),
+      shipper: new FormControl(shipperPersonRawValue.shipper),
     });
   }
 

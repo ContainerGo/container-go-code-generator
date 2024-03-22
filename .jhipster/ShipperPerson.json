@@ -36,9 +36,8 @@
     {
       "otherEntityName": "shipper",
       "relationshipName": "shipper",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one",
-      "relationshipValidateRules": "required"
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
     }
   ],
   "searchEngine": "no",

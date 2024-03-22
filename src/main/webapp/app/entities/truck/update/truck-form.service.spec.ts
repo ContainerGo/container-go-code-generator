@@ -22,6 +22,15 @@ describe('Truck Form Service', () => {
             id: expect.any(Object),
             code: expect.any(Object),
             name: expect.any(Object),
+            model: expect.any(Object),
+            manufacturer: expect.any(Object),
+            year: expect.any(Object),
+            capacity: expect.any(Object),
+            status: expect.any(Object),
+            mileage: expect.any(Object),
+            numberPlate: expect.any(Object),
+            type: expect.any(Object),
+            carrier: expect.any(Object),
           }),
         );
       });
@@ -34,6 +43,15 @@ describe('Truck Form Service', () => {
             id: expect.any(Object),
             code: expect.any(Object),
             name: expect.any(Object),
+            model: expect.any(Object),
+            manufacturer: expect.any(Object),
+            year: expect.any(Object),
+            capacity: expect.any(Object),
+            status: expect.any(Object),
+            mileage: expect.any(Object),
+            numberPlate: expect.any(Object),
+            type: expect.any(Object),
+            carrier: expect.any(Object),
           }),
         );
       });
