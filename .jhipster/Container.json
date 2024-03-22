@@ -1,0 +1,139 @@
+{
+  "annotations": {
+    "changelogDate": "20240322065403"
+  },
+  "applications": ["containerGoServer"],
+  "dto": "mapstruct",
+  "entityTableName": "container",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "contNo",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "estimatedPrice",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "distance",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "desiredPrice",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "additionalRequirements",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dropoffContact",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dropoffContactPhone",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dropoffAddress",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dropoffLat",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "dropoffLng",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "dropoffUntilDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "state",
+      "fieldType": "ContainerState",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "NEW,BIDDING,WAITING_FOR_OFFERS,OFFER_CHOSEN,SHIPMENT_PLAN_SENT,SHIPMENT_IN_PROGRESS,SHIPMENT_SUCCESS,SHIPMENT_FAIL,SHIPMENT_POD_APPROVED"
+    },
+    {
+      "fieldName": "shipperId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "carrierId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "totalWeight",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "pickupFromDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "biddingFromDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "biddingUntilDate",
+      "fieldType": "Instant"
+    }
+  ],
+  "jpaMetamodelFiltering": false,
+  "name": "Container",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "provice",
+      "relationshipName": "dropoffProvice",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "district",
+      "relationshipName": "dropoffDistrict",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "ward",
+      "relationshipName": "dropoffWard",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "containerType",
+      "relationshipName": "type",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityName": "containerStatus",
+      "relationshipName": "status",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityName": "truckType",
+      "relationshipName": "truckType",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

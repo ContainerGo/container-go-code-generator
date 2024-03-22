@@ -1,0 +1,32 @@
+{
+  "containerGoServerApp": {
+    "truckType": {
+      "home": {
+        "title": "Truck Types",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Truck Type",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Truck Type",
+        "notFound": "No Truck Types found"
+      },
+      "created": "Một Truck Type mới được tạo với định danh {{ param }}",
+      "updated": "Một Truck Type cập nhật với định danh {{ param }}",
+      "deleted": "Một Truck Type đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Truck Type {{ id }}?"
+      },
+      "detail": {
+        "title": "Truck Type"
+      },
+      "id": "Id",
+      "code": "Code",
+      "name": "Name",
+      "category": "Category",
+      "height": "Height",
+      "length": "Length",
+      "maxSpeed": "Max Speed",
+      "type": "Type",
+      "weight": "Weight",
+      "width": "Width"
+    }
+  }
+}

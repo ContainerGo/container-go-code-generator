@@ -1,0 +1,169 @@
+<div>
+  <h2 id="page-heading" data-cy="TruckTypeHeading">
+    <span jhiTranslate="containerGoServerApp.truckType.home.title">Truck Types</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="containerGoServerApp.truckType.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-truck-type"
+        [routerLink]="['/truck-type/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="containerGoServerApp.truckType.home.createLabel">Thêm mới một Truck Type</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (truckTypes?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="containerGoServerApp.truckType.home.notFound">No Truck Types found</span>
+    </div>
+  }
+
+  @if (truckTypes && truckTypes.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truckType.id">Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="code">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truckType.code">Code</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="name">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truckType.name">Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="category">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truckType.category">Category</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="height">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truckType.height">Height</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="length">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truckType.length">Length</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="maxSpeed">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truckType.maxSpeed">Max Speed</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="type">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truckType.type">Type</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="weight">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truckType.weight">Weight</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="width">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truckType.width">Width</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (truckType of truckTypes; track trackId) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/truck-type', truckType.id, 'view']">{{ truckType.id }}</a>
+              </td>
+              <td>{{ truckType.code }}</td>
+              <td>{{ truckType.name }}</td>
+              <td>{{ truckType.category }}</td>
+              <td>{{ truckType.height }}</td>
+              <td>{{ truckType.length }}</td>
+              <td>{{ truckType.maxSpeed }}</td>
+              <td>{{ truckType.type }}</td>
+              <td>{{ truckType.weight }}</td>
+              <td>{{ truckType.width }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/truck-type', truckType.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Xem</span>
+                  </a>
+
+                  <a [routerLink]="['/truck-type', truckType.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Sửa</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(truckType)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Xóa</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (truckTypes && truckTypes.length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</div>

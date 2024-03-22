@@ -1,0 +1,26 @@
+{
+  "containerGoServerApp": {
+    "provice": {
+      "home": {
+        "title": "Provices",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Provice",
+        "createOrEditLabel": "Create or edit a Provice",
+        "notFound": "No Provices found"
+      },
+      "created": "A new Provice is created with identifier {{ param }}",
+      "updated": "A Provice is updated with identifier {{ param }}",
+      "deleted": "A Provice is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Provice {{ id }}?"
+      },
+      "detail": {
+        "title": "Provice"
+      },
+      "id": "Id",
+      "code": "Code",
+      "name": "Name",
+      "description": "Description"
+    }
+  }
+}

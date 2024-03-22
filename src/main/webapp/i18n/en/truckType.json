@@ -1,0 +1,32 @@
+{
+  "containerGoServerApp": {
+    "truckType": {
+      "home": {
+        "title": "Truck Types",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Truck Type",
+        "createOrEditLabel": "Create or edit a Truck Type",
+        "notFound": "No Truck Types found"
+      },
+      "created": "A new Truck Type is created with identifier {{ param }}",
+      "updated": "A Truck Type is updated with identifier {{ param }}",
+      "deleted": "A Truck Type is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Truck Type {{ id }}?"
+      },
+      "detail": {
+        "title": "Truck Type"
+      },
+      "id": "Id",
+      "code": "Code",
+      "name": "Name",
+      "category": "Category",
+      "height": "Height",
+      "length": "Length",
+      "maxSpeed": "Max Speed",
+      "type": "Type",
+      "weight": "Weight",
+      "width": "Width"
+    }
+  }
+}

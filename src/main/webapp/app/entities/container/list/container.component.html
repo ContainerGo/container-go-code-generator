@@ -1,0 +1,319 @@
+<div>
+  <h2 id="page-heading" data-cy="ContainerHeading">
+    <span jhiTranslate="containerGoServerApp.container.home.title">Containers</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="containerGoServerApp.container.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-container"
+        [routerLink]="['/container/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="containerGoServerApp.container.home.createLabel">Thêm mới một Container</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (containers?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="containerGoServerApp.container.home.notFound">No Containers found</span>
+    </div>
+  }
+
+  @if (containers && containers.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.id">Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="contNo">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.contNo">Cont No</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="estimatedPrice">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.estimatedPrice">Estimated Price</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="distance">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.distance">Distance</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="desiredPrice">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.desiredPrice">Desired Price</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="additionalRequirements">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.additionalRequirements">Additional Requirements</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dropoffContact">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.dropoffContact">Dropoff Contact</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dropoffContactPhone">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.dropoffContactPhone">Dropoff Contact Phone</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dropoffAddress">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.dropoffAddress">Dropoff Address</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dropoffLat">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.dropoffLat">Dropoff Lat</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dropoffLng">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.dropoffLng">Dropoff Lng</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dropoffUntilDate">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.dropoffUntilDate">Dropoff Until Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="state">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.state">State</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="shipperId">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.shipperId">Shipper Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="carrierId">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.carrierId">Carrier Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="totalWeight">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.totalWeight">Total Weight</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="pickupFromDate">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.pickupFromDate">Pickup From Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="biddingFromDate">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.biddingFromDate">Bidding From Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="biddingUntilDate">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.biddingUntilDate">Bidding Until Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dropoffProvice.id">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.dropoffProvice">Dropoff Provice</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dropoffDistrict.id">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.dropoffDistrict">Dropoff District</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dropoffWard.id">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.dropoffWard">Dropoff Ward</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="type.id">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.type">Type</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="status.id">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.status">Status</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="truckType.id">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.truckType">Truck Type</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (container of containers; track trackId) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/container', container.id, 'view']">{{ container.id }}</a>
+              </td>
+              <td>{{ container.contNo }}</td>
+              <td>{{ container.estimatedPrice }}</td>
+              <td>{{ container.distance }}</td>
+              <td>{{ container.desiredPrice }}</td>
+              <td>{{ container.additionalRequirements }}</td>
+              <td>{{ container.dropoffContact }}</td>
+              <td>{{ container.dropoffContactPhone }}</td>
+              <td>{{ container.dropoffAddress }}</td>
+              <td>{{ container.dropoffLat }}</td>
+              <td>{{ container.dropoffLng }}</td>
+              <td>{{ container.dropoffUntilDate | formatMediumDatetime }}</td>
+              <td jhiTranslate="{{ 'containerGoServerApp.ContainerState.' + container.state }}">{{ container.state }}</td>
+              <td>{{ container.shipperId }}</td>
+              <td>{{ container.carrierId }}</td>
+              <td>{{ container.totalWeight }}</td>
+              <td>{{ container.pickupFromDate | formatMediumDatetime }}</td>
+              <td>{{ container.biddingFromDate | formatMediumDatetime }}</td>
+              <td>{{ container.biddingUntilDate | formatMediumDatetime }}</td>
+              <td>
+                @if (container.dropoffProvice) {
+                  <div>
+                    <a [routerLink]="['/provice', container.dropoffProvice.id, 'view']">{{ container.dropoffProvice.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (container.dropoffDistrict) {
+                  <div>
+                    <a [routerLink]="['/district', container.dropoffDistrict.id, 'view']">{{ container.dropoffDistrict.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (container.dropoffWard) {
+                  <div>
+                    <a [routerLink]="['/ward', container.dropoffWard.id, 'view']">{{ container.dropoffWard.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (container.type) {
+                  <div>
+                    <a [routerLink]="['/container-type', container.type.id, 'view']">{{ container.type.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (container.status) {
+                  <div>
+                    <a [routerLink]="['/container-status', container.status.id, 'view']">{{ container.status.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (container.truckType) {
+                  <div>
+                    <a [routerLink]="['/truck-type', container.truckType.id, 'view']">{{ container.truckType.id }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/container', container.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Xem</span>
+                  </a>
+
+                  <a [routerLink]="['/container', container.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Sửa</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(container)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Xóa</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (containers && containers.length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</div>

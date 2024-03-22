@@ -1,0 +1,150 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (container) {
+      <div>
+        <h2 data-cy="containerDetailsHeading"><span jhiTranslate="containerGoServerApp.container.detail.title">Container</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="containerGoServerApp.container.id">Id</span></dt>
+          <dd>
+            <span>{{ container.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.contNo">Cont No</span></dt>
+          <dd>
+            <span>{{ container.contNo }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.estimatedPrice">Estimated Price</span></dt>
+          <dd>
+            <span>{{ container.estimatedPrice }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.distance">Distance</span></dt>
+          <dd>
+            <span>{{ container.distance }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.desiredPrice">Desired Price</span></dt>
+          <dd>
+            <span>{{ container.desiredPrice }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.additionalRequirements">Additional Requirements</span></dt>
+          <dd>
+            <span>{{ container.additionalRequirements }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.dropoffContact">Dropoff Contact</span></dt>
+          <dd>
+            <span>{{ container.dropoffContact }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.dropoffContactPhone">Dropoff Contact Phone</span></dt>
+          <dd>
+            <span>{{ container.dropoffContactPhone }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.dropoffAddress">Dropoff Address</span></dt>
+          <dd>
+            <span>{{ container.dropoffAddress }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.dropoffLat">Dropoff Lat</span></dt>
+          <dd>
+            <span>{{ container.dropoffLat }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.dropoffLng">Dropoff Lng</span></dt>
+          <dd>
+            <span>{{ container.dropoffLng }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.dropoffUntilDate">Dropoff Until Date</span></dt>
+          <dd>
+            <span>{{ container.dropoffUntilDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.state">State</span></dt>
+          <dd>
+            <span jhiTranslate="{{ 'containerGoServerApp.ContainerState.' + container.state }}">{{ container.state }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.shipperId">Shipper Id</span></dt>
+          <dd>
+            <span>{{ container.shipperId }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.carrierId">Carrier Id</span></dt>
+          <dd>
+            <span>{{ container.carrierId }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.totalWeight">Total Weight</span></dt>
+          <dd>
+            <span>{{ container.totalWeight }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.pickupFromDate">Pickup From Date</span></dt>
+          <dd>
+            <span>{{ container.pickupFromDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.biddingFromDate">Bidding From Date</span></dt>
+          <dd>
+            <span>{{ container.biddingFromDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.biddingUntilDate">Bidding Until Date</span></dt>
+          <dd>
+            <span>{{ container.biddingUntilDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.dropoffProvice">Dropoff Provice</span></dt>
+          <dd>
+            @if (container.dropoffProvice) {
+              <div>
+                <a [routerLink]="['/provice', container.dropoffProvice.id, 'view']">{{ container.dropoffProvice.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.dropoffDistrict">Dropoff District</span></dt>
+          <dd>
+            @if (container.dropoffDistrict) {
+              <div>
+                <a [routerLink]="['/district', container.dropoffDistrict.id, 'view']">{{ container.dropoffDistrict.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.dropoffWard">Dropoff Ward</span></dt>
+          <dd>
+            @if (container.dropoffWard) {
+              <div>
+                <a [routerLink]="['/ward', container.dropoffWard.id, 'view']">{{ container.dropoffWard.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.type">Type</span></dt>
+          <dd>
+            @if (container.type) {
+              <div>
+                <a [routerLink]="['/container-type', container.type.id, 'view']">{{ container.type.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.status">Status</span></dt>
+          <dd>
+            @if (container.status) {
+              <div>
+                <a [routerLink]="['/container-status', container.status.id, 'view']">{{ container.status.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.truckType">Truck Type</span></dt>
+          <dd>
+            @if (container.truckType) {
+              <div>
+                <a [routerLink]="['/truck-type', container.truckType.id, 'view']">{{ container.truckType.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
+        </button>
+
+        <button type="button" [routerLink]="['/container', container.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

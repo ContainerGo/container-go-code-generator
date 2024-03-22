@@ -1,0 +1,99 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-truck-type-heading"
+        data-cy="TruckTypeCreateUpdateHeading"
+        jhiTranslate="containerGoServerApp.truckType.home.createOrEditLabel"
+      >
+        Thêm mới hoặc cập nhật Truck Type
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" jhiTranslate="containerGoServerApp.truckType.id" for="field_id">Id</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.truckType.code" for="field_code">Code</label>
+          <input type="text" class="form-control" name="code" id="field_code" data-cy="code" formControlName="code" />
+          @if (editForm.get('code')!.invalid && (editForm.get('code')!.dirty || editForm.get('code')!.touched)) {
+            <div>
+              @if (editForm.get('code')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.truckType.name" for="field_name">Name</label>
+          <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+          @if (editForm.get('name')!.invalid && (editForm.get('name')!.dirty || editForm.get('name')!.touched)) {
+            <div>
+              @if (editForm.get('name')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.truckType.category" for="field_category">Category</label>
+          <input type="text" class="form-control" name="category" id="field_category" data-cy="category" formControlName="category" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.truckType.height" for="field_height">Height</label>
+          <input type="number" class="form-control" name="height" id="field_height" data-cy="height" formControlName="height" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.truckType.length" for="field_length">Length</label>
+          <input type="number" class="form-control" name="length" id="field_length" data-cy="length" formControlName="length" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.truckType.maxSpeed" for="field_maxSpeed">Max Speed</label>
+          <input type="number" class="form-control" name="maxSpeed" id="field_maxSpeed" data-cy="maxSpeed" formControlName="maxSpeed" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.truckType.type" for="field_type">Type</label>
+          <input type="text" class="form-control" name="type" id="field_type" data-cy="type" formControlName="type" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.truckType.weight" for="field_weight">Weight</label>
+          <input type="number" class="form-control" name="weight" id="field_weight" data-cy="weight" formControlName="weight" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.truckType.width" for="field_width">Width</label>
+          <input type="number" class="form-control" name="width" id="field_width" data-cy="width" formControlName="width" />
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Hủy</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Lưu</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

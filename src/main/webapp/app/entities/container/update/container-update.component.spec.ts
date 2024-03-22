@@ -1,0 +1,360 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpResponse } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FormBuilder } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { of, Subject, from } from 'rxjs';
+
+import { IProvice } from 'app/entities/provice/provice.model';
+import { ProviceService } from 'app/entities/provice/service/provice.service';
+import { IDistrict } from 'app/entities/district/district.model';
+import { DistrictService } from 'app/entities/district/service/district.service';
+import { IWard } from 'app/entities/ward/ward.model';
+import { WardService } from 'app/entities/ward/service/ward.service';
+import { IContainerType } from 'app/entities/container-type/container-type.model';
+import { ContainerTypeService } from 'app/entities/container-type/service/container-type.service';
+import { IContainerStatus } from 'app/entities/container-status/container-status.model';
+import { ContainerStatusService } from 'app/entities/container-status/service/container-status.service';
+import { ITruckType } from 'app/entities/truck-type/truck-type.model';
+import { TruckTypeService } from 'app/entities/truck-type/service/truck-type.service';
+import { IContainer } from '../container.model';
+import { ContainerService } from '../service/container.service';
+import { ContainerFormService } from './container-form.service';
+
+import { ContainerUpdateComponent } from './container-update.component';
+
+describe('Container Management Update Component', () => {
+  let comp: ContainerUpdateComponent;
+  let fixture: ComponentFixture<ContainerUpdateComponent>;
+  let activatedRoute: ActivatedRoute;
+  let containerFormService: ContainerFormService;
+  let containerService: ContainerService;
+  let proviceService: ProviceService;
+  let districtService: DistrictService;
+  let wardService: WardService;
+  let containerTypeService: ContainerTypeService;
+  let containerStatusService: ContainerStatusService;
+  let truckTypeService: TruckTypeService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), ContainerUpdateComponent],
+      providers: [
+        FormBuilder,
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: from([{}]),
+          },
+        },
+      ],
+    })
+      .overrideTemplate(ContainerUpdateComponent, '')
+      .compileComponents();
+
+    fixture = TestBed.createComponent(ContainerUpdateComponent);
+    activatedRoute = TestBed.inject(ActivatedRoute);
+    containerFormService = TestBed.inject(ContainerFormService);
+    containerService = TestBed.inject(ContainerService);
+    proviceService = TestBed.inject(ProviceService);
+    districtService = TestBed.inject(DistrictService);
+    wardService = TestBed.inject(WardService);
+    containerTypeService = TestBed.inject(ContainerTypeService);
+    containerStatusService = TestBed.inject(ContainerStatusService);
+    truckTypeService = TestBed.inject(TruckTypeService);
+
+    comp = fixture.componentInstance;
+  });
+
+  describe('ngOnInit', () => {
+    it('Should call Provice query and add missing value', () => {
+      const container: IContainer = { id: 456 };
+      const dropoffProvice: IProvice = { id: 31253 };
+      container.dropoffProvice = dropoffProvice;
+
+      const proviceCollection: IProvice[] = [{ id: 9847 }];
+      jest.spyOn(proviceService, 'query').mockReturnValue(of(new HttpResponse({ body: proviceCollection })));
+      const additionalProvices = [dropoffProvice];
+      const expectedCollection: IProvice[] = [...additionalProvices, ...proviceCollection];
+      jest.spyOn(proviceService, 'addProviceToCollectionIfMissing').mockReturnValue(expectedCollection);
+
+      activatedRoute.data = of({ container });
+      comp.ngOnInit();
+
+      expect(proviceService.query).toHaveBeenCalled();
+      expect(proviceService.addProviceToCollectionIfMissing).toHaveBeenCalledWith(
+        proviceCollection,
+        ...additionalProvices.map(expect.objectContaining),
+      );
+      expect(comp.provicesSharedCollection).toEqual(expectedCollection);
+    });
+
+    it('Should call District query and add missing value', () => {
+      const container: IContainer = { id: 456 };
+      const dropoffDistrict: IDistrict = { id: 31354 };
+      container.dropoffDistrict = dropoffDistrict;
+
+      const districtCollection: IDistrict[] = [{ id: 28692 }];
+      jest.spyOn(districtService, 'query').mockReturnValue(of(new HttpResponse({ body: districtCollection })));
+      const additionalDistricts = [dropoffDistrict];
+      const expectedCollection: IDistrict[] = [...additionalDistricts, ...districtCollection];
+      jest.spyOn(districtService, 'addDistrictToCollectionIfMissing').mockReturnValue(expectedCollection);
+
+      activatedRoute.data = of({ container });
+      comp.ngOnInit();
+
+      expect(districtService.query).toHaveBeenCalled();
+      expect(districtService.addDistrictToCollectionIfMissing).toHaveBeenCalledWith(
+        districtCollection,
+        ...additionalDistricts.map(expect.objectContaining),
+      );
+      expect(comp.districtsSharedCollection).toEqual(expectedCollection);
+    });
+
+    it('Should call Ward query and add missing value', () => {
+      const container: IContainer = { id: 456 };
+      const dropoffWard: IWard = { id: 29502 };
+      container.dropoffWard = dropoffWard;
+
+      const wardCollection: IWard[] = [{ id: 21371 }];
+      jest.spyOn(wardService, 'query').mockReturnValue(of(new HttpResponse({ body: wardCollection })));
+      const additionalWards = [dropoffWard];
+      const expectedCollection: IWard[] = [...additionalWards, ...wardCollection];
+      jest.spyOn(wardService, 'addWardToCollectionIfMissing').mockReturnValue(expectedCollection);
+
+      activatedRoute.data = of({ container });
+      comp.ngOnInit();
+
+      expect(wardService.query).toHaveBeenCalled();
+      expect(wardService.addWardToCollectionIfMissing).toHaveBeenCalledWith(
+        wardCollection,
+        ...additionalWards.map(expect.objectContaining),
+      );
+      expect(comp.wardsSharedCollection).toEqual(expectedCollection);
+    });
+
+    it('Should call ContainerType query and add missing value', () => {
+      const container: IContainer = { id: 456 };
+      const type: IContainerType = { id: 20375 };
+      container.type = type;
+
+      const containerTypeCollection: IContainerType[] = [{ id: 26885 }];
+      jest.spyOn(containerTypeService, 'query').mockReturnValue(of(new HttpResponse({ body: containerTypeCollection })));
+      const additionalContainerTypes = [type];
+      const expectedCollection: IContainerType[] = [...additionalContainerTypes, ...containerTypeCollection];
+      jest.spyOn(containerTypeService, 'addContainerTypeToCollectionIfMissing').mockReturnValue(expectedCollection);
+
+      activatedRoute.data = of({ container });
+      comp.ngOnInit();
+
+      expect(containerTypeService.query).toHaveBeenCalled();
+      expect(containerTypeService.addContainerTypeToCollectionIfMissing).toHaveBeenCalledWith(
+        containerTypeCollection,
+        ...additionalContainerTypes.map(expect.objectContaining),
+      );
+      expect(comp.containerTypesSharedCollection).toEqual(expectedCollection);
+    });
+
+    it('Should call ContainerStatus query and add missing value', () => {
+      const container: IContainer = { id: 456 };
+      const status: IContainerStatus = { id: 31920 };
+      container.status = status;
+
+      const containerStatusCollection: IContainerStatus[] = [{ id: 23194 }];
+      jest.spyOn(containerStatusService, 'query').mockReturnValue(of(new HttpResponse({ body: containerStatusCollection })));
+      const additionalContainerStatuses = [status];
+      const expectedCollection: IContainerStatus[] = [...additionalContainerStatuses, ...containerStatusCollection];
+      jest.spyOn(containerStatusService, 'addContainerStatusToCollectionIfMissing').mockReturnValue(expectedCollection);
+
+      activatedRoute.data = of({ container });
+      comp.ngOnInit();
+
+      expect(containerStatusService.query).toHaveBeenCalled();
+      expect(containerStatusService.addContainerStatusToCollectionIfMissing).toHaveBeenCalledWith(
+        containerStatusCollection,
+        ...additionalContainerStatuses.map(expect.objectContaining),
+      );
+      expect(comp.containerStatusesSharedCollection).toEqual(expectedCollection);
+    });
+
+    it('Should call TruckType query and add missing value', () => {
+      const container: IContainer = { id: 456 };
+      const truckType: ITruckType = { id: 18773 };
+      container.truckType = truckType;
+
+      const truckTypeCollection: ITruckType[] = [{ id: 18107 }];
+      jest.spyOn(truckTypeService, 'query').mockReturnValue(of(new HttpResponse({ body: truckTypeCollection })));
+      const additionalTruckTypes = [truckType];
+      const expectedCollection: ITruckType[] = [...additionalTruckTypes, ...truckTypeCollection];
+      jest.spyOn(truckTypeService, 'addTruckTypeToCollectionIfMissing').mockReturnValue(expectedCollection);
+
+      activatedRoute.data = of({ container });
+      comp.ngOnInit();
+
+      expect(truckTypeService.query).toHaveBeenCalled();
+      expect(truckTypeService.addTruckTypeToCollectionIfMissing).toHaveBeenCalledWith(
+        truckTypeCollection,
+        ...additionalTruckTypes.map(expect.objectContaining),
+      );
+      expect(comp.truckTypesSharedCollection).toEqual(expectedCollection);
+    });
+
+    it('Should update editForm', () => {
+      const container: IContainer = { id: 456 };
+      const dropoffProvice: IProvice = { id: 22168 };
+      container.dropoffProvice = dropoffProvice;
+      const dropoffDistrict: IDistrict = { id: 1815 };
+      container.dropoffDistrict = dropoffDistrict;
+      const dropoffWard: IWard = { id: 15840 };
+      container.dropoffWard = dropoffWard;
+      const type: IContainerType = { id: 20262 };
+      container.type = type;
+      const status: IContainerStatus = { id: 32335 };
+      container.status = status;
+      const truckType: ITruckType = { id: 24745 };
+      container.truckType = truckType;
+
+      activatedRoute.data = of({ container });
+      comp.ngOnInit();
+
+      expect(comp.provicesSharedCollection).toContain(dropoffProvice);
+      expect(comp.districtsSharedCollection).toContain(dropoffDistrict);
+      expect(comp.wardsSharedCollection).toContain(dropoffWard);
+      expect(comp.containerTypesSharedCollection).toContain(type);
+      expect(comp.containerStatusesSharedCollection).toContain(status);
+      expect(comp.truckTypesSharedCollection).toContain(truckType);
+      expect(comp.container).toEqual(container);
+    });
+  });
+
+  describe('save', () => {
+    it('Should call update service on save for existing entity', () => {
+      // GIVEN
+      const saveSubject = new Subject<HttpResponse<IContainer>>();
+      const container = { id: 123 };
+      jest.spyOn(containerFormService, 'getContainer').mockReturnValue(container);
+      jest.spyOn(containerService, 'update').mockReturnValue(saveSubject);
+      jest.spyOn(comp, 'previousState');
+      activatedRoute.data = of({ container });
+      comp.ngOnInit();
+
+      // WHEN
+      comp.save();
+      expect(comp.isSaving).toEqual(true);
+      saveSubject.next(new HttpResponse({ body: container }));
+      saveSubject.complete();
+
+      // THEN
+      expect(containerFormService.getContainer).toHaveBeenCalled();
+      expect(comp.previousState).toHaveBeenCalled();
+      expect(containerService.update).toHaveBeenCalledWith(expect.objectContaining(container));
+      expect(comp.isSaving).toEqual(false);
+    });
+
+    it('Should call create service on save for new entity', () => {
+      // GIVEN
+      const saveSubject = new Subject<HttpResponse<IContainer>>();
+      const container = { id: 123 };
+      jest.spyOn(containerFormService, 'getContainer').mockReturnValue({ id: null });
+      jest.spyOn(containerService, 'create').mockReturnValue(saveSubject);
+      jest.spyOn(comp, 'previousState');
+      activatedRoute.data = of({ container: null });
+      comp.ngOnInit();
+
+      // WHEN
+      comp.save();
+      expect(comp.isSaving).toEqual(true);
+      saveSubject.next(new HttpResponse({ body: container }));
+      saveSubject.complete();
+
+      // THEN
+      expect(containerFormService.getContainer).toHaveBeenCalled();
+      expect(containerService.create).toHaveBeenCalled();
+      expect(comp.isSaving).toEqual(false);
+      expect(comp.previousState).toHaveBeenCalled();
+    });
+
+    it('Should set isSaving to false on error', () => {
+      // GIVEN
+      const saveSubject = new Subject<HttpResponse<IContainer>>();
+      const container = { id: 123 };
+      jest.spyOn(containerService, 'update').mockReturnValue(saveSubject);
+      jest.spyOn(comp, 'previousState');
+      activatedRoute.data = of({ container });
+      comp.ngOnInit();
+
+      // WHEN
+      comp.save();
+      expect(comp.isSaving).toEqual(true);
+      saveSubject.error('This is an error!');
+
+      // THEN
+      expect(containerService.update).toHaveBeenCalled();
+      expect(comp.isSaving).toEqual(false);
+      expect(comp.previousState).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Compare relationships', () => {
+    describe('compareProvice', () => {
+      it('Should forward to proviceService', () => {
+        const entity = { id: 123 };
+        const entity2 = { id: 456 };
+        jest.spyOn(proviceService, 'compareProvice');
+        comp.compareProvice(entity, entity2);
+        expect(proviceService.compareProvice).toHaveBeenCalledWith(entity, entity2);
+      });
+    });
+
+    describe('compareDistrict', () => {
+      it('Should forward to districtService', () => {
+        const entity = { id: 123 };
+        const entity2 = { id: 456 };
+        jest.spyOn(districtService, 'compareDistrict');
+        comp.compareDistrict(entity, entity2);
+        expect(districtService.compareDistrict).toHaveBeenCalledWith(entity, entity2);
+      });
+    });
+
+    describe('compareWard', () => {
+      it('Should forward to wardService', () => {
+        const entity = { id: 123 };
+        const entity2 = { id: 456 };
+        jest.spyOn(wardService, 'compareWard');
+        comp.compareWard(entity, entity2);
+        expect(wardService.compareWard).toHaveBeenCalledWith(entity, entity2);
+      });
+    });
+
+    describe('compareContainerType', () => {
+      it('Should forward to containerTypeService', () => {
+        const entity = { id: 123 };
+        const entity2 = { id: 456 };
+        jest.spyOn(containerTypeService, 'compareContainerType');
+        comp.compareContainerType(entity, entity2);
+        expect(containerTypeService.compareContainerType).toHaveBeenCalledWith(entity, entity2);
+      });
+    });
+
+    describe('compareContainerStatus', () => {
+      it('Should forward to containerStatusService', () => {
+        const entity = { id: 123 };
+        const entity2 = { id: 456 };
+        jest.spyOn(containerStatusService, 'compareContainerStatus');
+        comp.compareContainerStatus(entity, entity2);
+        expect(containerStatusService.compareContainerStatus).toHaveBeenCalledWith(entity, entity2);
+      });
+    });
+
+    describe('compareTruckType', () => {
+      it('Should forward to truckTypeService', () => {
+        const entity = { id: 123 };
+        const entity2 = { id: 456 };
+        jest.spyOn(truckTypeService, 'compareTruckType');
+        comp.compareTruckType(entity, entity2);
+        expect(truckTypeService.compareTruckType).toHaveBeenCalledWith(entity, entity2);
+      });
+    });
+  });
+});

@@ -1,0 +1,47 @@
+{
+  "containerGoServerApp": {
+    "container": {
+      "home": {
+        "title": "Containers",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Container",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Container",
+        "notFound": "No Containers found"
+      },
+      "created": "Một Container mới được tạo với định danh {{ param }}",
+      "updated": "Một Container cập nhật với định danh {{ param }}",
+      "deleted": "Một Container đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Container {{ id }}?"
+      },
+      "detail": {
+        "title": "Container"
+      },
+      "id": "Id",
+      "contNo": "Cont No",
+      "estimatedPrice": "Estimated Price",
+      "distance": "Distance",
+      "desiredPrice": "Desired Price",
+      "additionalRequirements": "Additional Requirements",
+      "dropoffContact": "Dropoff Contact",
+      "dropoffContactPhone": "Dropoff Contact Phone",
+      "dropoffAddress": "Dropoff Address",
+      "dropoffLat": "Dropoff Lat",
+      "dropoffLng": "Dropoff Lng",
+      "dropoffUntilDate": "Dropoff Until Date",
+      "state": "State",
+      "shipperId": "Shipper Id",
+      "carrierId": "Carrier Id",
+      "totalWeight": "Total Weight",
+      "pickupFromDate": "Pickup From Date",
+      "biddingFromDate": "Bidding From Date",
+      "biddingUntilDate": "Bidding Until Date",
+      "dropoffProvice": "Dropoff Provice",
+      "dropoffDistrict": "Dropoff District",
+      "dropoffWard": "Dropoff Ward",
+      "type": "Type",
+      "status": "Status",
+      "truckType": "Truck Type"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "containerGoServerApp": {
+    "truck": {
+      "home": {
+        "title": "Trucks",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Truck",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Truck",
+        "notFound": "No Trucks found"
+      },
+      "created": "Một Truck mới được tạo với định danh {{ param }}",
+      "updated": "Một Truck cập nhật với định danh {{ param }}",
+      "deleted": "Một Truck đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Truck {{ id }}?"
+      },
+      "detail": {
+        "title": "Truck"
+      },
+      "id": "Id",
+      "code": "Code",
+      "name": "Name"
+    }
+  }
+}

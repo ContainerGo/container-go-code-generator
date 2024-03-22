@@ -2,6 +2,7 @@ package vn.containergo.service.dto;
 
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Objects;
 
 /**
@@ -34,6 +35,12 @@ public class CarrierDTO implements Serializable {
     private Integer companySize;
 
     private Boolean isApproved;
+
+    private Integer vehicles;
+
+    private Integer shipmentsLeftForDay;
+
+    private Instant verifiedSince;
 
     public Long getId() {
         return id;
@@ -123,6 +130,30 @@ public class CarrierDTO implements Serializable {
         this.isApproved = isApproved;
     }
 
+    public Integer getVehicles() {
+        return vehicles;
+    }
+
+    public void setVehicles(Integer vehicles) {
+        this.vehicles = vehicles;
+    }
+
+    public Integer getShipmentsLeftForDay() {
+        return shipmentsLeftForDay;
+    }
+
+    public void setShipmentsLeftForDay(Integer shipmentsLeftForDay) {
+        this.shipmentsLeftForDay = shipmentsLeftForDay;
+    }
+
+    public Instant getVerifiedSince() {
+        return verifiedSince;
+    }
+
+    public void setVerifiedSince(Instant verifiedSince) {
+        this.verifiedSince = verifiedSince;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -159,6 +190,9 @@ public class CarrierDTO implements Serializable {
             ", branchName='" + getBranchName() + "'" +
             ", companySize=" + getCompanySize() +
             ", isApproved='" + getIsApproved() + "'" +
+            ", vehicles=" + getVehicles() +
+            ", shipmentsLeftForDay=" + getShipmentsLeftForDay() +
+            ", verifiedSince='" + getVerifiedSince() + "'" +
             "}";
     }
 }

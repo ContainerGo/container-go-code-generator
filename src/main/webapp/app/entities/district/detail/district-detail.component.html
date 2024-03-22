@@ -1,0 +1,42 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (district) {
+      <div>
+        <h2 data-cy="districtDetailsHeading"><span jhiTranslate="containerGoServerApp.district.detail.title">District</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="containerGoServerApp.district.id">Id</span></dt>
+          <dd>
+            <span>{{ district.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.district.code">Code</span></dt>
+          <dd>
+            <span>{{ district.code }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.district.name">Name</span></dt>
+          <dd>
+            <span>{{ district.name }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.district.description">Description</span></dt>
+          <dd>
+            <span>{{ district.description }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
+        </button>
+
+        <button type="button" [routerLink]="['/district', district.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

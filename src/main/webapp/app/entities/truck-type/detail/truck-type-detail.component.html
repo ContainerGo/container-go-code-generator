@@ -1,0 +1,66 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (truckType) {
+      <div>
+        <h2 data-cy="truckTypeDetailsHeading"><span jhiTranslate="containerGoServerApp.truckType.detail.title">Truck Type</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="containerGoServerApp.truckType.id">Id</span></dt>
+          <dd>
+            <span>{{ truckType.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.truckType.code">Code</span></dt>
+          <dd>
+            <span>{{ truckType.code }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.truckType.name">Name</span></dt>
+          <dd>
+            <span>{{ truckType.name }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.truckType.category">Category</span></dt>
+          <dd>
+            <span>{{ truckType.category }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.truckType.height">Height</span></dt>
+          <dd>
+            <span>{{ truckType.height }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.truckType.length">Length</span></dt>
+          <dd>
+            <span>{{ truckType.length }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.truckType.maxSpeed">Max Speed</span></dt>
+          <dd>
+            <span>{{ truckType.maxSpeed }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.truckType.type">Type</span></dt>
+          <dd>
+            <span>{{ truckType.type }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.truckType.weight">Weight</span></dt>
+          <dd>
+            <span>{{ truckType.weight }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.truckType.width">Width</span></dt>
+          <dd>
+            <span>{{ truckType.width }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
+        </button>
+
+        <button type="button" [routerLink]="['/truck-type', truckType.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

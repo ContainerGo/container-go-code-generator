@@ -22,7 +22,9 @@ public class CarrierTestSamples {
             .bankName("bankName1")
             .accountName("accountName1")
             .branchName("branchName1")
-            .companySize(1);
+            .companySize(1)
+            .vehicles(1)
+            .shipmentsLeftForDay(1);
     }
 
     public static Carrier getCarrierSample2() {
@@ -36,7 +38,9 @@ public class CarrierTestSamples {
             .bankName("bankName2")
             .accountName("accountName2")
             .branchName("branchName2")
-            .companySize(2);
+            .companySize(2)
+            .vehicles(2)
+            .shipmentsLeftForDay(2);
     }
 
     public static Carrier getCarrierRandomSampleGenerator() {
@@ -50,6 +54,8 @@ public class CarrierTestSamples {
             .bankName(UUID.randomUUID().toString())
             .accountName(UUID.randomUUID().toString())
             .branchName(UUID.randomUUID().toString())
-            .companySize(intCount.incrementAndGet());
+            .companySize(intCount.incrementAndGet())
+            .vehicles(intCount.incrementAndGet())
+            .shipmentsLeftForDay(intCount.incrementAndGet());
     }
 }

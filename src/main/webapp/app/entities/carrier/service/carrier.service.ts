@@ -2,12 +2,26 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+import { map } from 'rxjs/operators';
+
+import dayjs from 'dayjs/esm';
+
 import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
 import { ICarrier, NewCarrier } from '../carrier.model';
 
 export type PartialUpdateCarrier = Partial<ICarrier> & Pick<ICarrier, 'id'>;
+
+type RestOf<T extends ICarrier | NewCarrier> = Omit<T, 'verifiedSince'> & {
+  verifiedSince?: string | null;
+};
+
+export type RestCarrier = RestOf<ICarrier>;
+
+export type NewRestCarrier = RestOf<NewCarrier>;
+
+export type PartialUpdateRestCarrier = RestOf<PartialUpdateCarrier>;
 
 export type EntityResponseType = HttpResponse<ICarrier>;
 export type EntityArrayResponseType = HttpResponse<ICarrier[]>;
@@ -22,24 +36,37 @@ export class CarrierService {
   ) {}
 
   create(carrier: NewCarrier): Observable<EntityResponseType> {
-    return this.http.post<ICarrier>(this.resourceUrl, carrier, { observe: 'response' });
+    const copy = this.convertDateFromClient(carrier);
+    return this.http
+      .post<RestCarrier>(this.resourceUrl, copy, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   update(carrier: ICarrier): Observable<EntityResponseType> {
-    return this.http.put<ICarrier>(`${this.resourceUrl}/${this.getCarrierIdentifier(carrier)}`, carrier, { observe: 'response' });
+    const copy = this.convertDateFromClient(carrier);
+    return this.http
+      .put<RestCarrier>(`${this.resourceUrl}/${this.getCarrierIdentifier(carrier)}`, copy, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   partialUpdate(carrier: PartialUpdateCarrier): Observable<EntityResponseType> {
-    return this.http.patch<ICarrier>(`${this.resourceUrl}/${this.getCarrierIdentifier(carrier)}`, carrier, { observe: 'response' });
+    const copy = this.convertDateFromClient(carrier);
+    return this.http
+      .patch<RestCarrier>(`${this.resourceUrl}/${this.getCarrierIdentifier(carrier)}`, copy, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   find(id: number): Observable<EntityResponseType> {
-    return this.http.get<ICarrier>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+    return this.http
+      .get<RestCarrier>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
-    return this.http.get<ICarrier[]>(this.resourceUrl, { params: options, observe: 'response' });
+    return this.http
+      .get<RestCarrier[]>(this.resourceUrl, { params: options, observe: 'response' })
+      .pipe(map(res => this.convertResponseArrayFromServer(res)));
   }
 
   delete(id: number): Observable<HttpResponse<{}>> {
@@ -72,5 +99,31 @@ export class CarrierService {
       return [...carriersToAdd, ...carrierCollection];
     }
     return carrierCollection;
+  }
+
+  protected convertDateFromClient<T extends ICarrier | NewCarrier | PartialUpdateCarrier>(carrier: T): RestOf<T> {
+    return {
+      ...carrier,
+      verifiedSince: carrier.verifiedSince?.toJSON() ?? null,
+    };
+  }
+
+  protected convertDateFromServer(restCarrier: RestCarrier): ICarrier {
+    return {
+      ...restCarrier,
+      verifiedSince: restCarrier.verifiedSince ? dayjs(restCarrier.verifiedSince) : undefined,
+    };
+  }
+
+  protected convertResponseFromServer(res: HttpResponse<RestCarrier>): HttpResponse<ICarrier> {
+    return res.clone({
+      body: res.body ? this.convertDateFromServer(res.body) : null,
+    });
+  }
+
+  protected convertResponseArrayFromServer(res: HttpResponse<RestCarrier[]>): HttpResponse<ICarrier[]> {
+    return res.clone({
+      body: res.body ? res.body.map(item => this.convertDateFromServer(item)) : null,
+    });
   }
 }

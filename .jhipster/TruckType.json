@@ -1,0 +1,58 @@
+{
+  "annotations": {
+    "changelogDate": "20240322065358"
+  },
+  "applications": ["containerGoServer"],
+  "dto": "mapstruct",
+  "entityTableName": "truck_type",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "code",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "category",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "height",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "length",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "maxSpeed",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "type",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "weight",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "width",
+      "fieldType": "Integer"
+    }
+  ],
+  "jpaMetamodelFiltering": false,
+  "name": "TruckType",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

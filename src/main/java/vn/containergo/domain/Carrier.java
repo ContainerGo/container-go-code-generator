@@ -2,6 +2,7 @@ package vn.containergo.domain;
 
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
+import java.time.Instant;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -50,6 +51,15 @@ public class Carrier implements Serializable {
 
     @Field("is_approved")
     private Boolean isApproved;
+
+    @Field("vehicles")
+    private Integer vehicles;
+
+    @Field("shipments_left_for_day")
+    private Integer shipmentsLeftForDay;
+
+    @Field("verified_since")
+    private Instant verifiedSince;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -196,6 +206,45 @@ public class Carrier implements Serializable {
         this.isApproved = isApproved;
     }
 
+    public Integer getVehicles() {
+        return this.vehicles;
+    }
+
+    public Carrier vehicles(Integer vehicles) {
+        this.setVehicles(vehicles);
+        return this;
+    }
+
+    public void setVehicles(Integer vehicles) {
+        this.vehicles = vehicles;
+    }
+
+    public Integer getShipmentsLeftForDay() {
+        return this.shipmentsLeftForDay;
+    }
+
+    public Carrier shipmentsLeftForDay(Integer shipmentsLeftForDay) {
+        this.setShipmentsLeftForDay(shipmentsLeftForDay);
+        return this;
+    }
+
+    public void setShipmentsLeftForDay(Integer shipmentsLeftForDay) {
+        this.shipmentsLeftForDay = shipmentsLeftForDay;
+    }
+
+    public Instant getVerifiedSince() {
+        return this.verifiedSince;
+    }
+
+    public Carrier verifiedSince(Instant verifiedSince) {
+        this.setVerifiedSince(verifiedSince);
+        return this;
+    }
+
+    public void setVerifiedSince(Instant verifiedSince) {
+        this.verifiedSince = verifiedSince;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -230,6 +279,9 @@ public class Carrier implements Serializable {
             ", branchName='" + getBranchName() + "'" +
             ", companySize=" + getCompanySize() +
             ", isApproved='" + getIsApproved() + "'" +
+            ", vehicles=" + getVehicles() +
+            ", shipmentsLeftForDay=" + getShipmentsLeftForDay() +
+            ", verifiedSince='" + getVerifiedSince() + "'" +
             "}";
     }
 }

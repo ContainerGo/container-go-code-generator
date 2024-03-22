@@ -1,0 +1,27 @@
+{
+  "containerGoServerApp": {
+    "containerStatus": {
+      "home": {
+        "title": "Container Statuses",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Container Status",
+        "createOrEditLabel": "Create or edit a Container Status",
+        "notFound": "No Container Statuses found"
+      },
+      "created": "A new Container Status is created with identifier {{ param }}",
+      "updated": "A Container Status is updated with identifier {{ param }}",
+      "deleted": "A Container Status is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Container Status {{ id }}?"
+      },
+      "detail": {
+        "title": "Container Status"
+      },
+      "id": "Id",
+      "code": "Code",
+      "name": "Name",
+      "description": "Description",
+      "group": "Group"
+    }
+  }
+}

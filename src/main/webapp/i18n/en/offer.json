@@ -1,0 +1,31 @@
+{
+  "containerGoServerApp": {
+    "offer": {
+      "home": {
+        "title": "Offers",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Offer",
+        "createOrEditLabel": "Create or edit a Offer",
+        "notFound": "No Offers found"
+      },
+      "created": "A new Offer is created with identifier {{ param }}",
+      "updated": "A Offer is updated with identifier {{ param }}",
+      "deleted": "A Offer is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Offer {{ id }}?"
+      },
+      "detail": {
+        "title": "Offer"
+      },
+      "id": "Id",
+      "message": "Message",
+      "pickupFromDate": "Pickup From Date",
+      "pickupUntilDate": "Pickup Until Date",
+      "dropoffFromDate": "Dropoff From Date",
+      "dropoffUntilDate": "Dropoff Until Date",
+      "price": "Price",
+      "carrierId": "Carrier Id",
+      "container": "Container"
+    }
+  }
+}
