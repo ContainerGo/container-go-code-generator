@@ -73,10 +73,24 @@ entity TruckType {
     width Integer
 }
 
+enum TruckStatus {
+	AVAILABLE,
+    IN_TRANSIT,
+    UNDER_MAINTENANCE,
+    OUT_OF_SERVICE
+}
+
 entity Truck {
-	id Long,
+    id Long,
     code String required,
-    name String required
+    name String required,
+    model String,
+    manufacturer String,
+    year Integer,
+    capacity Double,
+    status TruckStatus required,
+    mileage Double,
+    numberPlate String required
 }
 
 entity Carrier {
@@ -191,19 +205,22 @@ entity Offer {
 }
 
 relationship ManyToOne {
-	CarrierPerson{carrier required} to Carrier
-    ShipperPerson{shipper required} to Shipper
-    Container{dropoffProvice} to Provice
+	Container{dropoffProvice} to Provice
     Container{dropoffDistrict} to District
     Container{dropoffWard} to Ward
     Container{type required} to ContainerType
     Container{status required} to ContainerStatus
     Container{truckType} to TruckType
+    Container{truck} to Truck
     Offer{container required} to Container
+    Truck{type required} to TruckType
 }
 
 relationship OneToMany {
 	ContainerStatusGroup to ContainerStatus{group}
+    Carrier to Truck{carrier}
+    Carrier to CarrierPerson{carrier}
+    Shipper to ShipperPerson{shipper}
 }
 
 relationship ManyToMany {
