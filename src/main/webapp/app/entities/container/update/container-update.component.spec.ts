@@ -78,14 +78,12 @@ describe('Container Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call Provice query and add missing value', () => {
       const container: IContainer = { id: 456 };
-      const pickupProvice: IProvice = { id: 31109 };
-      container.pickupProvice = pickupProvice;
-      const dropoffProvice: IProvice = { id: 18832 };
+      const dropoffProvice: IProvice = { id: 31109 };
       container.dropoffProvice = dropoffProvice;
 
-      const proviceCollection: IProvice[] = [{ id: 18345 }];
+      const proviceCollection: IProvice[] = [{ id: 18832 }];
       jest.spyOn(proviceService, 'query').mockReturnValue(of(new HttpResponse({ body: proviceCollection })));
-      const additionalProvices = [pickupProvice, dropoffProvice];
+      const additionalProvices = [dropoffProvice];
       const expectedCollection: IProvice[] = [...additionalProvices, ...proviceCollection];
       jest.spyOn(proviceService, 'addProviceToCollectionIfMissing').mockReturnValue(expectedCollection);
 
@@ -102,14 +100,12 @@ describe('Container Management Update Component', () => {
 
     it('Should call District query and add missing value', () => {
       const container: IContainer = { id: 456 };
-      const pickupDistrict: IDistrict = { id: 17218 };
-      container.pickupDistrict = pickupDistrict;
-      const dropoffDistrict: IDistrict = { id: 10852 };
+      const dropoffDistrict: IDistrict = { id: 17218 };
       container.dropoffDistrict = dropoffDistrict;
 
-      const districtCollection: IDistrict[] = [{ id: 19127 }];
+      const districtCollection: IDistrict[] = [{ id: 10852 }];
       jest.spyOn(districtService, 'query').mockReturnValue(of(new HttpResponse({ body: districtCollection })));
-      const additionalDistricts = [pickupDistrict, dropoffDistrict];
+      const additionalDistricts = [dropoffDistrict];
       const expectedCollection: IDistrict[] = [...additionalDistricts, ...districtCollection];
       jest.spyOn(districtService, 'addDistrictToCollectionIfMissing').mockReturnValue(expectedCollection);
 
@@ -126,14 +122,12 @@ describe('Container Management Update Component', () => {
 
     it('Should call Ward query and add missing value', () => {
       const container: IContainer = { id: 456 };
-      const pickupWard: IWard = { id: 18751 };
-      container.pickupWard = pickupWard;
-      const dropoffWard: IWard = { id: 26361 };
+      const dropoffWard: IWard = { id: 18751 };
       container.dropoffWard = dropoffWard;
 
-      const wardCollection: IWard[] = [{ id: 20162 }];
+      const wardCollection: IWard[] = [{ id: 26361 }];
       jest.spyOn(wardService, 'query').mockReturnValue(of(new HttpResponse({ body: wardCollection })));
-      const additionalWards = [pickupWard, dropoffWard];
+      const additionalWards = [dropoffWard];
       const expectedCollection: IWard[] = [...additionalWards, ...wardCollection];
       jest.spyOn(wardService, 'addWardToCollectionIfMissing').mockReturnValue(expectedCollection);
 
@@ -260,17 +254,11 @@ describe('Container Management Update Component', () => {
 
     it('Should update editForm', () => {
       const container: IContainer = { id: 456 };
-      const pickupProvice: IProvice = { id: 27658 };
-      container.pickupProvice = pickupProvice;
-      const dropoffProvice: IProvice = { id: 8081 };
+      const dropoffProvice: IProvice = { id: 18345 };
       container.dropoffProvice = dropoffProvice;
-      const pickupDistrict: IDistrict = { id: 2391 };
-      container.pickupDistrict = pickupDistrict;
-      const dropoffDistrict: IDistrict = { id: 19963 };
+      const dropoffDistrict: IDistrict = { id: 19127 };
       container.dropoffDistrict = dropoffDistrict;
-      const pickupWard: IWard = { id: 31476 };
-      container.pickupWard = pickupWard;
-      const dropoffWard: IWard = { id: 25663 };
+      const dropoffWard: IWard = { id: 20162 };
       container.dropoffWard = dropoffWard;
       const type: IContainerType = { id: 224 };
       container.type = type;
@@ -286,11 +274,8 @@ describe('Container Management Update Component', () => {
       activatedRoute.data = of({ container });
       comp.ngOnInit();
 
-      expect(comp.provicesSharedCollection).toContain(pickupProvice);
       expect(comp.provicesSharedCollection).toContain(dropoffProvice);
-      expect(comp.districtsSharedCollection).toContain(pickupDistrict);
       expect(comp.districtsSharedCollection).toContain(dropoffDistrict);
-      expect(comp.wardsSharedCollection).toContain(pickupWard);
       expect(comp.wardsSharedCollection).toContain(dropoffWard);
       expect(comp.containerTypesSharedCollection).toContain(type);
       expect(comp.containerStatusesSharedCollection).toContain(status);

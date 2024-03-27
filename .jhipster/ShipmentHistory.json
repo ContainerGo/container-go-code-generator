@@ -1,6 +1,6 @@
 {
   "annotations": {
-    "changelogDate": "20240327044307"
+    "changelogDate": "20240327043714"
   },
   "applications": ["containerGoServer"],
   "dto": "mapstruct",

@@ -50,10 +50,10 @@ describe('Offer Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call Container query and add missing value', () => {
       const offer: IOffer = { id: 456 };
-      const container: IContainer = { id: 14835 };
+      const container: IContainer = { id: 10522 };
       offer.container = container;
 
-      const containerCollection: IContainer[] = [{ id: 7379 }];
+      const containerCollection: IContainer[] = [{ id: 27681 }];
       jest.spyOn(containerService, 'query').mockReturnValue(of(new HttpResponse({ body: containerCollection })));
       const additionalContainers = [container];
       const expectedCollection: IContainer[] = [...additionalContainers, ...containerCollection];
@@ -72,7 +72,7 @@ describe('Offer Management Update Component', () => {
 
     it('Should update editForm', () => {
       const offer: IOffer = { id: 456 };
-      const container: IContainer = { id: 2665 };
+      const container: IContainer = { id: 22615 };
       offer.container = container;
 
       activatedRoute.data = of({ offer });

@@ -50,10 +50,10 @@ describe('ShipmentHistory Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call Container query and add missing value', () => {
       const shipmentHistory: IShipmentHistory = { id: 456 };
-      const container: IContainer = { id: 10648 };
+      const container: IContainer = { id: 20968 };
       shipmentHistory.container = container;
 
-      const containerCollection: IContainer[] = [{ id: 28826 }];
+      const containerCollection: IContainer[] = [{ id: 24008 }];
       jest.spyOn(containerService, 'query').mockReturnValue(of(new HttpResponse({ body: containerCollection })));
       const additionalContainers = [container];
       const expectedCollection: IContainer[] = [...additionalContainers, ...containerCollection];
@@ -72,7 +72,7 @@ describe('ShipmentHistory Management Update Component', () => {
 
     it('Should update editForm', () => {
       const shipmentHistory: IShipmentHistory = { id: 456 };
-      const container: IContainer = { id: 17194 };
+      const container: IContainer = { id: 10649 };
       shipmentHistory.container = container;
 
       activatedRoute.data = of({ shipmentHistory });
