@@ -13,6 +13,8 @@ export interface ITruck {
   status?: keyof typeof TruckStatus | null;
   mileage?: number | null;
   numberPlate?: string | null;
+  lat?: number | null;
+  lng?: number | null;
   type?: Pick<ITruckType, 'id'> | null;
   carrier?: Pick<ICarrier, 'id'> | null;
 }

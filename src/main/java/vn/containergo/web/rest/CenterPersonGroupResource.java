@@ -64,11 +64,10 @@ public class CenterPersonGroupResource {
         if (centerPersonGroupDTO.getId() != null) {
             throw new BadRequestAlertException("A new centerPersonGroup cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        CenterPersonGroupDTO result = centerPersonGroupService.save(centerPersonGroupDTO);
-        return ResponseEntity
-            .created(new URI("/api/center-person-groups/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        centerPersonGroupDTO = centerPersonGroupService.save(centerPersonGroupDTO);
+        return ResponseEntity.created(new URI("/api/center-person-groups/" + centerPersonGroupDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, centerPersonGroupDTO.getId().toString()))
+            .body(centerPersonGroupDTO);
     }
 
     /**
@@ -98,11 +97,10 @@ public class CenterPersonGroupResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        CenterPersonGroupDTO result = centerPersonGroupService.update(centerPersonGroupDTO);
-        return ResponseEntity
-            .ok()
+        centerPersonGroupDTO = centerPersonGroupService.update(centerPersonGroupDTO);
+        return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, centerPersonGroupDTO.getId().toString()))
-            .body(result);
+            .body(centerPersonGroupDTO);
     }
 
     /**
@@ -180,8 +178,7 @@ public class CenterPersonGroupResource {
     public ResponseEntity<Void> deleteCenterPersonGroup(@PathVariable("id") Long id) {
         log.debug("REST request to delete CenterPersonGroup : {}", id);
         centerPersonGroupService.delete(id);
-        return ResponseEntity
-            .noContent()
+        return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }

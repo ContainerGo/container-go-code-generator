@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -25,14 +25,13 @@ export class ContainerStatusUpdateComponent implements OnInit {
 
   containerStatusGroupsSharedCollection: IContainerStatusGroup[] = [];
 
-  editForm: ContainerStatusFormGroup = this.containerStatusFormService.createContainerStatusFormGroup();
+  protected containerStatusService = inject(ContainerStatusService);
+  protected containerStatusFormService = inject(ContainerStatusFormService);
+  protected containerStatusGroupService = inject(ContainerStatusGroupService);
+  protected activatedRoute = inject(ActivatedRoute);
 
-  constructor(
-    protected containerStatusService: ContainerStatusService,
-    protected containerStatusFormService: ContainerStatusFormService,
-    protected containerStatusGroupService: ContainerStatusGroupService,
-    protected activatedRoute: ActivatedRoute,
-  ) {}
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  editForm: ContainerStatusFormGroup = this.containerStatusFormService.createContainerStatusFormGroup();
 
   compareContainerStatusGroup = (o1: IContainerStatusGroup | null, o2: IContainerStatusGroup | null): boolean =>
     this.containerStatusGroupService.compareContainerStatusGroup(o1, o2);

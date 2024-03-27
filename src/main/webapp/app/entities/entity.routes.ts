@@ -2,6 +2,11 @@ import { Routes } from '@angular/router';
 
 const routes: Routes = [
   {
+    path: 'authority',
+    data: { pageTitle: 'containerGoServerApp.adminAuthority.home.title' },
+    loadChildren: () => import('./admin/authority/authority.routes'),
+  },
+  {
     path: 'shipper',
     data: { pageTitle: 'containerGoServerApp.shipper.home.title' },
     loadChildren: () => import('./shipper/shipper.routes'),
@@ -90,6 +95,16 @@ const routes: Routes = [
     path: 'offer',
     data: { pageTitle: 'containerGoServerApp.offer.home.title' },
     loadChildren: () => import('./offer/offer.routes'),
+  },
+  {
+    path: 'container-owner',
+    data: { pageTitle: 'containerGoServerApp.containerOwner.home.title' },
+    loadChildren: () => import('./container-owner/container-owner.routes'),
+  },
+  {
+    path: 'shipment-history',
+    data: { pageTitle: 'containerGoServerApp.shipmentHistory.home.title' },
+    loadChildren: () => import('./shipment-history/shipment-history.routes'),
   },
   /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
 ];

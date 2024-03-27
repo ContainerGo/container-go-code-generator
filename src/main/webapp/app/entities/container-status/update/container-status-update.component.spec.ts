@@ -50,10 +50,10 @@ describe('ContainerStatus Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call ContainerStatusGroup query and add missing value', () => {
       const containerStatus: IContainerStatus = { id: 456 };
-      const group: IContainerStatusGroup = { id: 15455 };
+      const group: IContainerStatusGroup = { id: 18290 };
       containerStatus.group = group;
 
-      const containerStatusGroupCollection: IContainerStatusGroup[] = [{ id: 19514 }];
+      const containerStatusGroupCollection: IContainerStatusGroup[] = [{ id: 7419 }];
       jest.spyOn(containerStatusGroupService, 'query').mockReturnValue(of(new HttpResponse({ body: containerStatusGroupCollection })));
       const additionalContainerStatusGroups = [group];
       const expectedCollection: IContainerStatusGroup[] = [...additionalContainerStatusGroups, ...containerStatusGroupCollection];
@@ -72,7 +72,7 @@ describe('ContainerStatus Management Update Component', () => {
 
     it('Should update editForm', () => {
       const containerStatus: IContainerStatus = { id: 456 };
-      const group: IContainerStatusGroup = { id: 1110 };
+      const group: IContainerStatusGroup = { id: 6890 };
       containerStatus.group = group;
 
       activatedRoute.data = of({ containerStatus });

@@ -54,10 +54,10 @@ describe('Truck Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call TruckType query and add missing value', () => {
       const truck: ITruck = { id: 456 };
-      const type: ITruckType = { id: 18773 };
+      const type: ITruckType = { id: 29657 };
       truck.type = type;
 
-      const truckTypeCollection: ITruckType[] = [{ id: 18107 }];
+      const truckTypeCollection: ITruckType[] = [{ id: 15517 }];
       jest.spyOn(truckTypeService, 'query').mockReturnValue(of(new HttpResponse({ body: truckTypeCollection })));
       const additionalTruckTypes = [type];
       const expectedCollection: ITruckType[] = [...additionalTruckTypes, ...truckTypeCollection];
@@ -76,10 +76,10 @@ describe('Truck Management Update Component', () => {
 
     it('Should call Carrier query and add missing value', () => {
       const truck: ITruck = { id: 456 };
-      const carrier: ICarrier = { id: 16359 };
+      const carrier: ICarrier = { id: 26779 };
       truck.carrier = carrier;
 
-      const carrierCollection: ICarrier[] = [{ id: 4001 }];
+      const carrierCollection: ICarrier[] = [{ id: 27780 }];
       jest.spyOn(carrierService, 'query').mockReturnValue(of(new HttpResponse({ body: carrierCollection })));
       const additionalCarriers = [carrier];
       const expectedCollection: ICarrier[] = [...additionalCarriers, ...carrierCollection];
@@ -98,9 +98,9 @@ describe('Truck Management Update Component', () => {
 
     it('Should update editForm', () => {
       const truck: ITruck = { id: 456 };
-      const type: ITruckType = { id: 24745 };
+      const type: ITruckType = { id: 17526 };
       truck.type = type;
-      const carrier: ICarrier = { id: 115 };
+      const carrier: ICarrier = { id: 17510 };
       truck.carrier = carrier;
 
       activatedRoute.data = of({ truck });

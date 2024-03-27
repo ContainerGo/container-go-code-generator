@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static vn.containergo.domain.ContainerStatusGroupAsserts.*;
+import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +45,9 @@ class ContainerStatusGroupResourceIT {
 
     private static Random random = new Random();
     private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+
+    @Autowired
+    private ObjectMapper om;
 
     @Autowired
     private ContainerStatusGroupRepository containerStatusGroupRepository;
@@ -91,24 +96,28 @@ class ContainerStatusGroupResourceIT {
 
     @Test
     void createContainerStatusGroup() throws Exception {
-        int databaseSizeBeforeCreate = containerStatusGroupRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the ContainerStatusGroup
         ContainerStatusGroupDTO containerStatusGroupDTO = containerStatusGroupMapper.toDto(containerStatusGroup);
-        restContainerStatusGroupMockMvc
-            .perform(
-                post(ENTITY_API_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(containerStatusGroupDTO))
-            )
-            .andExpect(status().isCreated());
+        var returnedContainerStatusGroupDTO = om.readValue(
+            restContainerStatusGroupMockMvc
+                .perform(
+                    post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerStatusGroupDTO))
+                )
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(),
+            ContainerStatusGroupDTO.class
+        );
 
         // Validate the ContainerStatusGroup in the database
-        List<ContainerStatusGroup> containerStatusGroupList = containerStatusGroupRepository.findAll();
-        assertThat(containerStatusGroupList).hasSize(databaseSizeBeforeCreate + 1);
-        ContainerStatusGroup testContainerStatusGroup = containerStatusGroupList.get(containerStatusGroupList.size() - 1);
-        assertThat(testContainerStatusGroup.getCode()).isEqualTo(DEFAULT_CODE);
-        assertThat(testContainerStatusGroup.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testContainerStatusGroup.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
+        var returnedContainerStatusGroup = containerStatusGroupMapper.toEntity(returnedContainerStatusGroupDTO);
+        assertContainerStatusGroupUpdatableFieldsEquals(
+            returnedContainerStatusGroup,
+            getPersistedContainerStatusGroup(returnedContainerStatusGroup)
+        );
     }
 
     @Test
@@ -117,25 +126,20 @@ class ContainerStatusGroupResourceIT {
         containerStatusGroup.setId(1L);
         ContainerStatusGroupDTO containerStatusGroupDTO = containerStatusGroupMapper.toDto(containerStatusGroup);
 
-        int databaseSizeBeforeCreate = containerStatusGroupRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restContainerStatusGroupMockMvc
-            .perform(
-                post(ENTITY_API_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(containerStatusGroupDTO))
-            )
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerStatusGroupDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the ContainerStatusGroup in the database
-        List<ContainerStatusGroup> containerStatusGroupList = containerStatusGroupRepository.findAll();
-        assertThat(containerStatusGroupList).hasSize(databaseSizeBeforeCreate);
+        assertSameRepositoryCount(databaseSizeBeforeCreate);
     }
 
     @Test
     void checkCodeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = containerStatusGroupRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         containerStatusGroup.setCode(null);
 
@@ -143,20 +147,15 @@ class ContainerStatusGroupResourceIT {
         ContainerStatusGroupDTO containerStatusGroupDTO = containerStatusGroupMapper.toDto(containerStatusGroup);
 
         restContainerStatusGroupMockMvc
-            .perform(
-                post(ENTITY_API_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(containerStatusGroupDTO))
-            )
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerStatusGroupDTO)))
             .andExpect(status().isBadRequest());
 
-        List<ContainerStatusGroup> containerStatusGroupList = containerStatusGroupRepository.findAll();
-        assertThat(containerStatusGroupList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkNameIsRequired() throws Exception {
-        int databaseSizeBeforeTest = containerStatusGroupRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         containerStatusGroup.setName(null);
 
@@ -164,15 +163,10 @@ class ContainerStatusGroupResourceIT {
         ContainerStatusGroupDTO containerStatusGroupDTO = containerStatusGroupMapper.toDto(containerStatusGroup);
 
         restContainerStatusGroupMockMvc
-            .perform(
-                post(ENTITY_API_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(containerStatusGroupDTO))
-            )
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerStatusGroupDTO)))
             .andExpect(status().isBadRequest());
 
-        List<ContainerStatusGroup> containerStatusGroupList = containerStatusGroupRepository.findAll();
-        assertThat(containerStatusGroupList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
@@ -218,7 +212,7 @@ class ContainerStatusGroupResourceIT {
         // Initialize the database
         containerStatusGroupRepository.save(containerStatusGroup);
 
-        int databaseSizeBeforeUpdate = containerStatusGroupRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the containerStatusGroup
         ContainerStatusGroup updatedContainerStatusGroup = containerStatusGroupRepository
@@ -231,22 +225,18 @@ class ContainerStatusGroupResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, containerStatusGroupDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(containerStatusGroupDTO))
+                    .content(om.writeValueAsBytes(containerStatusGroupDTO))
             )
             .andExpect(status().isOk());
 
         // Validate the ContainerStatusGroup in the database
-        List<ContainerStatusGroup> containerStatusGroupList = containerStatusGroupRepository.findAll();
-        assertThat(containerStatusGroupList).hasSize(databaseSizeBeforeUpdate);
-        ContainerStatusGroup testContainerStatusGroup = containerStatusGroupList.get(containerStatusGroupList.size() - 1);
-        assertThat(testContainerStatusGroup.getCode()).isEqualTo(UPDATED_CODE);
-        assertThat(testContainerStatusGroup.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testContainerStatusGroup.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertPersistedContainerStatusGroupToMatchAllProperties(updatedContainerStatusGroup);
     }
 
     @Test
     void putNonExistingContainerStatusGroup() throws Exception {
-        int databaseSizeBeforeUpdate = containerStatusGroupRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         containerStatusGroup.setId(longCount.incrementAndGet());
 
         // Create the ContainerStatusGroup
@@ -257,18 +247,17 @@ class ContainerStatusGroupResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, containerStatusGroupDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(containerStatusGroupDTO))
+                    .content(om.writeValueAsBytes(containerStatusGroupDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the ContainerStatusGroup in the database
-        List<ContainerStatusGroup> containerStatusGroupList = containerStatusGroupRepository.findAll();
-        assertThat(containerStatusGroupList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithIdMismatchContainerStatusGroup() throws Exception {
-        int databaseSizeBeforeUpdate = containerStatusGroupRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         containerStatusGroup.setId(longCount.incrementAndGet());
 
         // Create the ContainerStatusGroup
@@ -279,18 +268,17 @@ class ContainerStatusGroupResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(containerStatusGroupDTO))
+                    .content(om.writeValueAsBytes(containerStatusGroupDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the ContainerStatusGroup in the database
-        List<ContainerStatusGroup> containerStatusGroupList = containerStatusGroupRepository.findAll();
-        assertThat(containerStatusGroupList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithMissingIdPathParamContainerStatusGroup() throws Exception {
-        int databaseSizeBeforeUpdate = containerStatusGroupRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         containerStatusGroup.setId(longCount.incrementAndGet());
 
         // Create the ContainerStatusGroup
@@ -298,16 +286,11 @@ class ContainerStatusGroupResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restContainerStatusGroupMockMvc
-            .perform(
-                put(ENTITY_API_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(containerStatusGroupDTO))
-            )
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerStatusGroupDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the ContainerStatusGroup in the database
-        List<ContainerStatusGroup> containerStatusGroupList = containerStatusGroupRepository.findAll();
-        assertThat(containerStatusGroupList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -315,29 +298,27 @@ class ContainerStatusGroupResourceIT {
         // Initialize the database
         containerStatusGroupRepository.save(containerStatusGroup);
 
-        int databaseSizeBeforeUpdate = containerStatusGroupRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the containerStatusGroup using partial update
         ContainerStatusGroup partialUpdatedContainerStatusGroup = new ContainerStatusGroup();
         partialUpdatedContainerStatusGroup.setId(containerStatusGroup.getId());
 
-        partialUpdatedContainerStatusGroup.code(UPDATED_CODE).description(UPDATED_DESCRIPTION);
-
         restContainerStatusGroupMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedContainerStatusGroup.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedContainerStatusGroup))
+                    .content(om.writeValueAsBytes(partialUpdatedContainerStatusGroup))
             )
             .andExpect(status().isOk());
 
         // Validate the ContainerStatusGroup in the database
-        List<ContainerStatusGroup> containerStatusGroupList = containerStatusGroupRepository.findAll();
-        assertThat(containerStatusGroupList).hasSize(databaseSizeBeforeUpdate);
-        ContainerStatusGroup testContainerStatusGroup = containerStatusGroupList.get(containerStatusGroupList.size() - 1);
-        assertThat(testContainerStatusGroup.getCode()).isEqualTo(UPDATED_CODE);
-        assertThat(testContainerStatusGroup.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testContainerStatusGroup.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertContainerStatusGroupUpdatableFieldsEquals(
+            createUpdateProxyForBean(partialUpdatedContainerStatusGroup, containerStatusGroup),
+            getPersistedContainerStatusGroup(containerStatusGroup)
+        );
     }
 
     @Test
@@ -345,7 +326,7 @@ class ContainerStatusGroupResourceIT {
         // Initialize the database
         containerStatusGroupRepository.save(containerStatusGroup);
 
-        int databaseSizeBeforeUpdate = containerStatusGroupRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the containerStatusGroup using partial update
         ContainerStatusGroup partialUpdatedContainerStatusGroup = new ContainerStatusGroup();
@@ -357,22 +338,22 @@ class ContainerStatusGroupResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedContainerStatusGroup.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedContainerStatusGroup))
+                    .content(om.writeValueAsBytes(partialUpdatedContainerStatusGroup))
             )
             .andExpect(status().isOk());
 
         // Validate the ContainerStatusGroup in the database
-        List<ContainerStatusGroup> containerStatusGroupList = containerStatusGroupRepository.findAll();
-        assertThat(containerStatusGroupList).hasSize(databaseSizeBeforeUpdate);
-        ContainerStatusGroup testContainerStatusGroup = containerStatusGroupList.get(containerStatusGroupList.size() - 1);
-        assertThat(testContainerStatusGroup.getCode()).isEqualTo(UPDATED_CODE);
-        assertThat(testContainerStatusGroup.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testContainerStatusGroup.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertContainerStatusGroupUpdatableFieldsEquals(
+            partialUpdatedContainerStatusGroup,
+            getPersistedContainerStatusGroup(partialUpdatedContainerStatusGroup)
+        );
     }
 
     @Test
     void patchNonExistingContainerStatusGroup() throws Exception {
-        int databaseSizeBeforeUpdate = containerStatusGroupRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         containerStatusGroup.setId(longCount.incrementAndGet());
 
         // Create the ContainerStatusGroup
@@ -383,18 +364,17 @@ class ContainerStatusGroupResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, containerStatusGroupDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(containerStatusGroupDTO))
+                    .content(om.writeValueAsBytes(containerStatusGroupDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the ContainerStatusGroup in the database
-        List<ContainerStatusGroup> containerStatusGroupList = containerStatusGroupRepository.findAll();
-        assertThat(containerStatusGroupList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithIdMismatchContainerStatusGroup() throws Exception {
-        int databaseSizeBeforeUpdate = containerStatusGroupRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         containerStatusGroup.setId(longCount.incrementAndGet());
 
         // Create the ContainerStatusGroup
@@ -405,18 +385,17 @@ class ContainerStatusGroupResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(containerStatusGroupDTO))
+                    .content(om.writeValueAsBytes(containerStatusGroupDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the ContainerStatusGroup in the database
-        List<ContainerStatusGroup> containerStatusGroupList = containerStatusGroupRepository.findAll();
-        assertThat(containerStatusGroupList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithMissingIdPathParamContainerStatusGroup() throws Exception {
-        int databaseSizeBeforeUpdate = containerStatusGroupRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         containerStatusGroup.setId(longCount.incrementAndGet());
 
         // Create the ContainerStatusGroup
@@ -425,15 +404,12 @@ class ContainerStatusGroupResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restContainerStatusGroupMockMvc
             .perform(
-                patch(ENTITY_API_URL)
-                    .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(containerStatusGroupDTO))
+                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(containerStatusGroupDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the ContainerStatusGroup in the database
-        List<ContainerStatusGroup> containerStatusGroupList = containerStatusGroupRepository.findAll();
-        assertThat(containerStatusGroupList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -441,7 +417,7 @@ class ContainerStatusGroupResourceIT {
         // Initialize the database
         containerStatusGroupRepository.save(containerStatusGroup);
 
-        int databaseSizeBeforeDelete = containerStatusGroupRepository.findAll().size();
+        long databaseSizeBeforeDelete = getRepositoryCount();
 
         // Delete the containerStatusGroup
         restContainerStatusGroupMockMvc
@@ -449,7 +425,40 @@ class ContainerStatusGroupResourceIT {
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<ContainerStatusGroup> containerStatusGroupList = containerStatusGroupRepository.findAll();
-        assertThat(containerStatusGroupList).hasSize(databaseSizeBeforeDelete - 1);
+        assertDecrementedRepositoryCount(databaseSizeBeforeDelete);
+    }
+
+    protected long getRepositoryCount() {
+        return containerStatusGroupRepository.count();
+    }
+
+    protected void assertIncrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore + 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertDecrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore - 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertSameRepositoryCount(long countBefore) {
+        assertThat(countBefore).isEqualTo(getRepositoryCount());
+    }
+
+    protected ContainerStatusGroup getPersistedContainerStatusGroup(ContainerStatusGroup containerStatusGroup) {
+        return containerStatusGroupRepository.findById(containerStatusGroup.getId()).orElseThrow();
+    }
+
+    protected void assertPersistedContainerStatusGroupToMatchAllProperties(ContainerStatusGroup expectedContainerStatusGroup) {
+        assertContainerStatusGroupAllPropertiesEquals(
+            expectedContainerStatusGroup,
+            getPersistedContainerStatusGroup(expectedContainerStatusGroup)
+        );
+    }
+
+    protected void assertPersistedContainerStatusGroupToMatchUpdatableProperties(ContainerStatusGroup expectedContainerStatusGroup) {
+        assertContainerStatusGroupAllUpdatablePropertiesEquals(
+            expectedContainerStatusGroup,
+            getPersistedContainerStatusGroup(expectedContainerStatusGroup)
+        );
     }
 }

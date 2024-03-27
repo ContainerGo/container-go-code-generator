@@ -61,11 +61,10 @@ public class CarrierAccountResource {
         if (carrierAccountDTO.getId() != null) {
             throw new BadRequestAlertException("A new carrierAccount cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        CarrierAccountDTO result = carrierAccountService.save(carrierAccountDTO);
-        return ResponseEntity
-            .created(new URI("/api/carrier-accounts/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        carrierAccountDTO = carrierAccountService.save(carrierAccountDTO);
+        return ResponseEntity.created(new URI("/api/carrier-accounts/" + carrierAccountDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, carrierAccountDTO.getId().toString()))
+            .body(carrierAccountDTO);
     }
 
     /**
@@ -95,11 +94,10 @@ public class CarrierAccountResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        CarrierAccountDTO result = carrierAccountService.update(carrierAccountDTO);
-        return ResponseEntity
-            .ok()
+        carrierAccountDTO = carrierAccountService.update(carrierAccountDTO);
+        return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, carrierAccountDTO.getId().toString()))
-            .body(result);
+            .body(carrierAccountDTO);
     }
 
     /**
@@ -177,8 +175,7 @@ public class CarrierAccountResource {
     public ResponseEntity<Void> deleteCarrierAccount(@PathVariable("id") Long id) {
         log.debug("REST request to delete CarrierAccount : {}", id);
         carrierAccountService.delete(id);
-        return ResponseEntity
-            .noContent()
+        return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }

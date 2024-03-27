@@ -4,7 +4,6 @@
   },
   "applications": ["containerGoServer"],
   "dto": "mapstruct",
-  "entityTableName": "container",
   "fields": [
     {
       "fieldName": "id",
@@ -136,6 +135,12 @@
     {
       "otherEntityName": "truck",
       "relationshipName": "truck",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "containerOwner",
+      "relationshipName": "owner",
       "relationshipSide": "left",
       "relationshipType": "many-to-one"
     }

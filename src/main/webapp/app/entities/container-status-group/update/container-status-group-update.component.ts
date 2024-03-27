@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -21,13 +21,12 @@ export class ContainerStatusGroupUpdateComponent implements OnInit {
   isSaving = false;
   containerStatusGroup: IContainerStatusGroup | null = null;
 
-  editForm: ContainerStatusGroupFormGroup = this.containerStatusGroupFormService.createContainerStatusGroupFormGroup();
+  protected containerStatusGroupService = inject(ContainerStatusGroupService);
+  protected containerStatusGroupFormService = inject(ContainerStatusGroupFormService);
+  protected activatedRoute = inject(ActivatedRoute);
 
-  constructor(
-    protected containerStatusGroupService: ContainerStatusGroupService,
-    protected containerStatusGroupFormService: ContainerStatusGroupFormService,
-    protected activatedRoute: ActivatedRoute,
-  ) {}
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  editForm: ContainerStatusGroupFormGroup = this.containerStatusGroupFormService.createContainerStatusGroupFormGroup();
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ containerStatusGroup }) => {

@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static vn.containergo.domain.ShipperPersonAsserts.*;
+import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,6 +48,9 @@ class ShipperPersonResourceIT {
 
     private static Random random = new Random();
     private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+
+    @Autowired
+    private ObjectMapper om;
 
     @Autowired
     private ShipperPersonRepository shipperPersonRepository;
@@ -96,23 +101,23 @@ class ShipperPersonResourceIT {
 
     @Test
     void createShipperPerson() throws Exception {
-        int databaseSizeBeforeCreate = shipperPersonRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the ShipperPerson
         ShipperPersonDTO shipperPersonDTO = shipperPersonMapper.toDto(shipperPerson);
-        restShipperPersonMockMvc
-            .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(shipperPersonDTO))
-            )
-            .andExpect(status().isCreated());
+        var returnedShipperPersonDTO = om.readValue(
+            restShipperPersonMockMvc
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(shipperPersonDTO)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(),
+            ShipperPersonDTO.class
+        );
 
         // Validate the ShipperPerson in the database
-        List<ShipperPerson> shipperPersonList = shipperPersonRepository.findAll();
-        assertThat(shipperPersonList).hasSize(databaseSizeBeforeCreate + 1);
-        ShipperPerson testShipperPerson = shipperPersonList.get(shipperPersonList.size() - 1);
-        assertThat(testShipperPerson.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testShipperPerson.getPhone()).isEqualTo(DEFAULT_PHONE);
-        assertThat(testShipperPerson.getEmail()).isEqualTo(DEFAULT_EMAIL);
-        assertThat(testShipperPerson.getAddress()).isEqualTo(DEFAULT_ADDRESS);
+        assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
+        var returnedShipperPerson = shipperPersonMapper.toEntity(returnedShipperPersonDTO);
+        assertShipperPersonUpdatableFieldsEquals(returnedShipperPerson, getPersistedShipperPerson(returnedShipperPerson));
     }
 
     @Test
@@ -121,23 +126,20 @@ class ShipperPersonResourceIT {
         shipperPerson.setId(1L);
         ShipperPersonDTO shipperPersonDTO = shipperPersonMapper.toDto(shipperPerson);
 
-        int databaseSizeBeforeCreate = shipperPersonRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restShipperPersonMockMvc
-            .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(shipperPersonDTO))
-            )
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(shipperPersonDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the ShipperPerson in the database
-        List<ShipperPerson> shipperPersonList = shipperPersonRepository.findAll();
-        assertThat(shipperPersonList).hasSize(databaseSizeBeforeCreate);
+        assertSameRepositoryCount(databaseSizeBeforeCreate);
     }
 
     @Test
     void checkNameIsRequired() throws Exception {
-        int databaseSizeBeforeTest = shipperPersonRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         shipperPerson.setName(null);
 
@@ -145,18 +147,15 @@ class ShipperPersonResourceIT {
         ShipperPersonDTO shipperPersonDTO = shipperPersonMapper.toDto(shipperPerson);
 
         restShipperPersonMockMvc
-            .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(shipperPersonDTO))
-            )
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(shipperPersonDTO)))
             .andExpect(status().isBadRequest());
 
-        List<ShipperPerson> shipperPersonList = shipperPersonRepository.findAll();
-        assertThat(shipperPersonList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkPhoneIsRequired() throws Exception {
-        int databaseSizeBeforeTest = shipperPersonRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         shipperPerson.setPhone(null);
 
@@ -164,13 +163,10 @@ class ShipperPersonResourceIT {
         ShipperPersonDTO shipperPersonDTO = shipperPersonMapper.toDto(shipperPerson);
 
         restShipperPersonMockMvc
-            .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(shipperPersonDTO))
-            )
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(shipperPersonDTO)))
             .andExpect(status().isBadRequest());
 
-        List<ShipperPerson> shipperPersonList = shipperPersonRepository.findAll();
-        assertThat(shipperPersonList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
@@ -218,7 +214,7 @@ class ShipperPersonResourceIT {
         // Initialize the database
         shipperPersonRepository.save(shipperPerson);
 
-        int databaseSizeBeforeUpdate = shipperPersonRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the shipperPerson
         ShipperPerson updatedShipperPerson = shipperPersonRepository.findById(shipperPerson.getId()).orElseThrow();
@@ -229,23 +225,18 @@ class ShipperPersonResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, shipperPersonDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(shipperPersonDTO))
+                    .content(om.writeValueAsBytes(shipperPersonDTO))
             )
             .andExpect(status().isOk());
 
         // Validate the ShipperPerson in the database
-        List<ShipperPerson> shipperPersonList = shipperPersonRepository.findAll();
-        assertThat(shipperPersonList).hasSize(databaseSizeBeforeUpdate);
-        ShipperPerson testShipperPerson = shipperPersonList.get(shipperPersonList.size() - 1);
-        assertThat(testShipperPerson.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testShipperPerson.getPhone()).isEqualTo(UPDATED_PHONE);
-        assertThat(testShipperPerson.getEmail()).isEqualTo(UPDATED_EMAIL);
-        assertThat(testShipperPerson.getAddress()).isEqualTo(UPDATED_ADDRESS);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertPersistedShipperPersonToMatchAllProperties(updatedShipperPerson);
     }
 
     @Test
     void putNonExistingShipperPerson() throws Exception {
-        int databaseSizeBeforeUpdate = shipperPersonRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         shipperPerson.setId(longCount.incrementAndGet());
 
         // Create the ShipperPerson
@@ -256,18 +247,17 @@ class ShipperPersonResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, shipperPersonDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(shipperPersonDTO))
+                    .content(om.writeValueAsBytes(shipperPersonDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the ShipperPerson in the database
-        List<ShipperPerson> shipperPersonList = shipperPersonRepository.findAll();
-        assertThat(shipperPersonList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithIdMismatchShipperPerson() throws Exception {
-        int databaseSizeBeforeUpdate = shipperPersonRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         shipperPerson.setId(longCount.incrementAndGet());
 
         // Create the ShipperPerson
@@ -278,18 +268,17 @@ class ShipperPersonResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(shipperPersonDTO))
+                    .content(om.writeValueAsBytes(shipperPersonDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the ShipperPerson in the database
-        List<ShipperPerson> shipperPersonList = shipperPersonRepository.findAll();
-        assertThat(shipperPersonList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithMissingIdPathParamShipperPerson() throws Exception {
-        int databaseSizeBeforeUpdate = shipperPersonRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         shipperPerson.setId(longCount.incrementAndGet());
 
         // Create the ShipperPerson
@@ -297,14 +286,11 @@ class ShipperPersonResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restShipperPersonMockMvc
-            .perform(
-                put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(shipperPersonDTO))
-            )
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(shipperPersonDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the ShipperPerson in the database
-        List<ShipperPerson> shipperPersonList = shipperPersonRepository.findAll();
-        assertThat(shipperPersonList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -312,28 +298,29 @@ class ShipperPersonResourceIT {
         // Initialize the database
         shipperPersonRepository.save(shipperPerson);
 
-        int databaseSizeBeforeUpdate = shipperPersonRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the shipperPerson using partial update
         ShipperPerson partialUpdatedShipperPerson = new ShipperPerson();
         partialUpdatedShipperPerson.setId(shipperPerson.getId());
 
+        partialUpdatedShipperPerson.phone(UPDATED_PHONE).email(UPDATED_EMAIL).address(UPDATED_ADDRESS);
+
         restShipperPersonMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedShipperPerson.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedShipperPerson))
+                    .content(om.writeValueAsBytes(partialUpdatedShipperPerson))
             )
             .andExpect(status().isOk());
 
         // Validate the ShipperPerson in the database
-        List<ShipperPerson> shipperPersonList = shipperPersonRepository.findAll();
-        assertThat(shipperPersonList).hasSize(databaseSizeBeforeUpdate);
-        ShipperPerson testShipperPerson = shipperPersonList.get(shipperPersonList.size() - 1);
-        assertThat(testShipperPerson.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testShipperPerson.getPhone()).isEqualTo(DEFAULT_PHONE);
-        assertThat(testShipperPerson.getEmail()).isEqualTo(DEFAULT_EMAIL);
-        assertThat(testShipperPerson.getAddress()).isEqualTo(DEFAULT_ADDRESS);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertShipperPersonUpdatableFieldsEquals(
+            createUpdateProxyForBean(partialUpdatedShipperPerson, shipperPerson),
+            getPersistedShipperPerson(shipperPerson)
+        );
     }
 
     @Test
@@ -341,7 +328,7 @@ class ShipperPersonResourceIT {
         // Initialize the database
         shipperPersonRepository.save(shipperPerson);
 
-        int databaseSizeBeforeUpdate = shipperPersonRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the shipperPerson using partial update
         ShipperPerson partialUpdatedShipperPerson = new ShipperPerson();
@@ -353,23 +340,19 @@ class ShipperPersonResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedShipperPerson.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedShipperPerson))
+                    .content(om.writeValueAsBytes(partialUpdatedShipperPerson))
             )
             .andExpect(status().isOk());
 
         // Validate the ShipperPerson in the database
-        List<ShipperPerson> shipperPersonList = shipperPersonRepository.findAll();
-        assertThat(shipperPersonList).hasSize(databaseSizeBeforeUpdate);
-        ShipperPerson testShipperPerson = shipperPersonList.get(shipperPersonList.size() - 1);
-        assertThat(testShipperPerson.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testShipperPerson.getPhone()).isEqualTo(UPDATED_PHONE);
-        assertThat(testShipperPerson.getEmail()).isEqualTo(UPDATED_EMAIL);
-        assertThat(testShipperPerson.getAddress()).isEqualTo(UPDATED_ADDRESS);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertShipperPersonUpdatableFieldsEquals(partialUpdatedShipperPerson, getPersistedShipperPerson(partialUpdatedShipperPerson));
     }
 
     @Test
     void patchNonExistingShipperPerson() throws Exception {
-        int databaseSizeBeforeUpdate = shipperPersonRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         shipperPerson.setId(longCount.incrementAndGet());
 
         // Create the ShipperPerson
@@ -380,18 +363,17 @@ class ShipperPersonResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, shipperPersonDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(shipperPersonDTO))
+                    .content(om.writeValueAsBytes(shipperPersonDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the ShipperPerson in the database
-        List<ShipperPerson> shipperPersonList = shipperPersonRepository.findAll();
-        assertThat(shipperPersonList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithIdMismatchShipperPerson() throws Exception {
-        int databaseSizeBeforeUpdate = shipperPersonRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         shipperPerson.setId(longCount.incrementAndGet());
 
         // Create the ShipperPerson
@@ -402,18 +384,17 @@ class ShipperPersonResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(shipperPersonDTO))
+                    .content(om.writeValueAsBytes(shipperPersonDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the ShipperPerson in the database
-        List<ShipperPerson> shipperPersonList = shipperPersonRepository.findAll();
-        assertThat(shipperPersonList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithMissingIdPathParamShipperPerson() throws Exception {
-        int databaseSizeBeforeUpdate = shipperPersonRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         shipperPerson.setId(longCount.incrementAndGet());
 
         // Create the ShipperPerson
@@ -421,16 +402,11 @@ class ShipperPersonResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restShipperPersonMockMvc
-            .perform(
-                patch(ENTITY_API_URL)
-                    .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(shipperPersonDTO))
-            )
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(shipperPersonDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the ShipperPerson in the database
-        List<ShipperPerson> shipperPersonList = shipperPersonRepository.findAll();
-        assertThat(shipperPersonList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -438,7 +414,7 @@ class ShipperPersonResourceIT {
         // Initialize the database
         shipperPersonRepository.save(shipperPerson);
 
-        int databaseSizeBeforeDelete = shipperPersonRepository.findAll().size();
+        long databaseSizeBeforeDelete = getRepositoryCount();
 
         // Delete the shipperPerson
         restShipperPersonMockMvc
@@ -446,7 +422,34 @@ class ShipperPersonResourceIT {
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<ShipperPerson> shipperPersonList = shipperPersonRepository.findAll();
-        assertThat(shipperPersonList).hasSize(databaseSizeBeforeDelete - 1);
+        assertDecrementedRepositoryCount(databaseSizeBeforeDelete);
+    }
+
+    protected long getRepositoryCount() {
+        return shipperPersonRepository.count();
+    }
+
+    protected void assertIncrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore + 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertDecrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore - 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertSameRepositoryCount(long countBefore) {
+        assertThat(countBefore).isEqualTo(getRepositoryCount());
+    }
+
+    protected ShipperPerson getPersistedShipperPerson(ShipperPerson shipperPerson) {
+        return shipperPersonRepository.findById(shipperPerson.getId()).orElseThrow();
+    }
+
+    protected void assertPersistedShipperPersonToMatchAllProperties(ShipperPerson expectedShipperPerson) {
+        assertShipperPersonAllPropertiesEquals(expectedShipperPerson, getPersistedShipperPerson(expectedShipperPerson));
+    }
+
+    protected void assertPersistedShipperPersonToMatchUpdatableProperties(ShipperPerson expectedShipperPerson) {
+        assertShipperPersonAllUpdatablePropertiesEquals(expectedShipperPerson, getPersistedShipperPerson(expectedShipperPerson));
     }
 }

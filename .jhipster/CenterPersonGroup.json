@@ -4,7 +4,6 @@
   },
   "applications": ["containerGoServer"],
   "dto": "mapstruct",
-  "entityTableName": "center_person_group",
   "fields": [
     {
       "fieldName": "id",

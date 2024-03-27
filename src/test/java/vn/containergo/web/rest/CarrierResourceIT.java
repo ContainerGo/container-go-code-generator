@@ -4,10 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static vn.containergo.domain.CarrierAsserts.*;
+import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,6 +79,9 @@ class CarrierResourceIT {
     private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
+    private ObjectMapper om;
+
+    @Autowired
     private CarrierRepository carrierRepository;
 
     @Autowired
@@ -143,30 +148,23 @@ class CarrierResourceIT {
 
     @Test
     void createCarrier() throws Exception {
-        int databaseSizeBeforeCreate = carrierRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the Carrier
         CarrierDTO carrierDTO = carrierMapper.toDto(carrier);
-        restCarrierMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(carrierDTO)))
-            .andExpect(status().isCreated());
+        var returnedCarrierDTO = om.readValue(
+            restCarrierMockMvc
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(carrierDTO)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(),
+            CarrierDTO.class
+        );
 
         // Validate the Carrier in the database
-        List<Carrier> carrierList = carrierRepository.findAll();
-        assertThat(carrierList).hasSize(databaseSizeBeforeCreate + 1);
-        Carrier testCarrier = carrierList.get(carrierList.size() - 1);
-        assertThat(testCarrier.getCode()).isEqualTo(DEFAULT_CODE);
-        assertThat(testCarrier.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testCarrier.getAddress()).isEqualTo(DEFAULT_ADDRESS);
-        assertThat(testCarrier.getTaxCode()).isEqualTo(DEFAULT_TAX_CODE);
-        assertThat(testCarrier.getBankAccount()).isEqualTo(DEFAULT_BANK_ACCOUNT);
-        assertThat(testCarrier.getBankName()).isEqualTo(DEFAULT_BANK_NAME);
-        assertThat(testCarrier.getAccountName()).isEqualTo(DEFAULT_ACCOUNT_NAME);
-        assertThat(testCarrier.getBranchName()).isEqualTo(DEFAULT_BRANCH_NAME);
-        assertThat(testCarrier.getCompanySize()).isEqualTo(DEFAULT_COMPANY_SIZE);
-        assertThat(testCarrier.getIsApproved()).isEqualTo(DEFAULT_IS_APPROVED);
-        assertThat(testCarrier.getVehicles()).isEqualTo(DEFAULT_VEHICLES);
-        assertThat(testCarrier.getShipmentsLeftForDay()).isEqualTo(DEFAULT_SHIPMENTS_LEFT_FOR_DAY);
-        assertThat(testCarrier.getVerifiedSince()).isEqualTo(DEFAULT_VERIFIED_SINCE);
+        assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
+        var returnedCarrier = carrierMapper.toEntity(returnedCarrierDTO);
+        assertCarrierUpdatableFieldsEquals(returnedCarrier, getPersistedCarrier(returnedCarrier));
     }
 
     @Test
@@ -175,21 +173,20 @@ class CarrierResourceIT {
         carrier.setId(1L);
         CarrierDTO carrierDTO = carrierMapper.toDto(carrier);
 
-        int databaseSizeBeforeCreate = carrierRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restCarrierMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(carrierDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(carrierDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Carrier in the database
-        List<Carrier> carrierList = carrierRepository.findAll();
-        assertThat(carrierList).hasSize(databaseSizeBeforeCreate);
+        assertSameRepositoryCount(databaseSizeBeforeCreate);
     }
 
     @Test
     void checkCodeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = carrierRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         carrier.setCode(null);
 
@@ -197,16 +194,15 @@ class CarrierResourceIT {
         CarrierDTO carrierDTO = carrierMapper.toDto(carrier);
 
         restCarrierMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(carrierDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(carrierDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Carrier> carrierList = carrierRepository.findAll();
-        assertThat(carrierList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkNameIsRequired() throws Exception {
-        int databaseSizeBeforeTest = carrierRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         carrier.setName(null);
 
@@ -214,16 +210,15 @@ class CarrierResourceIT {
         CarrierDTO carrierDTO = carrierMapper.toDto(carrier);
 
         restCarrierMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(carrierDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(carrierDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Carrier> carrierList = carrierRepository.findAll();
-        assertThat(carrierList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkAddressIsRequired() throws Exception {
-        int databaseSizeBeforeTest = carrierRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         carrier.setAddress(null);
 
@@ -231,11 +226,10 @@ class CarrierResourceIT {
         CarrierDTO carrierDTO = carrierMapper.toDto(carrier);
 
         restCarrierMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(carrierDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(carrierDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Carrier> carrierList = carrierRepository.findAll();
-        assertThat(carrierList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
@@ -301,7 +295,7 @@ class CarrierResourceIT {
         // Initialize the database
         carrierRepository.save(carrier);
 
-        int databaseSizeBeforeUpdate = carrierRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the carrier
         Carrier updatedCarrier = carrierRepository.findById(carrier.getId()).orElseThrow();
@@ -323,34 +317,18 @@ class CarrierResourceIT {
 
         restCarrierMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, carrierDTO.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(carrierDTO))
+                put(ENTITY_API_URL_ID, carrierDTO.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(carrierDTO))
             )
             .andExpect(status().isOk());
 
         // Validate the Carrier in the database
-        List<Carrier> carrierList = carrierRepository.findAll();
-        assertThat(carrierList).hasSize(databaseSizeBeforeUpdate);
-        Carrier testCarrier = carrierList.get(carrierList.size() - 1);
-        assertThat(testCarrier.getCode()).isEqualTo(UPDATED_CODE);
-        assertThat(testCarrier.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testCarrier.getAddress()).isEqualTo(UPDATED_ADDRESS);
-        assertThat(testCarrier.getTaxCode()).isEqualTo(UPDATED_TAX_CODE);
-        assertThat(testCarrier.getBankAccount()).isEqualTo(UPDATED_BANK_ACCOUNT);
-        assertThat(testCarrier.getBankName()).isEqualTo(UPDATED_BANK_NAME);
-        assertThat(testCarrier.getAccountName()).isEqualTo(UPDATED_ACCOUNT_NAME);
-        assertThat(testCarrier.getBranchName()).isEqualTo(UPDATED_BRANCH_NAME);
-        assertThat(testCarrier.getCompanySize()).isEqualTo(UPDATED_COMPANY_SIZE);
-        assertThat(testCarrier.getIsApproved()).isEqualTo(UPDATED_IS_APPROVED);
-        assertThat(testCarrier.getVehicles()).isEqualTo(UPDATED_VEHICLES);
-        assertThat(testCarrier.getShipmentsLeftForDay()).isEqualTo(UPDATED_SHIPMENTS_LEFT_FOR_DAY);
-        assertThat(testCarrier.getVerifiedSince()).isEqualTo(UPDATED_VERIFIED_SINCE);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertPersistedCarrierToMatchAllProperties(updatedCarrier);
     }
 
     @Test
     void putNonExistingCarrier() throws Exception {
-        int databaseSizeBeforeUpdate = carrierRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         carrier.setId(longCount.incrementAndGet());
 
         // Create the Carrier
@@ -359,20 +337,17 @@ class CarrierResourceIT {
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCarrierMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, carrierDTO.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(carrierDTO))
+                put(ENTITY_API_URL_ID, carrierDTO.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(carrierDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Carrier in the database
-        List<Carrier> carrierList = carrierRepository.findAll();
-        assertThat(carrierList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithIdMismatchCarrier() throws Exception {
-        int databaseSizeBeforeUpdate = carrierRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         carrier.setId(longCount.incrementAndGet());
 
         // Create the Carrier
@@ -383,18 +358,17 @@ class CarrierResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(carrierDTO))
+                    .content(om.writeValueAsBytes(carrierDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Carrier in the database
-        List<Carrier> carrierList = carrierRepository.findAll();
-        assertThat(carrierList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithMissingIdPathParamCarrier() throws Exception {
-        int databaseSizeBeforeUpdate = carrierRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         carrier.setId(longCount.incrementAndGet());
 
         // Create the Carrier
@@ -402,12 +376,11 @@ class CarrierResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCarrierMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(carrierDTO)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(carrierDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Carrier in the database
-        List<Carrier> carrierList = carrierRepository.findAll();
-        assertThat(carrierList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -415,47 +388,31 @@ class CarrierResourceIT {
         // Initialize the database
         carrierRepository.save(carrier);
 
-        int databaseSizeBeforeUpdate = carrierRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the carrier using partial update
         Carrier partialUpdatedCarrier = new Carrier();
         partialUpdatedCarrier.setId(carrier.getId());
 
         partialUpdatedCarrier
-            .code(UPDATED_CODE)
-            .taxCode(UPDATED_TAX_CODE)
+            .name(UPDATED_NAME)
+            .address(UPDATED_ADDRESS)
             .accountName(UPDATED_ACCOUNT_NAME)
-            .branchName(UPDATED_BRANCH_NAME)
             .companySize(UPDATED_COMPANY_SIZE)
-            .vehicles(UPDATED_VEHICLES)
-            .shipmentsLeftForDay(UPDATED_SHIPMENTS_LEFT_FOR_DAY)
-            .verifiedSince(UPDATED_VERIFIED_SINCE);
+            .shipmentsLeftForDay(UPDATED_SHIPMENTS_LEFT_FOR_DAY);
 
         restCarrierMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedCarrier.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedCarrier))
+                    .content(om.writeValueAsBytes(partialUpdatedCarrier))
             )
             .andExpect(status().isOk());
 
         // Validate the Carrier in the database
-        List<Carrier> carrierList = carrierRepository.findAll();
-        assertThat(carrierList).hasSize(databaseSizeBeforeUpdate);
-        Carrier testCarrier = carrierList.get(carrierList.size() - 1);
-        assertThat(testCarrier.getCode()).isEqualTo(UPDATED_CODE);
-        assertThat(testCarrier.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testCarrier.getAddress()).isEqualTo(DEFAULT_ADDRESS);
-        assertThat(testCarrier.getTaxCode()).isEqualTo(UPDATED_TAX_CODE);
-        assertThat(testCarrier.getBankAccount()).isEqualTo(DEFAULT_BANK_ACCOUNT);
-        assertThat(testCarrier.getBankName()).isEqualTo(DEFAULT_BANK_NAME);
-        assertThat(testCarrier.getAccountName()).isEqualTo(UPDATED_ACCOUNT_NAME);
-        assertThat(testCarrier.getBranchName()).isEqualTo(UPDATED_BRANCH_NAME);
-        assertThat(testCarrier.getCompanySize()).isEqualTo(UPDATED_COMPANY_SIZE);
-        assertThat(testCarrier.getIsApproved()).isEqualTo(DEFAULT_IS_APPROVED);
-        assertThat(testCarrier.getVehicles()).isEqualTo(UPDATED_VEHICLES);
-        assertThat(testCarrier.getShipmentsLeftForDay()).isEqualTo(UPDATED_SHIPMENTS_LEFT_FOR_DAY);
-        assertThat(testCarrier.getVerifiedSince()).isEqualTo(UPDATED_VERIFIED_SINCE);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertCarrierUpdatableFieldsEquals(createUpdateProxyForBean(partialUpdatedCarrier, carrier), getPersistedCarrier(carrier));
     }
 
     @Test
@@ -463,7 +420,7 @@ class CarrierResourceIT {
         // Initialize the database
         carrierRepository.save(carrier);
 
-        int databaseSizeBeforeUpdate = carrierRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the carrier using partial update
         Carrier partialUpdatedCarrier = new Carrier();
@@ -488,32 +445,19 @@ class CarrierResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedCarrier.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedCarrier))
+                    .content(om.writeValueAsBytes(partialUpdatedCarrier))
             )
             .andExpect(status().isOk());
 
         // Validate the Carrier in the database
-        List<Carrier> carrierList = carrierRepository.findAll();
-        assertThat(carrierList).hasSize(databaseSizeBeforeUpdate);
-        Carrier testCarrier = carrierList.get(carrierList.size() - 1);
-        assertThat(testCarrier.getCode()).isEqualTo(UPDATED_CODE);
-        assertThat(testCarrier.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testCarrier.getAddress()).isEqualTo(UPDATED_ADDRESS);
-        assertThat(testCarrier.getTaxCode()).isEqualTo(UPDATED_TAX_CODE);
-        assertThat(testCarrier.getBankAccount()).isEqualTo(UPDATED_BANK_ACCOUNT);
-        assertThat(testCarrier.getBankName()).isEqualTo(UPDATED_BANK_NAME);
-        assertThat(testCarrier.getAccountName()).isEqualTo(UPDATED_ACCOUNT_NAME);
-        assertThat(testCarrier.getBranchName()).isEqualTo(UPDATED_BRANCH_NAME);
-        assertThat(testCarrier.getCompanySize()).isEqualTo(UPDATED_COMPANY_SIZE);
-        assertThat(testCarrier.getIsApproved()).isEqualTo(UPDATED_IS_APPROVED);
-        assertThat(testCarrier.getVehicles()).isEqualTo(UPDATED_VEHICLES);
-        assertThat(testCarrier.getShipmentsLeftForDay()).isEqualTo(UPDATED_SHIPMENTS_LEFT_FOR_DAY);
-        assertThat(testCarrier.getVerifiedSince()).isEqualTo(UPDATED_VERIFIED_SINCE);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertCarrierUpdatableFieldsEquals(partialUpdatedCarrier, getPersistedCarrier(partialUpdatedCarrier));
     }
 
     @Test
     void patchNonExistingCarrier() throws Exception {
-        int databaseSizeBeforeUpdate = carrierRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         carrier.setId(longCount.incrementAndGet());
 
         // Create the Carrier
@@ -524,18 +468,17 @@ class CarrierResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, carrierDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(carrierDTO))
+                    .content(om.writeValueAsBytes(carrierDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Carrier in the database
-        List<Carrier> carrierList = carrierRepository.findAll();
-        assertThat(carrierList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithIdMismatchCarrier() throws Exception {
-        int databaseSizeBeforeUpdate = carrierRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         carrier.setId(longCount.incrementAndGet());
 
         // Create the Carrier
@@ -546,18 +489,17 @@ class CarrierResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(carrierDTO))
+                    .content(om.writeValueAsBytes(carrierDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Carrier in the database
-        List<Carrier> carrierList = carrierRepository.findAll();
-        assertThat(carrierList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithMissingIdPathParamCarrier() throws Exception {
-        int databaseSizeBeforeUpdate = carrierRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         carrier.setId(longCount.incrementAndGet());
 
         // Create the Carrier
@@ -565,14 +507,11 @@ class CarrierResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCarrierMockMvc
-            .perform(
-                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(carrierDTO))
-            )
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(carrierDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Carrier in the database
-        List<Carrier> carrierList = carrierRepository.findAll();
-        assertThat(carrierList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -580,7 +519,7 @@ class CarrierResourceIT {
         // Initialize the database
         carrierRepository.save(carrier);
 
-        int databaseSizeBeforeDelete = carrierRepository.findAll().size();
+        long databaseSizeBeforeDelete = getRepositoryCount();
 
         // Delete the carrier
         restCarrierMockMvc
@@ -588,7 +527,34 @@ class CarrierResourceIT {
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<Carrier> carrierList = carrierRepository.findAll();
-        assertThat(carrierList).hasSize(databaseSizeBeforeDelete - 1);
+        assertDecrementedRepositoryCount(databaseSizeBeforeDelete);
+    }
+
+    protected long getRepositoryCount() {
+        return carrierRepository.count();
+    }
+
+    protected void assertIncrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore + 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertDecrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore - 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertSameRepositoryCount(long countBefore) {
+        assertThat(countBefore).isEqualTo(getRepositoryCount());
+    }
+
+    protected Carrier getPersistedCarrier(Carrier carrier) {
+        return carrierRepository.findById(carrier.getId()).orElseThrow();
+    }
+
+    protected void assertPersistedCarrierToMatchAllProperties(Carrier expectedCarrier) {
+        assertCarrierAllPropertiesEquals(expectedCarrier, getPersistedCarrier(expectedCarrier));
+    }
+
+    protected void assertPersistedCarrierToMatchUpdatableProperties(Carrier expectedCarrier) {
+        assertCarrierAllUpdatablePropertiesEquals(expectedCarrier, getPersistedCarrier(expectedCarrier));
     }
 }

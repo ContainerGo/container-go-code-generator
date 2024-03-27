@@ -50,10 +50,10 @@ describe('CenterPerson Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call CenterPersonGroup query and add missing value', () => {
       const centerPerson: ICenterPerson = { id: 456 };
-      const groups: ICenterPersonGroup[] = [{ id: 14353 }];
+      const groups: ICenterPersonGroup[] = [{ id: 32544 }];
       centerPerson.groups = groups;
 
-      const centerPersonGroupCollection: ICenterPersonGroup[] = [{ id: 11421 }];
+      const centerPersonGroupCollection: ICenterPersonGroup[] = [{ id: 7291 }];
       jest.spyOn(centerPersonGroupService, 'query').mockReturnValue(of(new HttpResponse({ body: centerPersonGroupCollection })));
       const additionalCenterPersonGroups = [...groups];
       const expectedCollection: ICenterPersonGroup[] = [...additionalCenterPersonGroups, ...centerPersonGroupCollection];
@@ -72,7 +72,7 @@ describe('CenterPerson Management Update Component', () => {
 
     it('Should update editForm', () => {
       const centerPerson: ICenterPerson = { id: 456 };
-      const groups: ICenterPersonGroup = { id: 11557 };
+      const groups: ICenterPersonGroup = { id: 30199 };
       centerPerson.groups = [groups];
 
       activatedRoute.data = of({ centerPerson });

@@ -34,7 +34,7 @@
     <div class="table-responsive table-entities" id="entities">
       <table class="table table-striped" aria-describedby="page-heading">
         <thead>
-          <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
             <th scope="col" jhiSortBy="id">
               <div class="d-flex">
                 <span jhiTranslate="containerGoServerApp.offer.id">Id</span>
@@ -77,6 +77,13 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="state">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.offer.state">State</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col" jhiSortBy="price">
               <div class="d-flex">
                 <span jhiTranslate="containerGoServerApp.offer.price">Price</span>
@@ -87,6 +94,20 @@
             <th scope="col" jhiSortBy="carrierId">
               <div class="d-flex">
                 <span jhiTranslate="containerGoServerApp.offer.carrierId">Carrier Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="carrierPersonId">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.offer.carrierPersonId">Carrier Person Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="truckId">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.offer.truckId">Truck Id</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
@@ -111,8 +132,11 @@
               <td>{{ offer.pickupUntilDate | formatMediumDatetime }}</td>
               <td>{{ offer.dropoffFromDate | formatMediumDatetime }}</td>
               <td>{{ offer.dropoffUntilDate | formatMediumDatetime }}</td>
+              <td jhiTranslate="{{ 'containerGoServerApp.OfferState.' + offer.state }}">{{ offer.state }}</td>
               <td>{{ offer.price }}</td>
               <td>{{ offer.carrierId }}</td>
+              <td>{{ offer.carrierPersonId }}</td>
+              <td>{{ offer.truckId }}</td>
               <td>
                 @if (offer.container) {
                   <div>

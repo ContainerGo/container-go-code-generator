@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -14,12 +14,10 @@ export type EntityArrayResponseType = HttpResponse<IDistrict[]>;
 
 @Injectable({ providedIn: 'root' })
 export class DistrictService {
-  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/districts');
+  protected http = inject(HttpClient);
+  protected applicationConfigService = inject(ApplicationConfigService);
 
-  constructor(
-    protected http: HttpClient,
-    protected applicationConfigService: ApplicationConfigService,
-  ) {}
+  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/districts');
 
   create(district: NewDistrict): Observable<EntityResponseType> {
     return this.http.post<IDistrict>(this.resourceUrl, district, { observe: 'response' });
@@ -60,7 +58,7 @@ export class DistrictService {
   ): Type[] {
     const districts: Type[] = districtsToCheck.filter(isPresent);
     if (districts.length > 0) {
-      const districtCollectionIdentifiers = districtCollection.map(districtItem => this.getDistrictIdentifier(districtItem)!);
+      const districtCollectionIdentifiers = districtCollection.map(districtItem => this.getDistrictIdentifier(districtItem));
       const districtsToAdd = districts.filter(districtItem => {
         const districtIdentifier = this.getDistrictIdentifier(districtItem);
         if (districtCollectionIdentifiers.includes(districtIdentifier)) {

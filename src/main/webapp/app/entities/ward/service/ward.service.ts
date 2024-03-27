@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -14,12 +14,10 @@ export type EntityArrayResponseType = HttpResponse<IWard[]>;
 
 @Injectable({ providedIn: 'root' })
 export class WardService {
-  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/wards');
+  protected http = inject(HttpClient);
+  protected applicationConfigService = inject(ApplicationConfigService);
 
-  constructor(
-    protected http: HttpClient,
-    protected applicationConfigService: ApplicationConfigService,
-  ) {}
+  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/wards');
 
   create(ward: NewWard): Observable<EntityResponseType> {
     return this.http.post<IWard>(this.resourceUrl, ward, { observe: 'response' });
@@ -60,7 +58,7 @@ export class WardService {
   ): Type[] {
     const wards: Type[] = wardsToCheck.filter(isPresent);
     if (wards.length > 0) {
-      const wardCollectionIdentifiers = wardCollection.map(wardItem => this.getWardIdentifier(wardItem)!);
+      const wardCollectionIdentifiers = wardCollection.map(wardItem => this.getWardIdentifier(wardItem));
       const wardsToAdd = wards.filter(wardItem => {
         const wardIdentifier = this.getWardIdentifier(wardItem);
         if (wardCollectionIdentifiers.includes(wardIdentifier)) {

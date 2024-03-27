@@ -1,0 +1,27 @@
+{
+  "containerGoServerApp": {
+    "containerOwner": {
+      "home": {
+        "title": "Container Owners",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Container Owner",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Container Owner",
+        "notFound": "No Container Owners found"
+      },
+      "created": "Một Container Owner mới được tạo với định danh {{ param }}",
+      "updated": "Một Container Owner cập nhật với định danh {{ param }}",
+      "deleted": "Một Container Owner đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Container Owner {{ id }}?"
+      },
+      "detail": {
+        "title": "Container Owner"
+      },
+      "id": "Id",
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address"
+    }
+  }
+}

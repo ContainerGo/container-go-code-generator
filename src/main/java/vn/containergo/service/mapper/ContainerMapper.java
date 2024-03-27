@@ -2,6 +2,7 @@ package vn.containergo.service.mapper;
 
 import org.mapstruct.*;
 import vn.containergo.domain.Container;
+import vn.containergo.domain.ContainerOwner;
 import vn.containergo.domain.ContainerStatus;
 import vn.containergo.domain.ContainerType;
 import vn.containergo.domain.District;
@@ -10,6 +11,7 @@ import vn.containergo.domain.Truck;
 import vn.containergo.domain.TruckType;
 import vn.containergo.domain.Ward;
 import vn.containergo.service.dto.ContainerDTO;
+import vn.containergo.service.dto.ContainerOwnerDTO;
 import vn.containergo.service.dto.ContainerStatusDTO;
 import vn.containergo.service.dto.ContainerTypeDTO;
 import vn.containergo.service.dto.DistrictDTO;
@@ -30,6 +32,7 @@ public interface ContainerMapper extends EntityMapper<ContainerDTO, Container> {
     @Mapping(target = "status", source = "status", qualifiedByName = "containerStatusId")
     @Mapping(target = "truckType", source = "truckType", qualifiedByName = "truckTypeId")
     @Mapping(target = "truck", source = "truck", qualifiedByName = "truckId")
+    @Mapping(target = "owner", source = "owner", qualifiedByName = "containerOwnerId")
     ContainerDTO toDto(Container s);
 
     @Named("proviceId")
@@ -66,4 +69,9 @@ public interface ContainerMapper extends EntityMapper<ContainerDTO, Container> {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
     TruckDTO toDtoTruckId(Truck truck);
+
+    @Named("containerOwnerId")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    ContainerOwnerDTO toDtoContainerOwnerId(ContainerOwner containerOwner);
 }

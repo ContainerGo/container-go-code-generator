@@ -27,6 +27,8 @@ type TruckFormGroupContent = {
   status: FormControl<ITruck['status']>;
   mileage: FormControl<ITruck['mileage']>;
   numberPlate: FormControl<ITruck['numberPlate']>;
+  lat: FormControl<ITruck['lat']>;
+  lng: FormControl<ITruck['lng']>;
   type: FormControl<ITruck['type']>;
   carrier: FormControl<ITruck['carrier']>;
 };
@@ -65,6 +67,8 @@ export class TruckFormService {
       numberPlate: new FormControl(truckRawValue.numberPlate, {
         validators: [Validators.required],
       }),
+      lat: new FormControl(truckRawValue.lat),
+      lng: new FormControl(truckRawValue.lng),
       type: new FormControl(truckRawValue.type, {
         validators: [Validators.required],
       }),

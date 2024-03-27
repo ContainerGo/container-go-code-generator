@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -21,13 +21,12 @@ export class ShipperUpdateComponent implements OnInit {
   isSaving = false;
   shipper: IShipper | null = null;
 
-  editForm: ShipperFormGroup = this.shipperFormService.createShipperFormGroup();
+  protected shipperService = inject(ShipperService);
+  protected shipperFormService = inject(ShipperFormService);
+  protected activatedRoute = inject(ActivatedRoute);
 
-  constructor(
-    protected shipperService: ShipperService,
-    protected shipperFormService: ShipperFormService,
-    protected activatedRoute: ActivatedRoute,
-  ) {}
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  editForm: ShipperFormGroup = this.shipperFormService.createShipperFormGroup();
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ shipper }) => {

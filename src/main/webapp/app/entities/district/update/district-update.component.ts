@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -21,13 +21,12 @@ export class DistrictUpdateComponent implements OnInit {
   isSaving = false;
   district: IDistrict | null = null;
 
-  editForm: DistrictFormGroup = this.districtFormService.createDistrictFormGroup();
+  protected districtService = inject(DistrictService);
+  protected districtFormService = inject(DistrictFormService);
+  protected activatedRoute = inject(ActivatedRoute);
 
-  constructor(
-    protected districtService: DistrictService,
-    protected districtFormService: DistrictFormService,
-    protected activatedRoute: ActivatedRoute,
-  ) {}
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  editForm: DistrictFormGroup = this.districtFormService.createDistrictFormGroup();
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ district }) => {

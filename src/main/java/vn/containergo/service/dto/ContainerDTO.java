@@ -63,13 +63,17 @@ public class ContainerDTO implements Serializable {
 
     private WardDTO dropoffWard;
 
+    @NotNull
     private ContainerTypeDTO type;
 
+    @NotNull
     private ContainerStatusDTO status;
 
     private TruckTypeDTO truckType;
 
     private TruckDTO truck;
+
+    private ContainerOwnerDTO owner;
 
     public Long getId() {
         return id;
@@ -279,6 +283,14 @@ public class ContainerDTO implements Serializable {
         this.truck = truck;
     }
 
+    public ContainerOwnerDTO getOwner() {
+        return owner;
+    }
+
+    public void setOwner(ContainerOwnerDTO owner) {
+        this.owner = owner;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -330,6 +342,7 @@ public class ContainerDTO implements Serializable {
             ", status=" + getStatus() +
             ", truckType=" + getTruckType() +
             ", truck=" + getTruck() +
+            ", owner=" + getOwner() +
             "}";
     }
 }

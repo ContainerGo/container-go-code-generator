@@ -42,7 +42,8 @@
       "type": "Type",
       "status": "Status",
       "truckType": "Truck Type",
-      "truck": "Truck"
+      "truck": "Truck",
+      "owner": "Owner"
     }
   }
 }

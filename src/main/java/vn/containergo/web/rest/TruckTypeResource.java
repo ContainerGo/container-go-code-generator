@@ -60,11 +60,10 @@ public class TruckTypeResource {
         if (truckTypeDTO.getId() != null) {
             throw new BadRequestAlertException("A new truckType cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        TruckTypeDTO result = truckTypeService.save(truckTypeDTO);
-        return ResponseEntity
-            .created(new URI("/api/truck-types/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        truckTypeDTO = truckTypeService.save(truckTypeDTO);
+        return ResponseEntity.created(new URI("/api/truck-types/" + truckTypeDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, truckTypeDTO.getId().toString()))
+            .body(truckTypeDTO);
     }
 
     /**
@@ -94,11 +93,10 @@ public class TruckTypeResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        TruckTypeDTO result = truckTypeService.update(truckTypeDTO);
-        return ResponseEntity
-            .ok()
+        truckTypeDTO = truckTypeService.update(truckTypeDTO);
+        return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, truckTypeDTO.getId().toString()))
-            .body(result);
+            .body(truckTypeDTO);
     }
 
     /**
@@ -174,8 +172,7 @@ public class TruckTypeResource {
     public ResponseEntity<Void> deleteTruckType(@PathVariable("id") Long id) {
         log.debug("REST request to delete TruckType : {}", id);
         truckTypeService.delete(id);
-        return ResponseEntity
-            .noContent()
+        return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }

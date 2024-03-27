@@ -150,6 +150,23 @@
         </div>
 
         <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.offer.state" for="field_state">State</label>
+          <select class="form-control" name="state" formControlName="state" id="field_state" data-cy="state">
+            <option [ngValue]="null">{{ 'containerGoServerApp.OfferState.null' | translate }}</option>
+            @for (offerState of offerStateValues; track $index) {
+              <option [value]="offerState">{{ 'containerGoServerApp.OfferState.' + offerState | translate }}</option>
+            }
+          </select>
+          @if (editForm.get('state')!.invalid && (editForm.get('state')!.dirty || editForm.get('state')!.touched)) {
+            <div>
+              @if (editForm.get('state')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
           <label class="form-label" jhiTranslate="containerGoServerApp.offer.price" for="field_price">Price</label>
           <input type="number" class="form-control" name="price" id="field_price" data-cy="price" formControlName="price" />
           @if (editForm.get('price')!.invalid && (editForm.get('price')!.dirty || editForm.get('price')!.touched)) {
@@ -180,6 +197,25 @@
               >
             </div>
           }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.offer.carrierPersonId" for="field_carrierPersonId"
+            >Carrier Person Id</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            name="carrierPersonId"
+            id="field_carrierPersonId"
+            data-cy="carrierPersonId"
+            formControlName="carrierPersonId"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.offer.truckId" for="field_truckId">Truck Id</label>
+          <input type="number" class="form-control" name="truckId" id="field_truckId" data-cy="truckId" formControlName="truckId" />
         </div>
 
         <div class="mb-3">

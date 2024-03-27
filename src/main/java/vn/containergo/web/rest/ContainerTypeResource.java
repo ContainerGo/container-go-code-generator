@@ -61,11 +61,10 @@ public class ContainerTypeResource {
         if (containerTypeDTO.getId() != null) {
             throw new BadRequestAlertException("A new containerType cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        ContainerTypeDTO result = containerTypeService.save(containerTypeDTO);
-        return ResponseEntity
-            .created(new URI("/api/container-types/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        containerTypeDTO = containerTypeService.save(containerTypeDTO);
+        return ResponseEntity.created(new URI("/api/container-types/" + containerTypeDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, containerTypeDTO.getId().toString()))
+            .body(containerTypeDTO);
     }
 
     /**
@@ -95,11 +94,10 @@ public class ContainerTypeResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        ContainerTypeDTO result = containerTypeService.update(containerTypeDTO);
-        return ResponseEntity
-            .ok()
+        containerTypeDTO = containerTypeService.update(containerTypeDTO);
+        return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, containerTypeDTO.getId().toString()))
-            .body(result);
+            .body(containerTypeDTO);
     }
 
     /**
@@ -175,8 +173,7 @@ public class ContainerTypeResource {
     public ResponseEntity<Void> deleteContainerType(@PathVariable("id") Long id) {
         log.debug("REST request to delete ContainerType : {}", id);
         containerTypeService.delete(id);
-        return ResponseEntity
-            .noContent()
+        return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }

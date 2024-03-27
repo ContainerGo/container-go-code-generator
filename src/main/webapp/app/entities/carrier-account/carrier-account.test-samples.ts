@@ -1,28 +1,29 @@
 import { ICarrierAccount, NewCarrierAccount } from './carrier-account.model';
 
 export const sampleWithRequiredData: ICarrierAccount = {
-  id: 28631,
-  name: 'likeness spanish',
-  phone: '024 2363 6740',
+  id: 1492,
+  name: 'within next',
+  phone: '026 4688 3585',
 };
 
 export const sampleWithPartialData: ICarrierAccount = {
-  id: 24373,
-  name: 'contributor kiss',
-  phone: '028 4563 6760',
+  id: 12192,
+  name: 'relieved psst',
+  phone: '021 2118 3386',
+  address: 'plus excitedly',
 };
 
 export const sampleWithFullData: ICarrierAccount = {
-  id: 27345,
-  name: 'lumpy',
-  phone: '028 4013 4839',
-  email: 'MongQuynh.Le84@hotmail.com',
-  address: 'yippee present',
+  id: 5187,
+  name: 'actually hmph',
+  phone: '0255 1031 7858',
+  email: 'VanTuyen.Nguyen@gmail.com',
+  address: 'yesterday converse busy',
 };
 
 export const sampleWithNewData: NewCarrierAccount = {
-  name: 'reheat opposite',
-  phone: '029 5621 6640',
+  name: 'the',
+  phone: '0237 6938 8809',
   id: null,
 };
 

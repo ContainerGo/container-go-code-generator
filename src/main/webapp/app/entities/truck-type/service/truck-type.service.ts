@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -14,12 +14,10 @@ export type EntityArrayResponseType = HttpResponse<ITruckType[]>;
 
 @Injectable({ providedIn: 'root' })
 export class TruckTypeService {
-  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/truck-types');
+  protected http = inject(HttpClient);
+  protected applicationConfigService = inject(ApplicationConfigService);
 
-  constructor(
-    protected http: HttpClient,
-    protected applicationConfigService: ApplicationConfigService,
-  ) {}
+  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/truck-types');
 
   create(truckType: NewTruckType): Observable<EntityResponseType> {
     return this.http.post<ITruckType>(this.resourceUrl, truckType, { observe: 'response' });
@@ -60,7 +58,7 @@ export class TruckTypeService {
   ): Type[] {
     const truckTypes: Type[] = truckTypesToCheck.filter(isPresent);
     if (truckTypes.length > 0) {
-      const truckTypeCollectionIdentifiers = truckTypeCollection.map(truckTypeItem => this.getTruckTypeIdentifier(truckTypeItem)!);
+      const truckTypeCollectionIdentifiers = truckTypeCollection.map(truckTypeItem => this.getTruckTypeIdentifier(truckTypeItem));
       const truckTypesToAdd = truckTypes.filter(truckTypeItem => {
         const truckTypeIdentifier = this.getTruckTypeIdentifier(truckTypeItem);
         if (truckTypeCollectionIdentifiers.includes(truckTypeIdentifier)) {

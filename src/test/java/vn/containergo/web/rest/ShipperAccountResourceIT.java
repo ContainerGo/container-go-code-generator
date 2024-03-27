@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static vn.containergo.domain.ShipperAccountAsserts.*;
+import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,6 +49,9 @@ class ShipperAccountResourceIT {
 
     private static Random random = new Random();
     private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+
+    @Autowired
+    private ObjectMapper om;
 
     @Autowired
     private ShipperAccountRepository shipperAccountRepository;
@@ -107,23 +112,23 @@ class ShipperAccountResourceIT {
 
     @Test
     void createShipperAccount() throws Exception {
-        int databaseSizeBeforeCreate = shipperAccountRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the ShipperAccount
         ShipperAccountDTO shipperAccountDTO = shipperAccountMapper.toDto(shipperAccount);
-        restShipperAccountMockMvc
-            .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(shipperAccountDTO))
-            )
-            .andExpect(status().isCreated());
+        var returnedShipperAccountDTO = om.readValue(
+            restShipperAccountMockMvc
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(shipperAccountDTO)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(),
+            ShipperAccountDTO.class
+        );
 
         // Validate the ShipperAccount in the database
-        List<ShipperAccount> shipperAccountList = shipperAccountRepository.findAll();
-        assertThat(shipperAccountList).hasSize(databaseSizeBeforeCreate + 1);
-        ShipperAccount testShipperAccount = shipperAccountList.get(shipperAccountList.size() - 1);
-        assertThat(testShipperAccount.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testShipperAccount.getPhone()).isEqualTo(DEFAULT_PHONE);
-        assertThat(testShipperAccount.getEmail()).isEqualTo(DEFAULT_EMAIL);
-        assertThat(testShipperAccount.getAddress()).isEqualTo(DEFAULT_ADDRESS);
+        assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
+        var returnedShipperAccount = shipperAccountMapper.toEntity(returnedShipperAccountDTO);
+        assertShipperAccountUpdatableFieldsEquals(returnedShipperAccount, getPersistedShipperAccount(returnedShipperAccount));
     }
 
     @Test
@@ -132,23 +137,20 @@ class ShipperAccountResourceIT {
         shipperAccount.setId(1L);
         ShipperAccountDTO shipperAccountDTO = shipperAccountMapper.toDto(shipperAccount);
 
-        int databaseSizeBeforeCreate = shipperAccountRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restShipperAccountMockMvc
-            .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(shipperAccountDTO))
-            )
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(shipperAccountDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the ShipperAccount in the database
-        List<ShipperAccount> shipperAccountList = shipperAccountRepository.findAll();
-        assertThat(shipperAccountList).hasSize(databaseSizeBeforeCreate);
+        assertSameRepositoryCount(databaseSizeBeforeCreate);
     }
 
     @Test
     void checkNameIsRequired() throws Exception {
-        int databaseSizeBeforeTest = shipperAccountRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         shipperAccount.setName(null);
 
@@ -156,18 +158,15 @@ class ShipperAccountResourceIT {
         ShipperAccountDTO shipperAccountDTO = shipperAccountMapper.toDto(shipperAccount);
 
         restShipperAccountMockMvc
-            .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(shipperAccountDTO))
-            )
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(shipperAccountDTO)))
             .andExpect(status().isBadRequest());
 
-        List<ShipperAccount> shipperAccountList = shipperAccountRepository.findAll();
-        assertThat(shipperAccountList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkPhoneIsRequired() throws Exception {
-        int databaseSizeBeforeTest = shipperAccountRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         shipperAccount.setPhone(null);
 
@@ -175,13 +174,10 @@ class ShipperAccountResourceIT {
         ShipperAccountDTO shipperAccountDTO = shipperAccountMapper.toDto(shipperAccount);
 
         restShipperAccountMockMvc
-            .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(shipperAccountDTO))
-            )
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(shipperAccountDTO)))
             .andExpect(status().isBadRequest());
 
-        List<ShipperAccount> shipperAccountList = shipperAccountRepository.findAll();
-        assertThat(shipperAccountList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
@@ -229,7 +225,7 @@ class ShipperAccountResourceIT {
         // Initialize the database
         shipperAccountRepository.save(shipperAccount);
 
-        int databaseSizeBeforeUpdate = shipperAccountRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the shipperAccount
         ShipperAccount updatedShipperAccount = shipperAccountRepository.findById(shipperAccount.getId()).orElseThrow();
@@ -240,23 +236,18 @@ class ShipperAccountResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, shipperAccountDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(shipperAccountDTO))
+                    .content(om.writeValueAsBytes(shipperAccountDTO))
             )
             .andExpect(status().isOk());
 
         // Validate the ShipperAccount in the database
-        List<ShipperAccount> shipperAccountList = shipperAccountRepository.findAll();
-        assertThat(shipperAccountList).hasSize(databaseSizeBeforeUpdate);
-        ShipperAccount testShipperAccount = shipperAccountList.get(shipperAccountList.size() - 1);
-        assertThat(testShipperAccount.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testShipperAccount.getPhone()).isEqualTo(UPDATED_PHONE);
-        assertThat(testShipperAccount.getEmail()).isEqualTo(UPDATED_EMAIL);
-        assertThat(testShipperAccount.getAddress()).isEqualTo(UPDATED_ADDRESS);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertPersistedShipperAccountToMatchAllProperties(updatedShipperAccount);
     }
 
     @Test
     void putNonExistingShipperAccount() throws Exception {
-        int databaseSizeBeforeUpdate = shipperAccountRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         shipperAccount.setId(longCount.incrementAndGet());
 
         // Create the ShipperAccount
@@ -267,18 +258,17 @@ class ShipperAccountResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, shipperAccountDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(shipperAccountDTO))
+                    .content(om.writeValueAsBytes(shipperAccountDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the ShipperAccount in the database
-        List<ShipperAccount> shipperAccountList = shipperAccountRepository.findAll();
-        assertThat(shipperAccountList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithIdMismatchShipperAccount() throws Exception {
-        int databaseSizeBeforeUpdate = shipperAccountRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         shipperAccount.setId(longCount.incrementAndGet());
 
         // Create the ShipperAccount
@@ -289,18 +279,17 @@ class ShipperAccountResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(shipperAccountDTO))
+                    .content(om.writeValueAsBytes(shipperAccountDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the ShipperAccount in the database
-        List<ShipperAccount> shipperAccountList = shipperAccountRepository.findAll();
-        assertThat(shipperAccountList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithMissingIdPathParamShipperAccount() throws Exception {
-        int databaseSizeBeforeUpdate = shipperAccountRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         shipperAccount.setId(longCount.incrementAndGet());
 
         // Create the ShipperAccount
@@ -308,14 +297,11 @@ class ShipperAccountResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restShipperAccountMockMvc
-            .perform(
-                put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(shipperAccountDTO))
-            )
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(shipperAccountDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the ShipperAccount in the database
-        List<ShipperAccount> shipperAccountList = shipperAccountRepository.findAll();
-        assertThat(shipperAccountList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -323,30 +309,29 @@ class ShipperAccountResourceIT {
         // Initialize the database
         shipperAccountRepository.save(shipperAccount);
 
-        int databaseSizeBeforeUpdate = shipperAccountRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the shipperAccount using partial update
         ShipperAccount partialUpdatedShipperAccount = new ShipperAccount();
         partialUpdatedShipperAccount.setId(shipperAccount.getId());
 
-        partialUpdatedShipperAccount.name(UPDATED_NAME).phone(UPDATED_PHONE).address(UPDATED_ADDRESS);
+        partialUpdatedShipperAccount.phone(UPDATED_PHONE);
 
         restShipperAccountMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedShipperAccount.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedShipperAccount))
+                    .content(om.writeValueAsBytes(partialUpdatedShipperAccount))
             )
             .andExpect(status().isOk());
 
         // Validate the ShipperAccount in the database
-        List<ShipperAccount> shipperAccountList = shipperAccountRepository.findAll();
-        assertThat(shipperAccountList).hasSize(databaseSizeBeforeUpdate);
-        ShipperAccount testShipperAccount = shipperAccountList.get(shipperAccountList.size() - 1);
-        assertThat(testShipperAccount.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testShipperAccount.getPhone()).isEqualTo(UPDATED_PHONE);
-        assertThat(testShipperAccount.getEmail()).isEqualTo(DEFAULT_EMAIL);
-        assertThat(testShipperAccount.getAddress()).isEqualTo(UPDATED_ADDRESS);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertShipperAccountUpdatableFieldsEquals(
+            createUpdateProxyForBean(partialUpdatedShipperAccount, shipperAccount),
+            getPersistedShipperAccount(shipperAccount)
+        );
     }
 
     @Test
@@ -354,7 +339,7 @@ class ShipperAccountResourceIT {
         // Initialize the database
         shipperAccountRepository.save(shipperAccount);
 
-        int databaseSizeBeforeUpdate = shipperAccountRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the shipperAccount using partial update
         ShipperAccount partialUpdatedShipperAccount = new ShipperAccount();
@@ -366,23 +351,19 @@ class ShipperAccountResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedShipperAccount.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedShipperAccount))
+                    .content(om.writeValueAsBytes(partialUpdatedShipperAccount))
             )
             .andExpect(status().isOk());
 
         // Validate the ShipperAccount in the database
-        List<ShipperAccount> shipperAccountList = shipperAccountRepository.findAll();
-        assertThat(shipperAccountList).hasSize(databaseSizeBeforeUpdate);
-        ShipperAccount testShipperAccount = shipperAccountList.get(shipperAccountList.size() - 1);
-        assertThat(testShipperAccount.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testShipperAccount.getPhone()).isEqualTo(UPDATED_PHONE);
-        assertThat(testShipperAccount.getEmail()).isEqualTo(UPDATED_EMAIL);
-        assertThat(testShipperAccount.getAddress()).isEqualTo(UPDATED_ADDRESS);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertShipperAccountUpdatableFieldsEquals(partialUpdatedShipperAccount, getPersistedShipperAccount(partialUpdatedShipperAccount));
     }
 
     @Test
     void patchNonExistingShipperAccount() throws Exception {
-        int databaseSizeBeforeUpdate = shipperAccountRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         shipperAccount.setId(longCount.incrementAndGet());
 
         // Create the ShipperAccount
@@ -393,18 +374,17 @@ class ShipperAccountResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, shipperAccountDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(shipperAccountDTO))
+                    .content(om.writeValueAsBytes(shipperAccountDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the ShipperAccount in the database
-        List<ShipperAccount> shipperAccountList = shipperAccountRepository.findAll();
-        assertThat(shipperAccountList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithIdMismatchShipperAccount() throws Exception {
-        int databaseSizeBeforeUpdate = shipperAccountRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         shipperAccount.setId(longCount.incrementAndGet());
 
         // Create the ShipperAccount
@@ -415,18 +395,17 @@ class ShipperAccountResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(shipperAccountDTO))
+                    .content(om.writeValueAsBytes(shipperAccountDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the ShipperAccount in the database
-        List<ShipperAccount> shipperAccountList = shipperAccountRepository.findAll();
-        assertThat(shipperAccountList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithMissingIdPathParamShipperAccount() throws Exception {
-        int databaseSizeBeforeUpdate = shipperAccountRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         shipperAccount.setId(longCount.incrementAndGet());
 
         // Create the ShipperAccount
@@ -434,16 +413,11 @@ class ShipperAccountResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restShipperAccountMockMvc
-            .perform(
-                patch(ENTITY_API_URL)
-                    .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(shipperAccountDTO))
-            )
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(shipperAccountDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the ShipperAccount in the database
-        List<ShipperAccount> shipperAccountList = shipperAccountRepository.findAll();
-        assertThat(shipperAccountList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -451,7 +425,7 @@ class ShipperAccountResourceIT {
         // Initialize the database
         shipperAccountRepository.save(shipperAccount);
 
-        int databaseSizeBeforeDelete = shipperAccountRepository.findAll().size();
+        long databaseSizeBeforeDelete = getRepositoryCount();
 
         // Delete the shipperAccount
         restShipperAccountMockMvc
@@ -459,7 +433,34 @@ class ShipperAccountResourceIT {
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<ShipperAccount> shipperAccountList = shipperAccountRepository.findAll();
-        assertThat(shipperAccountList).hasSize(databaseSizeBeforeDelete - 1);
+        assertDecrementedRepositoryCount(databaseSizeBeforeDelete);
+    }
+
+    protected long getRepositoryCount() {
+        return shipperAccountRepository.count();
+    }
+
+    protected void assertIncrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore + 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertDecrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore - 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertSameRepositoryCount(long countBefore) {
+        assertThat(countBefore).isEqualTo(getRepositoryCount());
+    }
+
+    protected ShipperAccount getPersistedShipperAccount(ShipperAccount shipperAccount) {
+        return shipperAccountRepository.findById(shipperAccount.getId()).orElseThrow();
+    }
+
+    protected void assertPersistedShipperAccountToMatchAllProperties(ShipperAccount expectedShipperAccount) {
+        assertShipperAccountAllPropertiesEquals(expectedShipperAccount, getPersistedShipperAccount(expectedShipperAccount));
+    }
+
+    protected void assertPersistedShipperAccountToMatchUpdatableProperties(ShipperAccount expectedShipperAccount) {
+        assertShipperAccountAllUpdatablePropertiesEquals(expectedShipperAccount, getPersistedShipperAccount(expectedShipperAccount));
     }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -14,12 +14,10 @@ export type EntityArrayResponseType = HttpResponse<IProvice[]>;
 
 @Injectable({ providedIn: 'root' })
 export class ProviceService {
-  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/provices');
+  protected http = inject(HttpClient);
+  protected applicationConfigService = inject(ApplicationConfigService);
 
-  constructor(
-    protected http: HttpClient,
-    protected applicationConfigService: ApplicationConfigService,
-  ) {}
+  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/provices');
 
   create(provice: NewProvice): Observable<EntityResponseType> {
     return this.http.post<IProvice>(this.resourceUrl, provice, { observe: 'response' });
@@ -60,7 +58,7 @@ export class ProviceService {
   ): Type[] {
     const provices: Type[] = provicesToCheck.filter(isPresent);
     if (provices.length > 0) {
-      const proviceCollectionIdentifiers = proviceCollection.map(proviceItem => this.getProviceIdentifier(proviceItem)!);
+      const proviceCollectionIdentifiers = proviceCollection.map(proviceItem => this.getProviceIdentifier(proviceItem));
       const provicesToAdd = provices.filter(proviceItem => {
         const proviceIdentifier = this.getProviceIdentifier(proviceItem);
         if (proviceCollectionIdentifiers.includes(proviceIdentifier)) {

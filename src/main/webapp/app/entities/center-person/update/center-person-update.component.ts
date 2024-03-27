@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -25,14 +25,13 @@ export class CenterPersonUpdateComponent implements OnInit {
 
   centerPersonGroupsSharedCollection: ICenterPersonGroup[] = [];
 
-  editForm: CenterPersonFormGroup = this.centerPersonFormService.createCenterPersonFormGroup();
+  protected centerPersonService = inject(CenterPersonService);
+  protected centerPersonFormService = inject(CenterPersonFormService);
+  protected centerPersonGroupService = inject(CenterPersonGroupService);
+  protected activatedRoute = inject(ActivatedRoute);
 
-  constructor(
-    protected centerPersonService: CenterPersonService,
-    protected centerPersonFormService: CenterPersonFormService,
-    protected centerPersonGroupService: CenterPersonGroupService,
-    protected activatedRoute: ActivatedRoute,
-  ) {}
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  editForm: CenterPersonFormGroup = this.centerPersonFormService.createCenterPersonFormGroup();
 
   compareCenterPersonGroup = (o1: ICenterPersonGroup | null, o2: ICenterPersonGroup | null): boolean =>
     this.centerPersonGroupService.compareCenterPersonGroup(o1, o2);

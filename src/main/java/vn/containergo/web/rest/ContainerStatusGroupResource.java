@@ -65,11 +65,10 @@ public class ContainerStatusGroupResource {
         if (containerStatusGroupDTO.getId() != null) {
             throw new BadRequestAlertException("A new containerStatusGroup cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        ContainerStatusGroupDTO result = containerStatusGroupService.save(containerStatusGroupDTO);
-        return ResponseEntity
-            .created(new URI("/api/container-status-groups/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        containerStatusGroupDTO = containerStatusGroupService.save(containerStatusGroupDTO);
+        return ResponseEntity.created(new URI("/api/container-status-groups/" + containerStatusGroupDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, containerStatusGroupDTO.getId().toString()))
+            .body(containerStatusGroupDTO);
     }
 
     /**
@@ -99,11 +98,10 @@ public class ContainerStatusGroupResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        ContainerStatusGroupDTO result = containerStatusGroupService.update(containerStatusGroupDTO);
-        return ResponseEntity
-            .ok()
+        containerStatusGroupDTO = containerStatusGroupService.update(containerStatusGroupDTO);
+        return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, containerStatusGroupDTO.getId().toString()))
-            .body(result);
+            .body(containerStatusGroupDTO);
     }
 
     /**
@@ -181,8 +179,7 @@ public class ContainerStatusGroupResource {
     public ResponseEntity<Void> deleteContainerStatusGroup(@PathVariable("id") Long id) {
         log.debug("REST request to delete ContainerStatusGroup : {}", id);
         containerStatusGroupService.delete(id);
-        return ResponseEntity
-            .noContent()
+        return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }

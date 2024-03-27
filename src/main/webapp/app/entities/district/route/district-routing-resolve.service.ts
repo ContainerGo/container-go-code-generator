@@ -7,7 +7,7 @@ import { mergeMap } from 'rxjs/operators';
 import { IDistrict } from '../district.model';
 import { DistrictService } from '../service/district.service';
 
-export const districtResolve = (route: ActivatedRouteSnapshot): Observable<null | IDistrict> => {
+const districtResolve = (route: ActivatedRouteSnapshot): Observable<null | IDistrict> => {
   const id = route.params['id'];
   if (id) {
     return inject(DistrictService)

@@ -60,11 +60,10 @@ public class OfferResource {
         if (offerDTO.getId() != null) {
             throw new BadRequestAlertException("A new offer cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        OfferDTO result = offerService.save(offerDTO);
-        return ResponseEntity
-            .created(new URI("/api/offers/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        offerDTO = offerService.save(offerDTO);
+        return ResponseEntity.created(new URI("/api/offers/" + offerDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, offerDTO.getId().toString()))
+            .body(offerDTO);
     }
 
     /**
@@ -94,11 +93,10 @@ public class OfferResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        OfferDTO result = offerService.update(offerDTO);
-        return ResponseEntity
-            .ok()
+        offerDTO = offerService.update(offerDTO);
+        return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, offerDTO.getId().toString()))
-            .body(result);
+            .body(offerDTO);
     }
 
     /**
@@ -174,8 +172,7 @@ public class OfferResource {
     public ResponseEntity<Void> deleteOffer(@PathVariable("id") Long id) {
         log.debug("REST request to delete Offer : {}", id);
         offerService.delete(id);
-        return ResponseEntity
-            .noContent()
+        return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }

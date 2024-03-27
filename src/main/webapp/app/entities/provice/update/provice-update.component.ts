@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -21,13 +21,12 @@ export class ProviceUpdateComponent implements OnInit {
   isSaving = false;
   provice: IProvice | null = null;
 
-  editForm: ProviceFormGroup = this.proviceFormService.createProviceFormGroup();
+  protected proviceService = inject(ProviceService);
+  protected proviceFormService = inject(ProviceFormService);
+  protected activatedRoute = inject(ActivatedRoute);
 
-  constructor(
-    protected proviceService: ProviceService,
-    protected proviceFormService: ProviceFormService,
-    protected activatedRoute: ActivatedRoute,
-  ) {}
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  editForm: ProviceFormGroup = this.proviceFormService.createProviceFormGroup();
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ provice }) => {

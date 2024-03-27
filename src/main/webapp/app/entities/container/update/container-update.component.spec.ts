@@ -20,6 +20,8 @@ import { ITruckType } from 'app/entities/truck-type/truck-type.model';
 import { TruckTypeService } from 'app/entities/truck-type/service/truck-type.service';
 import { ITruck } from 'app/entities/truck/truck.model';
 import { TruckService } from 'app/entities/truck/service/truck.service';
+import { IContainerOwner } from 'app/entities/container-owner/container-owner.model';
+import { ContainerOwnerService } from 'app/entities/container-owner/service/container-owner.service';
 import { IContainer } from '../container.model';
 import { ContainerService } from '../service/container.service';
 import { ContainerFormService } from './container-form.service';
@@ -39,6 +41,7 @@ describe('Container Management Update Component', () => {
   let containerStatusService: ContainerStatusService;
   let truckTypeService: TruckTypeService;
   let truckService: TruckService;
+  let containerOwnerService: ContainerOwnerService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -67,6 +70,7 @@ describe('Container Management Update Component', () => {
     containerStatusService = TestBed.inject(ContainerStatusService);
     truckTypeService = TestBed.inject(TruckTypeService);
     truckService = TestBed.inject(TruckService);
+    containerOwnerService = TestBed.inject(ContainerOwnerService);
 
     comp = fixture.componentInstance;
   });
@@ -74,10 +78,10 @@ describe('Container Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call Provice query and add missing value', () => {
       const container: IContainer = { id: 456 };
-      const dropoffProvice: IProvice = { id: 31253 };
+      const dropoffProvice: IProvice = { id: 31109 };
       container.dropoffProvice = dropoffProvice;
 
-      const proviceCollection: IProvice[] = [{ id: 9847 }];
+      const proviceCollection: IProvice[] = [{ id: 18832 }];
       jest.spyOn(proviceService, 'query').mockReturnValue(of(new HttpResponse({ body: proviceCollection })));
       const additionalProvices = [dropoffProvice];
       const expectedCollection: IProvice[] = [...additionalProvices, ...proviceCollection];
@@ -96,10 +100,10 @@ describe('Container Management Update Component', () => {
 
     it('Should call District query and add missing value', () => {
       const container: IContainer = { id: 456 };
-      const dropoffDistrict: IDistrict = { id: 31354 };
+      const dropoffDistrict: IDistrict = { id: 17218 };
       container.dropoffDistrict = dropoffDistrict;
 
-      const districtCollection: IDistrict[] = [{ id: 28692 }];
+      const districtCollection: IDistrict[] = [{ id: 10852 }];
       jest.spyOn(districtService, 'query').mockReturnValue(of(new HttpResponse({ body: districtCollection })));
       const additionalDistricts = [dropoffDistrict];
       const expectedCollection: IDistrict[] = [...additionalDistricts, ...districtCollection];
@@ -118,10 +122,10 @@ describe('Container Management Update Component', () => {
 
     it('Should call Ward query and add missing value', () => {
       const container: IContainer = { id: 456 };
-      const dropoffWard: IWard = { id: 29502 };
+      const dropoffWard: IWard = { id: 18751 };
       container.dropoffWard = dropoffWard;
 
-      const wardCollection: IWard[] = [{ id: 21371 }];
+      const wardCollection: IWard[] = [{ id: 26361 }];
       jest.spyOn(wardService, 'query').mockReturnValue(of(new HttpResponse({ body: wardCollection })));
       const additionalWards = [dropoffWard];
       const expectedCollection: IWard[] = [...additionalWards, ...wardCollection];
@@ -140,10 +144,10 @@ describe('Container Management Update Component', () => {
 
     it('Should call ContainerType query and add missing value', () => {
       const container: IContainer = { id: 456 };
-      const type: IContainerType = { id: 20375 };
+      const type: IContainerType = { id: 30408 };
       container.type = type;
 
-      const containerTypeCollection: IContainerType[] = [{ id: 26885 }];
+      const containerTypeCollection: IContainerType[] = [{ id: 6362 }];
       jest.spyOn(containerTypeService, 'query').mockReturnValue(of(new HttpResponse({ body: containerTypeCollection })));
       const additionalContainerTypes = [type];
       const expectedCollection: IContainerType[] = [...additionalContainerTypes, ...containerTypeCollection];
@@ -162,10 +166,10 @@ describe('Container Management Update Component', () => {
 
     it('Should call ContainerStatus query and add missing value', () => {
       const container: IContainer = { id: 456 };
-      const status: IContainerStatus = { id: 31920 };
+      const status: IContainerStatus = { id: 2483 };
       container.status = status;
 
-      const containerStatusCollection: IContainerStatus[] = [{ id: 23194 }];
+      const containerStatusCollection: IContainerStatus[] = [{ id: 3282 }];
       jest.spyOn(containerStatusService, 'query').mockReturnValue(of(new HttpResponse({ body: containerStatusCollection })));
       const additionalContainerStatuses = [status];
       const expectedCollection: IContainerStatus[] = [...additionalContainerStatuses, ...containerStatusCollection];
@@ -184,10 +188,10 @@ describe('Container Management Update Component', () => {
 
     it('Should call TruckType query and add missing value', () => {
       const container: IContainer = { id: 456 };
-      const truckType: ITruckType = { id: 8535 };
+      const truckType: ITruckType = { id: 29400 };
       container.truckType = truckType;
 
-      const truckTypeCollection: ITruckType[] = [{ id: 13844 }];
+      const truckTypeCollection: ITruckType[] = [{ id: 7141 }];
       jest.spyOn(truckTypeService, 'query').mockReturnValue(of(new HttpResponse({ body: truckTypeCollection })));
       const additionalTruckTypes = [truckType];
       const expectedCollection: ITruckType[] = [...additionalTruckTypes, ...truckTypeCollection];
@@ -206,10 +210,10 @@ describe('Container Management Update Component', () => {
 
     it('Should call Truck query and add missing value', () => {
       const container: IContainer = { id: 456 };
-      const truck: ITruck = { id: 14658 };
+      const truck: ITruck = { id: 17028 };
       container.truck = truck;
 
-      const truckCollection: ITruck[] = [{ id: 14789 }];
+      const truckCollection: ITruck[] = [{ id: 19938 }];
       jest.spyOn(truckService, 'query').mockReturnValue(of(new HttpResponse({ body: truckCollection })));
       const additionalTrucks = [truck];
       const expectedCollection: ITruck[] = [...additionalTrucks, ...truckCollection];
@@ -226,22 +230,46 @@ describe('Container Management Update Component', () => {
       expect(comp.trucksSharedCollection).toEqual(expectedCollection);
     });
 
+    it('Should call ContainerOwner query and add missing value', () => {
+      const container: IContainer = { id: 456 };
+      const owner: IContainerOwner = { id: 23224 };
+      container.owner = owner;
+
+      const containerOwnerCollection: IContainerOwner[] = [{ id: 10978 }];
+      jest.spyOn(containerOwnerService, 'query').mockReturnValue(of(new HttpResponse({ body: containerOwnerCollection })));
+      const additionalContainerOwners = [owner];
+      const expectedCollection: IContainerOwner[] = [...additionalContainerOwners, ...containerOwnerCollection];
+      jest.spyOn(containerOwnerService, 'addContainerOwnerToCollectionIfMissing').mockReturnValue(expectedCollection);
+
+      activatedRoute.data = of({ container });
+      comp.ngOnInit();
+
+      expect(containerOwnerService.query).toHaveBeenCalled();
+      expect(containerOwnerService.addContainerOwnerToCollectionIfMissing).toHaveBeenCalledWith(
+        containerOwnerCollection,
+        ...additionalContainerOwners.map(expect.objectContaining),
+      );
+      expect(comp.containerOwnersSharedCollection).toEqual(expectedCollection);
+    });
+
     it('Should update editForm', () => {
       const container: IContainer = { id: 456 };
-      const dropoffProvice: IProvice = { id: 22168 };
+      const dropoffProvice: IProvice = { id: 18345 };
       container.dropoffProvice = dropoffProvice;
-      const dropoffDistrict: IDistrict = { id: 1815 };
+      const dropoffDistrict: IDistrict = { id: 19127 };
       container.dropoffDistrict = dropoffDistrict;
-      const dropoffWard: IWard = { id: 15840 };
+      const dropoffWard: IWard = { id: 20162 };
       container.dropoffWard = dropoffWard;
-      const type: IContainerType = { id: 20262 };
+      const type: IContainerType = { id: 224 };
       container.type = type;
-      const status: IContainerStatus = { id: 32335 };
+      const status: IContainerStatus = { id: 14853 };
       container.status = status;
-      const truckType: ITruckType = { id: 30712 };
+      const truckType: ITruckType = { id: 667 };
       container.truckType = truckType;
-      const truck: ITruck = { id: 3042 };
+      const truck: ITruck = { id: 25962 };
       container.truck = truck;
+      const owner: IContainerOwner = { id: 10262 };
+      container.owner = owner;
 
       activatedRoute.data = of({ container });
       comp.ngOnInit();
@@ -253,6 +281,7 @@ describe('Container Management Update Component', () => {
       expect(comp.containerStatusesSharedCollection).toContain(status);
       expect(comp.truckTypesSharedCollection).toContain(truckType);
       expect(comp.trucksSharedCollection).toContain(truck);
+      expect(comp.containerOwnersSharedCollection).toContain(owner);
       expect(comp.container).toEqual(container);
     });
   });
@@ -393,6 +422,16 @@ describe('Container Management Update Component', () => {
         jest.spyOn(truckService, 'compareTruck');
         comp.compareTruck(entity, entity2);
         expect(truckService.compareTruck).toHaveBeenCalledWith(entity, entity2);
+      });
+    });
+
+    describe('compareContainerOwner', () => {
+      it('Should forward to containerOwnerService', () => {
+        const entity = { id: 123 };
+        const entity2 = { id: 456 };
+        jest.spyOn(containerOwnerService, 'compareContainerOwner');
+        comp.compareContainerOwner(entity, entity2);
+        expect(containerOwnerService.compareContainerOwner).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

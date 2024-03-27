@@ -451,6 +451,23 @@
             }
           </select>
         </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.owner" for="field_owner">Owner</label>
+          <select
+            class="form-control"
+            id="field_owner"
+            data-cy="owner"
+            name="owner"
+            formControlName="owner"
+            [compareWith]="compareContainerOwner"
+          >
+            <option [ngValue]="null"></option>
+            @for (containerOwnerOption of containerOwnersSharedCollection; track $index) {
+              <option [ngValue]="containerOwnerOption">{{ containerOwnerOption.id }}</option>
+            }
+          </select>
+        </div>
       </div>
 
       <div>

@@ -1,39 +1,42 @@
 import { IShipper, NewShipper } from './shipper.model';
 
 export const sampleWithRequiredData: IShipper = {
-  id: 8340,
-  code: 'ah ah candid',
-  name: 'cannibalize',
-  address: 'while an',
-  paymentType: 'broadly sleet where',
+  id: 17686,
+  code: 'astride round nutritious',
+  name: 'forebear tomorrow',
+  address: 'generously',
+  paymentType: 'amidst',
 };
 
 export const sampleWithPartialData: IShipper = {
-  id: 32158,
-  code: 'meh spanish',
-  name: 'failing furthermore abnormally',
-  address: 'being unlike fond',
-  paymentType: 'yearly',
+  id: 28177,
+  code: 'gosh',
+  name: 'tutor natural gee',
+  address: 'furthermore hm',
+  taxCode: 'yahoo yum',
+  paymentType: 'ah',
+  isApproved: false,
+  isProfileComplete: false,
 };
 
 export const sampleWithFullData: IShipper = {
-  id: 28248,
-  code: 'perfectly',
-  name: 'agitated remit past',
-  address: 'versus',
-  taxCode: 'of fully',
-  companySize: 24848,
-  paymentType: 'agonizing',
+  id: 5498,
+  code: 'ack tremendously nifty',
+  name: 'litmus',
+  address: 'mysteriously brocolli',
+  taxCode: 'decimal unabashedly staple',
+  companySize: 345,
+  paymentType: 'back-up',
   isApproved: true,
-  isBillingInformationComplete: true,
+  isBillingInformationComplete: false,
   isProfileComplete: false,
 };
 
 export const sampleWithNewData: NewShipper = {
-  code: 'till dearly colorfully',
-  name: 'curly patrimony or',
-  address: 'positively private',
-  paymentType: 'individualize aha without',
+  code: 'while regenerate upbeat',
+  name: 'beloved gosh disallow',
+  address: 'guava furthermore times',
+  paymentType: 'ouch schema',
   id: null,
 };
 

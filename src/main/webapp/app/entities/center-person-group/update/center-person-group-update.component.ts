@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -21,13 +21,12 @@ export class CenterPersonGroupUpdateComponent implements OnInit {
   isSaving = false;
   centerPersonGroup: ICenterPersonGroup | null = null;
 
-  editForm: CenterPersonGroupFormGroup = this.centerPersonGroupFormService.createCenterPersonGroupFormGroup();
+  protected centerPersonGroupService = inject(CenterPersonGroupService);
+  protected centerPersonGroupFormService = inject(CenterPersonGroupFormService);
+  protected activatedRoute = inject(ActivatedRoute);
 
-  constructor(
-    protected centerPersonGroupService: CenterPersonGroupService,
-    protected centerPersonGroupFormService: CenterPersonGroupFormService,
-    protected activatedRoute: ActivatedRoute,
-  ) {}
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  editForm: CenterPersonGroupFormGroup = this.centerPersonGroupFormService.createCenterPersonGroupFormGroup();
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ centerPersonGroup }) => {

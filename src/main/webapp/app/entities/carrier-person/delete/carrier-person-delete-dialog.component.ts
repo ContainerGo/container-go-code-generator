@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -15,10 +15,8 @@ import { CarrierPersonService } from '../service/carrier-person.service';
 export class CarrierPersonDeleteDialogComponent {
   carrierPerson?: ICarrierPerson;
 
-  constructor(
-    protected carrierPersonService: CarrierPersonService,
-    protected activeModal: NgbActiveModal,
-  ) {}
+  protected carrierPersonService = inject(CarrierPersonService);
+  protected activeModal = inject(NgbActiveModal);
 
   cancel(): void {
     this.activeModal.dismiss();

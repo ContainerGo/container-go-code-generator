@@ -1,30 +1,28 @@
 import { ICenterPerson, NewCenterPerson } from './center-person.model';
 
 export const sampleWithRequiredData: ICenterPerson = {
-  id: 8780,
-  name: 'or per ambush',
-  phone: '0296 4802 6535',
+  id: 9355,
+  name: 'numeracy',
+  phone: '0217 7649 7821',
 };
 
 export const sampleWithPartialData: ICenterPerson = {
-  id: 14852,
-  name: 'quintessential',
-  phone: '028 0995 4857',
-  email: 'LongGiang_Ha@hotmail.com',
-  address: 'safe huzzah',
+  id: 21892,
+  name: 'until forenenst equally',
+  phone: '0227 6203 5939',
 };
 
 export const sampleWithFullData: ICenterPerson = {
-  id: 22094,
-  name: 'colorlessness',
-  phone: '0251 8527 8447',
-  email: 'MyLoi_Phung@gmail.com',
-  address: 'ouch surprisingly',
+  id: 21593,
+  name: 'swiftly meh',
+  phone: '0265 5022 1542',
+  email: 'MinhThu14@yahoo.com',
+  address: 'key drat',
 };
 
 export const sampleWithNewData: NewCenterPerson = {
-  name: 'weather bloom',
-  phone: '0289 2995 6466',
+  name: 'blindly sulks',
+  phone: '0252 6909 4728',
   id: null,
 };
 

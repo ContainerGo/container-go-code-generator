@@ -1,8 +1,6 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
-import { map } from 'rxjs/operators';
+import { map, Observable } from 'rxjs';
 
 import dayjs from 'dayjs/esm';
 
@@ -31,12 +29,10 @@ export type EntityArrayResponseType = HttpResponse<IOffer[]>;
 
 @Injectable({ providedIn: 'root' })
 export class OfferService {
-  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/offers');
+  protected http = inject(HttpClient);
+  protected applicationConfigService = inject(ApplicationConfigService);
 
-  constructor(
-    protected http: HttpClient,
-    protected applicationConfigService: ApplicationConfigService,
-  ) {}
+  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/offers');
 
   create(offer: NewOffer): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(offer);
@@ -88,7 +84,7 @@ export class OfferService {
   ): Type[] {
     const offers: Type[] = offersToCheck.filter(isPresent);
     if (offers.length > 0) {
-      const offerCollectionIdentifiers = offerCollection.map(offerItem => this.getOfferIdentifier(offerItem)!);
+      const offerCollectionIdentifiers = offerCollection.map(offerItem => this.getOfferIdentifier(offerItem));
       const offersToAdd = offers.filter(offerItem => {
         const offerIdentifier = this.getOfferIdentifier(offerItem);
         if (offerCollectionIdentifiers.includes(offerIdentifier)) {

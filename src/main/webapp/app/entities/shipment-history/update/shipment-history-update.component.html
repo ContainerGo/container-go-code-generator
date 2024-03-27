@@ -1,0 +1,142 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-shipment-history-heading"
+        data-cy="ShipmentHistoryCreateUpdateHeading"
+        jhiTranslate="containerGoServerApp.shipmentHistory.home.createOrEditLabel"
+      >
+        Thêm mới hoặc cập nhật Shipment History
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" jhiTranslate="containerGoServerApp.shipmentHistory.id" for="field_id">Id</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.shipmentHistory.event" for="field_event">Event</label>
+          <input type="text" class="form-control" name="event" id="field_event" data-cy="event" formControlName="event" />
+          @if (editForm.get('event')!.invalid && (editForm.get('event')!.dirty || editForm.get('event')!.touched)) {
+            <div>
+              @if (editForm.get('event')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.shipmentHistory.timestamp" for="field_timestamp">Timestamp</label>
+          <div class="d-flex">
+            <input
+              id="field_timestamp"
+              data-cy="timestamp"
+              type="datetime-local"
+              class="form-control"
+              name="timestamp"
+              formControlName="timestamp"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (editForm.get('timestamp')!.invalid && (editForm.get('timestamp')!.dirty || editForm.get('timestamp')!.touched)) {
+            <div>
+              @if (editForm.get('timestamp')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('timestamp')?.errors?.datetimelocal"
+                jhiTranslate="entity.validation.datetimelocal"
+                >Trường này phải là định dạng thời gian.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.shipmentHistory.executedBy" for="field_executedBy"
+            >Executed By</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="executedBy"
+            id="field_executedBy"
+            data-cy="executedBy"
+            formControlName="executedBy"
+          />
+          @if (editForm.get('executedBy')!.invalid && (editForm.get('executedBy')!.dirty || editForm.get('executedBy')!.touched)) {
+            <div>
+              @if (editForm.get('executedBy')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.shipmentHistory.location" for="field_location">Location</label>
+          <input type="text" class="form-control" name="location" id="field_location" data-cy="location" formControlName="location" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.shipmentHistory.lat" for="field_lat">Lat</label>
+          <input type="number" class="form-control" name="lat" id="field_lat" data-cy="lat" formControlName="lat" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.shipmentHistory.lng" for="field_lng">Lng</label>
+          <input type="number" class="form-control" name="lng" id="field_lng" data-cy="lng" formControlName="lng" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.shipmentHistory.container" for="field_container">Container</label>
+          <select
+            class="form-control"
+            id="field_container"
+            data-cy="container"
+            name="container"
+            formControlName="container"
+            [compareWith]="compareContainer"
+          >
+            @if (!editForm.get('container')!.value) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (containerOption of containersSharedCollection; track $index) {
+              <option [ngValue]="containerOption">{{ containerOption.id }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['container'])!.invalid && (editForm.get(['container'])!.dirty || editForm.get(['container'])!.touched)) {
+          <div>
+            @if (editForm.get(['container'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+            }
+          </div>
+        }
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Hủy</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Lưu</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness, RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
@@ -6,6 +6,9 @@ import { of } from 'rxjs';
 import { WardDetailComponent } from './ward-detail.component';
 
 describe('Ward Management Detail Component', () => {
+  let comp: WardDetailComponent;
+  let fixture: ComponentFixture<WardDetailComponent>;
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [WardDetailComponent, RouterTestingModule.withRoutes([], { bindToComponentInputs: true })],
@@ -26,6 +29,11 @@ describe('Ward Management Detail Component', () => {
       .compileComponents();
   });
 
+  beforeEach(() => {
+    fixture = TestBed.createComponent(WardDetailComponent);
+    comp = fixture.componentInstance;
+  });
+
   describe('OnInit', () => {
     it('Should load ward on init', async () => {
       const harness = await RouterTestingHarness.create();
@@ -33,6 +41,14 @@ describe('Ward Management Detail Component', () => {
 
       // THEN
       expect(instance.ward).toEqual(expect.objectContaining({ id: 123 }));
+    });
+  });
+
+  describe('PreviousState', () => {
+    it('Should navigate to previous state', () => {
+      jest.spyOn(window.history, 'back');
+      comp.previousState();
+      expect(window.history.back).toHaveBeenCalled();
     });
   });
 });

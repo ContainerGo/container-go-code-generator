@@ -1,0 +1,30 @@
+{
+  "containerGoServerApp": {
+    "shipmentHistory": {
+      "home": {
+        "title": "Shipment Histories",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Shipment History",
+        "createOrEditLabel": "Create or edit a Shipment History",
+        "notFound": "No Shipment Histories found"
+      },
+      "created": "A new Shipment History is created with identifier {{ param }}",
+      "updated": "A Shipment History is updated with identifier {{ param }}",
+      "deleted": "A Shipment History is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Shipment History {{ id }}?"
+      },
+      "detail": {
+        "title": "Shipment History"
+      },
+      "id": "Id",
+      "event": "Event",
+      "timestamp": "Timestamp",
+      "executedBy": "Executed By",
+      "location": "Location",
+      "lat": "Lat",
+      "lng": "Lng",
+      "container": "Container"
+    }
+  }
+}

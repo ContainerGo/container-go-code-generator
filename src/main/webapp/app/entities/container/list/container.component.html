@@ -34,7 +34,7 @@
     <div class="table-responsive table-entities" id="entities">
       <table class="table table-striped" aria-describedby="page-heading">
         <thead>
-          <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
             <th scope="col" jhiSortBy="id">
               <div class="d-flex">
                 <span jhiTranslate="containerGoServerApp.container.id">Id</span>
@@ -210,6 +210,12 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="owner.id">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.owner">Owner</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -283,6 +289,13 @@
                 @if (container.truck) {
                   <div>
                     <a [routerLink]="['/truck', container.truck.id, 'view']">{{ container.truck.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (container.owner) {
+                  <div>
+                    <a [routerLink]="['/container-owner', container.owner.id, 'view']">{{ container.owner.id }}</a>
                   </div>
                 }
               </td>

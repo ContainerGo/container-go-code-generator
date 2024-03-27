@@ -1,6 +1,7 @@
 package vn.containergo.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static vn.containergo.domain.ContainerOwnerTestSamples.*;
 import static vn.containergo.domain.ContainerStatusTestSamples.*;
 import static vn.containergo.domain.ContainerTestSamples.*;
 import static vn.containergo.domain.ContainerTypeTestSamples.*;
@@ -111,5 +112,17 @@ class ContainerTest {
 
         container.truck(null);
         assertThat(container.getTruck()).isNull();
+    }
+
+    @Test
+    void ownerTest() throws Exception {
+        Container container = getContainerRandomSampleGenerator();
+        ContainerOwner containerOwnerBack = getContainerOwnerRandomSampleGenerator();
+
+        container.setOwner(containerOwnerBack);
+        assertThat(container.getOwner()).isEqualTo(containerOwnerBack);
+
+        container.owner(null);
+        assertThat(container.getOwner()).isNull();
     }
 }

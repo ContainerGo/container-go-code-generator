@@ -25,8 +25,11 @@ describe('Offer Form Service', () => {
             pickupUntilDate: expect.any(Object),
             dropoffFromDate: expect.any(Object),
             dropoffUntilDate: expect.any(Object),
+            state: expect.any(Object),
             price: expect.any(Object),
             carrierId: expect.any(Object),
+            carrierPersonId: expect.any(Object),
+            truckId: expect.any(Object),
             container: expect.any(Object),
           }),
         );
@@ -43,8 +46,11 @@ describe('Offer Form Service', () => {
             pickupUntilDate: expect.any(Object),
             dropoffFromDate: expect.any(Object),
             dropoffUntilDate: expect.any(Object),
+            state: expect.any(Object),
             price: expect.any(Object),
             carrierId: expect.any(Object),
+            carrierPersonId: expect.any(Object),
+            truckId: expect.any(Object),
             container: expect.any(Object),
           }),
         );

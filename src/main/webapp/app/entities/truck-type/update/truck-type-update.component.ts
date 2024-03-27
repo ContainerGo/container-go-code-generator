@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -21,13 +21,12 @@ export class TruckTypeUpdateComponent implements OnInit {
   isSaving = false;
   truckType: ITruckType | null = null;
 
-  editForm: TruckTypeFormGroup = this.truckTypeFormService.createTruckTypeFormGroup();
+  protected truckTypeService = inject(TruckTypeService);
+  protected truckTypeFormService = inject(TruckTypeFormService);
+  protected activatedRoute = inject(ActivatedRoute);
 
-  constructor(
-    protected truckTypeService: TruckTypeService,
-    protected truckTypeFormService: TruckTypeFormService,
-    protected activatedRoute: ActivatedRoute,
-  ) {}
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  editForm: TruckTypeFormGroup = this.truckTypeFormService.createTruckTypeFormGroup();
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ truckType }) => {

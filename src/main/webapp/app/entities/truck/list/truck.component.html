@@ -34,7 +34,7 @@
     <div class="table-responsive table-entities" id="entities">
       <table class="table table-striped" aria-describedby="page-heading">
         <thead>
-          <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
             <th scope="col" jhiSortBy="id">
               <div class="d-flex">
                 <span jhiTranslate="containerGoServerApp.truck.id">Id</span>
@@ -105,6 +105,20 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="lat">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truck.lat">Lat</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="lng">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.truck.lng">Lng</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col" jhiSortBy="type.id">
               <div class="d-flex">
                 <span jhiTranslate="containerGoServerApp.truck.type">Type</span>
@@ -135,6 +149,8 @@
               <td jhiTranslate="{{ 'containerGoServerApp.TruckStatus.' + truck.status }}">{{ truck.status }}</td>
               <td>{{ truck.mileage }}</td>
               <td>{{ truck.numberPlate }}</td>
+              <td>{{ truck.lat }}</td>
+              <td>{{ truck.lng }}</td>
               <td>
                 @if (truck.type) {
                   <div>

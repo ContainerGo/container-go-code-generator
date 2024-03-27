@@ -22,6 +22,7 @@ public class ShipperAccountDTO implements Serializable {
 
     private String address;
 
+    @NotNull
     private ShipperDTO shipper;
 
     public Long getId() {

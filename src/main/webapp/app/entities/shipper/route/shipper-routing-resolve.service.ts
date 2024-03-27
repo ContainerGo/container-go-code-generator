@@ -7,7 +7,7 @@ import { mergeMap } from 'rxjs/operators';
 import { IShipper } from '../shipper.model';
 import { ShipperService } from '../service/shipper.service';
 
-export const shipperResolve = (route: ActivatedRouteSnapshot): Observable<null | IShipper> => {
+const shipperResolve = (route: ActivatedRouteSnapshot): Observable<null | IShipper> => {
   const id = route.params['id'];
   if (id) {
     return inject(ShipperService)

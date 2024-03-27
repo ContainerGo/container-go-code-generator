@@ -1,0 +1,11 @@
+export enum OfferState {
+  PENDING = 'PENDING',
+
+  ACCEPTED = 'ACCEPTED',
+
+  REJECTED = 'REJECTED',
+
+  EXPIRED = 'EXPIRED',
+
+  WITHDRAWN = 'WITHDRAWN',
+}

@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import vn.containergo.domain.enumeration.OfferState;
 
 /**
  * A Offer.
@@ -41,6 +42,10 @@ public class Offer implements Serializable {
     private Instant dropoffUntilDate;
 
     @NotNull
+    @Field("state")
+    private OfferState state;
+
+    @NotNull
     @Field("price")
     private Double price;
 
@@ -48,10 +53,16 @@ public class Offer implements Serializable {
     @Field("carrier_id")
     private Long carrierId;
 
+    @Field("carrier_person_id")
+    private Long carrierPersonId;
+
+    @Field("truck_id")
+    private Long truckId;
+
     @DBRef
     @Field("container")
     @JsonIgnoreProperties(
-        value = { "dropoffProvice", "dropoffDistrict", "dropoffWard", "type", "status", "truckType", "truck" },
+        value = { "dropoffProvice", "dropoffDistrict", "dropoffWard", "type", "status", "truckType", "truck", "owner" },
         allowSetters = true
     )
     private Container container;
@@ -136,6 +147,19 @@ public class Offer implements Serializable {
         this.dropoffUntilDate = dropoffUntilDate;
     }
 
+    public OfferState getState() {
+        return this.state;
+    }
+
+    public Offer state(OfferState state) {
+        this.setState(state);
+        return this;
+    }
+
+    public void setState(OfferState state) {
+        this.state = state;
+    }
+
     public Double getPrice() {
         return this.price;
     }
@@ -160,6 +184,32 @@ public class Offer implements Serializable {
 
     public void setCarrierId(Long carrierId) {
         this.carrierId = carrierId;
+    }
+
+    public Long getCarrierPersonId() {
+        return this.carrierPersonId;
+    }
+
+    public Offer carrierPersonId(Long carrierPersonId) {
+        this.setCarrierPersonId(carrierPersonId);
+        return this;
+    }
+
+    public void setCarrierPersonId(Long carrierPersonId) {
+        this.carrierPersonId = carrierPersonId;
+    }
+
+    public Long getTruckId() {
+        return this.truckId;
+    }
+
+    public Offer truckId(Long truckId) {
+        this.setTruckId(truckId);
+        return this;
+    }
+
+    public void setTruckId(Long truckId) {
+        this.truckId = truckId;
     }
 
     public Container getContainer() {
@@ -204,8 +254,11 @@ public class Offer implements Serializable {
             ", pickupUntilDate='" + getPickupUntilDate() + "'" +
             ", dropoffFromDate='" + getDropoffFromDate() + "'" +
             ", dropoffUntilDate='" + getDropoffUntilDate() + "'" +
+            ", state='" + getState() + "'" +
             ", price=" + getPrice() +
             ", carrierId=" + getCarrierId() +
+            ", carrierPersonId=" + getCarrierPersonId() +
+            ", truckId=" + getTruckId() +
             "}";
     }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -15,10 +15,8 @@ import { TruckTypeService } from '../service/truck-type.service';
 export class TruckTypeDeleteDialogComponent {
   truckType?: ITruckType;
 
-  constructor(
-    protected truckTypeService: TruckTypeService,
-    protected activeModal: NgbActiveModal,
-  ) {}
+  protected truckTypeService = inject(TruckTypeService);
+  protected activeModal = inject(NgbActiveModal);
 
   cancel(): void {
     this.activeModal.dismiss();
