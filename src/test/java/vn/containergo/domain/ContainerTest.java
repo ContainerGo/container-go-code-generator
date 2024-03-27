@@ -31,6 +31,42 @@ class ContainerTest {
     }
 
     @Test
+    void pickupProviceTest() throws Exception {
+        Container container = getContainerRandomSampleGenerator();
+        Provice proviceBack = getProviceRandomSampleGenerator();
+
+        container.setPickupProvice(proviceBack);
+        assertThat(container.getPickupProvice()).isEqualTo(proviceBack);
+
+        container.pickupProvice(null);
+        assertThat(container.getPickupProvice()).isNull();
+    }
+
+    @Test
+    void pickupDistrictTest() throws Exception {
+        Container container = getContainerRandomSampleGenerator();
+        District districtBack = getDistrictRandomSampleGenerator();
+
+        container.setPickupDistrict(districtBack);
+        assertThat(container.getPickupDistrict()).isEqualTo(districtBack);
+
+        container.pickupDistrict(null);
+        assertThat(container.getPickupDistrict()).isNull();
+    }
+
+    @Test
+    void pickupWardTest() throws Exception {
+        Container container = getContainerRandomSampleGenerator();
+        Ward wardBack = getWardRandomSampleGenerator();
+
+        container.setPickupWard(wardBack);
+        assertThat(container.getPickupWard()).isEqualTo(wardBack);
+
+        container.pickupWard(null);
+        assertThat(container.getPickupWard()).isNull();
+    }
+
+    @Test
     void dropoffProviceTest() throws Exception {
         Container container = getContainerRandomSampleGenerator();
         Provice proviceBack = getProviceRandomSampleGenerator();

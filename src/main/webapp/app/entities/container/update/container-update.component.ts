@@ -132,13 +132,19 @@ export class ContainerUpdateComponent implements OnInit {
 
     this.provicesSharedCollection = this.proviceService.addProviceToCollectionIfMissing<IProvice>(
       this.provicesSharedCollection,
+      container.pickupProvice,
       container.dropoffProvice,
     );
     this.districtsSharedCollection = this.districtService.addDistrictToCollectionIfMissing<IDistrict>(
       this.districtsSharedCollection,
+      container.pickupDistrict,
       container.dropoffDistrict,
     );
-    this.wardsSharedCollection = this.wardService.addWardToCollectionIfMissing<IWard>(this.wardsSharedCollection, container.dropoffWard);
+    this.wardsSharedCollection = this.wardService.addWardToCollectionIfMissing<IWard>(
+      this.wardsSharedCollection,
+      container.pickupWard,
+      container.dropoffWard,
+    );
     this.containerTypesSharedCollection = this.containerTypeService.addContainerTypeToCollectionIfMissing<IContainerType>(
       this.containerTypesSharedCollection,
       container.type,
@@ -164,7 +170,11 @@ export class ContainerUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IProvice[]>) => res.body ?? []))
       .pipe(
         map((provices: IProvice[]) =>
-          this.proviceService.addProviceToCollectionIfMissing<IProvice>(provices, this.container?.dropoffProvice),
+          this.proviceService.addProviceToCollectionIfMissing<IProvice>(
+            provices,
+            this.container?.pickupProvice,
+            this.container?.dropoffProvice,
+          ),
         ),
       )
       .subscribe((provices: IProvice[]) => (this.provicesSharedCollection = provices));
@@ -174,7 +184,11 @@ export class ContainerUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IDistrict[]>) => res.body ?? []))
       .pipe(
         map((districts: IDistrict[]) =>
-          this.districtService.addDistrictToCollectionIfMissing<IDistrict>(districts, this.container?.dropoffDistrict),
+          this.districtService.addDistrictToCollectionIfMissing<IDistrict>(
+            districts,
+            this.container?.pickupDistrict,
+            this.container?.dropoffDistrict,
+          ),
         ),
       )
       .subscribe((districts: IDistrict[]) => (this.districtsSharedCollection = districts));
@@ -182,7 +196,11 @@ export class ContainerUpdateComponent implements OnInit {
     this.wardService
       .query()
       .pipe(map((res: HttpResponse<IWard[]>) => res.body ?? []))
-      .pipe(map((wards: IWard[]) => this.wardService.addWardToCollectionIfMissing<IWard>(wards, this.container?.dropoffWard)))
+      .pipe(
+        map((wards: IWard[]) =>
+          this.wardService.addWardToCollectionIfMissing<IWard>(wards, this.container?.pickupWard, this.container?.dropoffWard),
+        ),
+      )
       .subscribe((wards: IWard[]) => (this.wardsSharedCollection = wards));
 
     this.containerTypeService

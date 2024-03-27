@@ -25,6 +25,9 @@ import vn.containergo.service.dto.WardDTO;
  */
 @Mapper(componentModel = "spring")
 public interface ContainerMapper extends EntityMapper<ContainerDTO, Container> {
+    @Mapping(target = "pickupProvice", source = "pickupProvice", qualifiedByName = "proviceId")
+    @Mapping(target = "pickupDistrict", source = "pickupDistrict", qualifiedByName = "districtId")
+    @Mapping(target = "pickupWard", source = "pickupWard", qualifiedByName = "wardId")
     @Mapping(target = "dropoffProvice", source = "dropoffProvice", qualifiedByName = "proviceId")
     @Mapping(target = "dropoffDistrict", source = "dropoffDistrict", qualifiedByName = "districtId")
     @Mapping(target = "dropoffWard", source = "dropoffWard", qualifiedByName = "wardId")

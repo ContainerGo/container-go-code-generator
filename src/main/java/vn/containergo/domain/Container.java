@@ -41,12 +41,37 @@ public class Container implements Serializable {
     @Field("additional_requirements")
     private String additionalRequirements;
 
+    @NotNull
+    @Field("pickup_contact")
+    private String pickupContact;
+
+    @NotNull
+    @Field("pickup_contact_phone")
+    private String pickupContactPhone;
+
+    @NotNull
+    @Field("pickup_address")
+    private String pickupAddress;
+
+    @NotNull
+    @Field("pickup_lat")
+    private Double pickupLat;
+
+    @NotNull
+    @Field("pickup_lng")
+    private Double pickupLng;
+
+    @NotNull
+    @Field("pickup_from_date")
+    private Instant pickupFromDate;
+
     @Field("dropoff_contact")
     private String dropoffContact;
 
     @Field("dropoff_contact_phone")
     private String dropoffContactPhone;
 
+    @NotNull
     @Field("dropoff_address")
     private String dropoffAddress;
 
@@ -55,6 +80,9 @@ public class Container implements Serializable {
 
     @Field("dropoff_lng")
     private Double dropoffLng;
+
+    @Field("points")
+    private String points;
 
     @Field("dropoff_until_date")
     private Instant dropoffUntilDate;
@@ -74,14 +102,23 @@ public class Container implements Serializable {
     @Field("total_weight")
     private Double totalWeight;
 
-    @Field("pickup_from_date")
-    private Instant pickupFromDate;
-
     @Field("bidding_from_date")
     private Instant biddingFromDate;
 
     @Field("bidding_until_date")
     private Instant biddingUntilDate;
+
+    @DBRef
+    @Field("pickupProvice")
+    private Provice pickupProvice;
+
+    @DBRef
+    @Field("pickupDistrict")
+    private District pickupDistrict;
+
+    @DBRef
+    @Field("pickupWard")
+    private Ward pickupWard;
 
     @DBRef
     @Field("dropoffProvice")
@@ -197,6 +234,84 @@ public class Container implements Serializable {
         this.additionalRequirements = additionalRequirements;
     }
 
+    public String getPickupContact() {
+        return this.pickupContact;
+    }
+
+    public Container pickupContact(String pickupContact) {
+        this.setPickupContact(pickupContact);
+        return this;
+    }
+
+    public void setPickupContact(String pickupContact) {
+        this.pickupContact = pickupContact;
+    }
+
+    public String getPickupContactPhone() {
+        return this.pickupContactPhone;
+    }
+
+    public Container pickupContactPhone(String pickupContactPhone) {
+        this.setPickupContactPhone(pickupContactPhone);
+        return this;
+    }
+
+    public void setPickupContactPhone(String pickupContactPhone) {
+        this.pickupContactPhone = pickupContactPhone;
+    }
+
+    public String getPickupAddress() {
+        return this.pickupAddress;
+    }
+
+    public Container pickupAddress(String pickupAddress) {
+        this.setPickupAddress(pickupAddress);
+        return this;
+    }
+
+    public void setPickupAddress(String pickupAddress) {
+        this.pickupAddress = pickupAddress;
+    }
+
+    public Double getPickupLat() {
+        return this.pickupLat;
+    }
+
+    public Container pickupLat(Double pickupLat) {
+        this.setPickupLat(pickupLat);
+        return this;
+    }
+
+    public void setPickupLat(Double pickupLat) {
+        this.pickupLat = pickupLat;
+    }
+
+    public Double getPickupLng() {
+        return this.pickupLng;
+    }
+
+    public Container pickupLng(Double pickupLng) {
+        this.setPickupLng(pickupLng);
+        return this;
+    }
+
+    public void setPickupLng(Double pickupLng) {
+        this.pickupLng = pickupLng;
+    }
+
+    public Instant getPickupFromDate() {
+        return this.pickupFromDate;
+    }
+
+    public Container pickupFromDate(Instant pickupFromDate) {
+        this.setPickupFromDate(pickupFromDate);
+        return this;
+    }
+
+    public void setPickupFromDate(Instant pickupFromDate) {
+        this.pickupFromDate = pickupFromDate;
+    }
+
     public String getDropoffContact() {
         return this.dropoffContact;
     }
@@ -260,6 +375,19 @@ public class Container implements Serializable {
 
     public void setDropoffLng(Double dropoffLng) {
         this.dropoffLng = dropoffLng;
+    }
+
+    public String getPoints() {
+        return this.points;
+    }
+
+    public Container points(String points) {
+        this.setPoints(points);
+        return this;
+    }
+
+    public void setPoints(String points) {
+        this.points = points;
     }
 
     public Instant getDropoffUntilDate() {
@@ -327,19 +455,6 @@ public class Container implements Serializable {
         this.totalWeight = totalWeight;
     }
 
-    public Instant getPickupFromDate() {
-        return this.pickupFromDate;
-    }
-
-    public Container pickupFromDate(Instant pickupFromDate) {
-        this.setPickupFromDate(pickupFromDate);
-        return this;
-    }
-
-    public void setPickupFromDate(Instant pickupFromDate) {
-        this.pickupFromDate = pickupFromDate;
-    }
-
     public Instant getBiddingFromDate() {
         return this.biddingFromDate;
     }
@@ -364,6 +479,45 @@ public class Container implements Serializable {
 
     public void setBiddingUntilDate(Instant biddingUntilDate) {
         this.biddingUntilDate = biddingUntilDate;
+    }
+
+    public Provice getPickupProvice() {
+        return this.pickupProvice;
+    }
+
+    public void setPickupProvice(Provice provice) {
+        this.pickupProvice = provice;
+    }
+
+    public Container pickupProvice(Provice provice) {
+        this.setPickupProvice(provice);
+        return this;
+    }
+
+    public District getPickupDistrict() {
+        return this.pickupDistrict;
+    }
+
+    public void setPickupDistrict(District district) {
+        this.pickupDistrict = district;
+    }
+
+    public Container pickupDistrict(District district) {
+        this.setPickupDistrict(district);
+        return this;
+    }
+
+    public Ward getPickupWard() {
+        return this.pickupWard;
+    }
+
+    public void setPickupWard(Ward ward) {
+        this.pickupWard = ward;
+    }
+
+    public Container pickupWard(Ward ward) {
+        this.setPickupWard(ward);
+        return this;
     }
 
     public Provice getDropoffProvice() {
@@ -499,17 +653,23 @@ public class Container implements Serializable {
             ", distance=" + getDistance() +
             ", desiredPrice=" + getDesiredPrice() +
             ", additionalRequirements='" + getAdditionalRequirements() + "'" +
+            ", pickupContact='" + getPickupContact() + "'" +
+            ", pickupContactPhone='" + getPickupContactPhone() + "'" +
+            ", pickupAddress='" + getPickupAddress() + "'" +
+            ", pickupLat=" + getPickupLat() +
+            ", pickupLng=" + getPickupLng() +
+            ", pickupFromDate='" + getPickupFromDate() + "'" +
             ", dropoffContact='" + getDropoffContact() + "'" +
             ", dropoffContactPhone='" + getDropoffContactPhone() + "'" +
             ", dropoffAddress='" + getDropoffAddress() + "'" +
             ", dropoffLat=" + getDropoffLat() +
             ", dropoffLng=" + getDropoffLng() +
+            ", points='" + getPoints() + "'" +
             ", dropoffUntilDate='" + getDropoffUntilDate() + "'" +
             ", state='" + getState() + "'" +
             ", shipperId=" + getShipperId() +
             ", carrierId=" + getCarrierId() +
             ", totalWeight=" + getTotalWeight() +
-            ", pickupFromDate='" + getPickupFromDate() + "'" +
             ", biddingFromDate='" + getBiddingFromDate() + "'" +
             ", biddingUntilDate='" + getBiddingUntilDate() + "'" +
             "}";

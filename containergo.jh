@@ -187,17 +187,23 @@ entity Container {
     distance Double required,
     desiredPrice Double required,
     additionalRequirements String,
+    pickupContact String required,
+    pickupContactPhone String required,
+    pickupAddress String required,
+    pickupLat Double required,
+    pickupLng Double required,
+    pickupFromDate Instant required,
     dropoffContact String,
     dropoffContactPhone String,
-    dropoffAddress String,
+    dropoffAddress String required,
     dropoffLat Double,
     dropoffLng Double,
+    points String,
     dropoffUntilDate Instant,
     state ContainerState required,
     shipperId Long required,
     carrierId Long,
     totalWeight Double required,
-    pickupFromDate Instant,
     biddingFromDate Instant,
     biddingUntilDate Instant
 }
@@ -236,8 +242,11 @@ entity Offer {
 }
 
 relationship ManyToOne {
-	Container{dropoffProvice} to Provice
-    Container{dropoffDistrict} to District
+	Container{pickupProvice required} to Provice
+    Container{pickupDistrict required} to District
+    Container{pickupWard required} to Ward
+    Container{dropoffProvice required} to Provice
+    Container{dropoffDistrict required} to District
     Container{dropoffWard} to Ward
     Container{type required} to ContainerType
     Container{status required} to ContainerStatus

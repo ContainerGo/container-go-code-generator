@@ -77,6 +77,48 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="pickupContact">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.pickupContact">Pickup Contact</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="pickupContactPhone">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.pickupContactPhone">Pickup Contact Phone</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="pickupAddress">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.pickupAddress">Pickup Address</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="pickupLat">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.pickupLat">Pickup Lat</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="pickupLng">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.pickupLng">Pickup Lng</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="pickupFromDate">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.pickupFromDate">Pickup From Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col" jhiSortBy="dropoffContact">
               <div class="d-flex">
                 <span jhiTranslate="containerGoServerApp.container.dropoffContact">Dropoff Contact</span>
@@ -108,6 +150,13 @@
             <th scope="col" jhiSortBy="dropoffLng">
               <div class="d-flex">
                 <span jhiTranslate="containerGoServerApp.container.dropoffLng">Dropoff Lng</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="points">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.points">Points</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
@@ -147,13 +196,6 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="pickupFromDate">
-              <div class="d-flex">
-                <span jhiTranslate="containerGoServerApp.container.pickupFromDate">Pickup From Date</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
             <th scope="col" jhiSortBy="biddingFromDate">
               <div class="d-flex">
                 <span jhiTranslate="containerGoServerApp.container.biddingFromDate">Bidding From Date</span>
@@ -165,6 +207,24 @@
               <div class="d-flex">
                 <span jhiTranslate="containerGoServerApp.container.biddingUntilDate">Bidding Until Date</span>
 
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="pickupProvice.id">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.pickupProvice">Pickup Provice</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="pickupDistrict.id">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.pickupDistrict">Pickup District</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="pickupWard.id">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.container.pickupWard">Pickup Ward</span>
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
@@ -230,19 +290,46 @@
               <td>{{ container.distance }}</td>
               <td>{{ container.desiredPrice }}</td>
               <td>{{ container.additionalRequirements }}</td>
+              <td>{{ container.pickupContact }}</td>
+              <td>{{ container.pickupContactPhone }}</td>
+              <td>{{ container.pickupAddress }}</td>
+              <td>{{ container.pickupLat }}</td>
+              <td>{{ container.pickupLng }}</td>
+              <td>{{ container.pickupFromDate | formatMediumDatetime }}</td>
               <td>{{ container.dropoffContact }}</td>
               <td>{{ container.dropoffContactPhone }}</td>
               <td>{{ container.dropoffAddress }}</td>
               <td>{{ container.dropoffLat }}</td>
               <td>{{ container.dropoffLng }}</td>
+              <td>{{ container.points }}</td>
               <td>{{ container.dropoffUntilDate | formatMediumDatetime }}</td>
               <td jhiTranslate="{{ 'containerGoServerApp.ContainerState.' + container.state }}">{{ container.state }}</td>
               <td>{{ container.shipperId }}</td>
               <td>{{ container.carrierId }}</td>
               <td>{{ container.totalWeight }}</td>
-              <td>{{ container.pickupFromDate | formatMediumDatetime }}</td>
               <td>{{ container.biddingFromDate | formatMediumDatetime }}</td>
               <td>{{ container.biddingUntilDate | formatMediumDatetime }}</td>
+              <td>
+                @if (container.pickupProvice) {
+                  <div>
+                    <a [routerLink]="['/provice', container.pickupProvice.id, 'view']">{{ container.pickupProvice.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (container.pickupDistrict) {
+                  <div>
+                    <a [routerLink]="['/district', container.pickupDistrict.id, 'view']">{{ container.pickupDistrict.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (container.pickupWard) {
+                  <div>
+                    <a [routerLink]="['/ward', container.pickupWard.id, 'view']">{{ container.pickupWard.id }}</a>
+                  </div>
+                }
+              </td>
               <td>
                 @if (container.dropoffProvice) {
                   <div>

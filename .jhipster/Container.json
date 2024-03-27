@@ -34,6 +34,36 @@
       "fieldType": "String"
     },
     {
+      "fieldName": "pickupContact",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "pickupContactPhone",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "pickupAddress",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "pickupLat",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "pickupLng",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "pickupFromDate",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
       "fieldName": "dropoffContact",
       "fieldType": "String"
     },
@@ -43,7 +73,8 @@
     },
     {
       "fieldName": "dropoffAddress",
-      "fieldType": "String"
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
     },
     {
       "fieldName": "dropoffLat",
@@ -52,6 +83,10 @@
     {
       "fieldName": "dropoffLng",
       "fieldType": "Double"
+    },
+    {
+      "fieldName": "points",
+      "fieldType": "String"
     },
     {
       "fieldName": "dropoffUntilDate",
@@ -78,10 +113,6 @@
       "fieldValidateRules": ["required"]
     },
     {
-      "fieldName": "pickupFromDate",
-      "fieldType": "Instant"
-    },
-    {
       "fieldName": "biddingFromDate",
       "fieldType": "Instant"
     },
@@ -96,15 +127,38 @@
   "relationships": [
     {
       "otherEntityName": "provice",
+      "relationshipName": "pickupProvice",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityName": "district",
+      "relationshipName": "pickupDistrict",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityName": "ward",
+      "relationshipName": "pickupWard",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityName": "provice",
       "relationshipName": "dropoffProvice",
       "relationshipSide": "left",
-      "relationshipType": "many-to-one"
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
     },
     {
       "otherEntityName": "district",
       "relationshipName": "dropoffDistrict",
       "relationshipSide": "left",
-      "relationshipType": "many-to-one"
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
     },
     {
       "otherEntityName": "ward",

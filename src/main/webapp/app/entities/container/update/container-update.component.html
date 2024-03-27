@@ -120,6 +120,140 @@
         </div>
 
         <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.pickupContact" for="field_pickupContact"
+            >Pickup Contact</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="pickupContact"
+            id="field_pickupContact"
+            data-cy="pickupContact"
+            formControlName="pickupContact"
+          />
+          @if (editForm.get('pickupContact')!.invalid && (editForm.get('pickupContact')!.dirty || editForm.get('pickupContact')!.touched)) {
+            <div>
+              @if (editForm.get('pickupContact')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.pickupContactPhone" for="field_pickupContactPhone"
+            >Pickup Contact Phone</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="pickupContactPhone"
+            id="field_pickupContactPhone"
+            data-cy="pickupContactPhone"
+            formControlName="pickupContactPhone"
+          />
+          @if (
+            editForm.get('pickupContactPhone')!.invalid &&
+            (editForm.get('pickupContactPhone')!.dirty || editForm.get('pickupContactPhone')!.touched)
+          ) {
+            <div>
+              @if (editForm.get('pickupContactPhone')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.pickupAddress" for="field_pickupAddress"
+            >Pickup Address</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="pickupAddress"
+            id="field_pickupAddress"
+            data-cy="pickupAddress"
+            formControlName="pickupAddress"
+          />
+          @if (editForm.get('pickupAddress')!.invalid && (editForm.get('pickupAddress')!.dirty || editForm.get('pickupAddress')!.touched)) {
+            <div>
+              @if (editForm.get('pickupAddress')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.pickupLat" for="field_pickupLat">Pickup Lat</label>
+          <input type="number" class="form-control" name="pickupLat" id="field_pickupLat" data-cy="pickupLat" formControlName="pickupLat" />
+          @if (editForm.get('pickupLat')!.invalid && (editForm.get('pickupLat')!.dirty || editForm.get('pickupLat')!.touched)) {
+            <div>
+              @if (editForm.get('pickupLat')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('pickupLat')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Trường này phải là một số.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.pickupLng" for="field_pickupLng">Pickup Lng</label>
+          <input type="number" class="form-control" name="pickupLng" id="field_pickupLng" data-cy="pickupLng" formControlName="pickupLng" />
+          @if (editForm.get('pickupLng')!.invalid && (editForm.get('pickupLng')!.dirty || editForm.get('pickupLng')!.touched)) {
+            <div>
+              @if (editForm.get('pickupLng')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('pickupLng')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Trường này phải là một số.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.pickupFromDate" for="field_pickupFromDate"
+            >Pickup From Date</label
+          >
+          <div class="d-flex">
+            <input
+              id="field_pickupFromDate"
+              data-cy="pickupFromDate"
+              type="datetime-local"
+              class="form-control"
+              name="pickupFromDate"
+              formControlName="pickupFromDate"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (
+            editForm.get('pickupFromDate')!.invalid && (editForm.get('pickupFromDate')!.dirty || editForm.get('pickupFromDate')!.touched)
+          ) {
+            <div>
+              @if (editForm.get('pickupFromDate')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('pickupFromDate')?.errors?.datetimelocal"
+                jhiTranslate="entity.validation.datetimelocal"
+                >Trường này phải là định dạng thời gian.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
           <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffContact" for="field_dropoffContact"
             >Dropoff Contact</label
           >
@@ -159,6 +293,15 @@
             data-cy="dropoffAddress"
             formControlName="dropoffAddress"
           />
+          @if (
+            editForm.get('dropoffAddress')!.invalid && (editForm.get('dropoffAddress')!.dirty || editForm.get('dropoffAddress')!.touched)
+          ) {
+            <div>
+              @if (editForm.get('dropoffAddress')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
         </div>
 
         <div class="mb-3">
@@ -183,6 +326,11 @@
             data-cy="dropoffLng"
             formControlName="dropoffLng"
           />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.points" for="field_points">Points</label>
+          <input type="text" class="form-control" name="points" id="field_points" data-cy="points" formControlName="points" />
         </div>
 
         <div class="mb-3">
@@ -268,23 +416,6 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.pickupFromDate" for="field_pickupFromDate"
-            >Pickup From Date</label
-          >
-          <div class="d-flex">
-            <input
-              id="field_pickupFromDate"
-              data-cy="pickupFromDate"
-              type="datetime-local"
-              class="form-control"
-              name="pickupFromDate"
-              formControlName="pickupFromDate"
-              placeholder="YYYY-MM-DD HH:mm"
-            />
-          </div>
-        </div>
-
-        <div class="mb-3">
           <label class="form-label" jhiTranslate="containerGoServerApp.container.biddingFromDate" for="field_biddingFromDate"
             >Bidding From Date</label
           >
@@ -319,6 +450,93 @@
         </div>
 
         <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.pickupProvice" for="field_pickupProvice"
+            >Pickup Provice</label
+          >
+          <select
+            class="form-control"
+            id="field_pickupProvice"
+            data-cy="pickupProvice"
+            name="pickupProvice"
+            formControlName="pickupProvice"
+            [compareWith]="compareProvice"
+          >
+            @if (!editForm.get('pickupProvice')!.value) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (proviceOption of provicesSharedCollection; track $index) {
+              <option [ngValue]="proviceOption">{{ proviceOption.id }}</option>
+            }
+          </select>
+        </div>
+        @if (
+          editForm.get(['pickupProvice'])!.invalid && (editForm.get(['pickupProvice'])!.dirty || editForm.get(['pickupProvice'])!.touched)
+        ) {
+          <div>
+            @if (editForm.get(['pickupProvice'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+            }
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.pickupDistrict" for="field_pickupDistrict"
+            >Pickup District</label
+          >
+          <select
+            class="form-control"
+            id="field_pickupDistrict"
+            data-cy="pickupDistrict"
+            name="pickupDistrict"
+            formControlName="pickupDistrict"
+            [compareWith]="compareDistrict"
+          >
+            @if (!editForm.get('pickupDistrict')!.value) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (districtOption of districtsSharedCollection; track $index) {
+              <option [ngValue]="districtOption">{{ districtOption.id }}</option>
+            }
+          </select>
+        </div>
+        @if (
+          editForm.get(['pickupDistrict'])!.invalid &&
+          (editForm.get(['pickupDistrict'])!.dirty || editForm.get(['pickupDistrict'])!.touched)
+        ) {
+          <div>
+            @if (editForm.get(['pickupDistrict'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+            }
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.container.pickupWard" for="field_pickupWard">Pickup Ward</label>
+          <select
+            class="form-control"
+            id="field_pickupWard"
+            data-cy="pickupWard"
+            name="pickupWard"
+            formControlName="pickupWard"
+            [compareWith]="compareWard"
+          >
+            @if (!editForm.get('pickupWard')!.value) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (wardOption of wardsSharedCollection; track $index) {
+              <option [ngValue]="wardOption">{{ wardOption.id }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['pickupWard'])!.invalid && (editForm.get(['pickupWard'])!.dirty || editForm.get(['pickupWard'])!.touched)) {
+          <div>
+            @if (editForm.get(['pickupWard'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+            }
+          </div>
+        }
+
+        <div class="mb-3">
           <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffProvice" for="field_dropoffProvice"
             >Dropoff Provice</label
           >
@@ -330,12 +548,24 @@
             formControlName="dropoffProvice"
             [compareWith]="compareProvice"
           >
-            <option [ngValue]="null"></option>
+            @if (!editForm.get('dropoffProvice')!.value) {
+              <option [ngValue]="null" selected></option>
+            }
             @for (proviceOption of provicesSharedCollection; track $index) {
               <option [ngValue]="proviceOption">{{ proviceOption.id }}</option>
             }
           </select>
         </div>
+        @if (
+          editForm.get(['dropoffProvice'])!.invalid &&
+          (editForm.get(['dropoffProvice'])!.dirty || editForm.get(['dropoffProvice'])!.touched)
+        ) {
+          <div>
+            @if (editForm.get(['dropoffProvice'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+            }
+          </div>
+        }
 
         <div class="mb-3">
           <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffDistrict" for="field_dropoffDistrict"
@@ -349,12 +579,24 @@
             formControlName="dropoffDistrict"
             [compareWith]="compareDistrict"
           >
-            <option [ngValue]="null"></option>
+            @if (!editForm.get('dropoffDistrict')!.value) {
+              <option [ngValue]="null" selected></option>
+            }
             @for (districtOption of districtsSharedCollection; track $index) {
               <option [ngValue]="districtOption">{{ districtOption.id }}</option>
             }
           </select>
         </div>
+        @if (
+          editForm.get(['dropoffDistrict'])!.invalid &&
+          (editForm.get(['dropoffDistrict'])!.dirty || editForm.get(['dropoffDistrict'])!.touched)
+        ) {
+          <div>
+            @if (editForm.get(['dropoffDistrict'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+            }
+          </div>
+        }
 
         <div class="mb-3">
           <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffWard" for="field_dropoffWard">Dropoff Ward</label>
