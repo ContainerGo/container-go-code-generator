@@ -4,10 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static vn.containergo.domain.ContainerAsserts.*;
+import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.BeforeEach;
@@ -93,6 +95,9 @@ class ContainerResourceIT {
 
     private static Random random = new Random();
     private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+
+    @Autowired
+    private ObjectMapper om;
 
     @Autowired
     private ContainerRepository containerRepository;
@@ -191,35 +196,23 @@ class ContainerResourceIT {
 
     @Test
     void createContainer() throws Exception {
-        int databaseSizeBeforeCreate = containerRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the Container
         ContainerDTO containerDTO = containerMapper.toDto(container);
-        restContainerMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerDTO)))
-            .andExpect(status().isCreated());
+        var returnedContainerDTO = om.readValue(
+            restContainerMockMvc
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(),
+            ContainerDTO.class
+        );
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeCreate + 1);
-        Container testContainer = containerList.get(containerList.size() - 1);
-        assertThat(testContainer.getContNo()).isEqualTo(DEFAULT_CONT_NO);
-        assertThat(testContainer.getEstimatedPrice()).isEqualTo(DEFAULT_ESTIMATED_PRICE);
-        assertThat(testContainer.getDistance()).isEqualTo(DEFAULT_DISTANCE);
-        assertThat(testContainer.getDesiredPrice()).isEqualTo(DEFAULT_DESIRED_PRICE);
-        assertThat(testContainer.getAdditionalRequirements()).isEqualTo(DEFAULT_ADDITIONAL_REQUIREMENTS);
-        assertThat(testContainer.getDropoffContact()).isEqualTo(DEFAULT_DROPOFF_CONTACT);
-        assertThat(testContainer.getDropoffContactPhone()).isEqualTo(DEFAULT_DROPOFF_CONTACT_PHONE);
-        assertThat(testContainer.getDropoffAddress()).isEqualTo(DEFAULT_DROPOFF_ADDRESS);
-        assertThat(testContainer.getDropoffLat()).isEqualTo(DEFAULT_DROPOFF_LAT);
-        assertThat(testContainer.getDropoffLng()).isEqualTo(DEFAULT_DROPOFF_LNG);
-        assertThat(testContainer.getDropoffUntilDate()).isEqualTo(DEFAULT_DROPOFF_UNTIL_DATE);
-        assertThat(testContainer.getState()).isEqualTo(DEFAULT_STATE);
-        assertThat(testContainer.getShipperId()).isEqualTo(DEFAULT_SHIPPER_ID);
-        assertThat(testContainer.getCarrierId()).isEqualTo(DEFAULT_CARRIER_ID);
-        assertThat(testContainer.getTotalWeight()).isEqualTo(DEFAULT_TOTAL_WEIGHT);
-        assertThat(testContainer.getPickupFromDate()).isEqualTo(DEFAULT_PICKUP_FROM_DATE);
-        assertThat(testContainer.getBiddingFromDate()).isEqualTo(DEFAULT_BIDDING_FROM_DATE);
-        assertThat(testContainer.getBiddingUntilDate()).isEqualTo(DEFAULT_BIDDING_UNTIL_DATE);
+        assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
+        var returnedContainer = containerMapper.toEntity(returnedContainerDTO);
+        assertContainerUpdatableFieldsEquals(returnedContainer, getPersistedContainer(returnedContainer));
     }
 
     @Test
@@ -228,21 +221,20 @@ class ContainerResourceIT {
         container.setId(1L);
         ContainerDTO containerDTO = containerMapper.toDto(container);
 
-        int databaseSizeBeforeCreate = containerRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restContainerMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeCreate);
+        assertSameRepositoryCount(databaseSizeBeforeCreate);
     }
 
     @Test
     void checkContNoIsRequired() throws Exception {
-        int databaseSizeBeforeTest = containerRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         container.setContNo(null);
 
@@ -250,16 +242,15 @@ class ContainerResourceIT {
         ContainerDTO containerDTO = containerMapper.toDto(container);
 
         restContainerMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkEstimatedPriceIsRequired() throws Exception {
-        int databaseSizeBeforeTest = containerRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         container.setEstimatedPrice(null);
 
@@ -267,16 +258,15 @@ class ContainerResourceIT {
         ContainerDTO containerDTO = containerMapper.toDto(container);
 
         restContainerMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkDistanceIsRequired() throws Exception {
-        int databaseSizeBeforeTest = containerRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         container.setDistance(null);
 
@@ -284,16 +274,15 @@ class ContainerResourceIT {
         ContainerDTO containerDTO = containerMapper.toDto(container);
 
         restContainerMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkDesiredPriceIsRequired() throws Exception {
-        int databaseSizeBeforeTest = containerRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         container.setDesiredPrice(null);
 
@@ -301,16 +290,15 @@ class ContainerResourceIT {
         ContainerDTO containerDTO = containerMapper.toDto(container);
 
         restContainerMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkStateIsRequired() throws Exception {
-        int databaseSizeBeforeTest = containerRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         container.setState(null);
 
@@ -318,16 +306,15 @@ class ContainerResourceIT {
         ContainerDTO containerDTO = containerMapper.toDto(container);
 
         restContainerMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkShipperIdIsRequired() throws Exception {
-        int databaseSizeBeforeTest = containerRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         container.setShipperId(null);
 
@@ -335,16 +322,15 @@ class ContainerResourceIT {
         ContainerDTO containerDTO = containerMapper.toDto(container);
 
         restContainerMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkTotalWeightIsRequired() throws Exception {
-        int databaseSizeBeforeTest = containerRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         container.setTotalWeight(null);
 
@@ -352,11 +338,10 @@ class ContainerResourceIT {
         ContainerDTO containerDTO = containerMapper.toDto(container);
 
         restContainerMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
@@ -432,7 +417,7 @@ class ContainerResourceIT {
         // Initialize the database
         containerRepository.save(container);
 
-        int databaseSizeBeforeUpdate = containerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the container
         Container updatedContainer = containerRepository.findById(container.getId()).orElseThrow();
@@ -461,37 +446,18 @@ class ContainerResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, containerDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(containerDTO))
+                    .content(om.writeValueAsBytes(containerDTO))
             )
             .andExpect(status().isOk());
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeUpdate);
-        Container testContainer = containerList.get(containerList.size() - 1);
-        assertThat(testContainer.getContNo()).isEqualTo(UPDATED_CONT_NO);
-        assertThat(testContainer.getEstimatedPrice()).isEqualTo(UPDATED_ESTIMATED_PRICE);
-        assertThat(testContainer.getDistance()).isEqualTo(UPDATED_DISTANCE);
-        assertThat(testContainer.getDesiredPrice()).isEqualTo(UPDATED_DESIRED_PRICE);
-        assertThat(testContainer.getAdditionalRequirements()).isEqualTo(UPDATED_ADDITIONAL_REQUIREMENTS);
-        assertThat(testContainer.getDropoffContact()).isEqualTo(UPDATED_DROPOFF_CONTACT);
-        assertThat(testContainer.getDropoffContactPhone()).isEqualTo(UPDATED_DROPOFF_CONTACT_PHONE);
-        assertThat(testContainer.getDropoffAddress()).isEqualTo(UPDATED_DROPOFF_ADDRESS);
-        assertThat(testContainer.getDropoffLat()).isEqualTo(UPDATED_DROPOFF_LAT);
-        assertThat(testContainer.getDropoffLng()).isEqualTo(UPDATED_DROPOFF_LNG);
-        assertThat(testContainer.getDropoffUntilDate()).isEqualTo(UPDATED_DROPOFF_UNTIL_DATE);
-        assertThat(testContainer.getState()).isEqualTo(UPDATED_STATE);
-        assertThat(testContainer.getShipperId()).isEqualTo(UPDATED_SHIPPER_ID);
-        assertThat(testContainer.getCarrierId()).isEqualTo(UPDATED_CARRIER_ID);
-        assertThat(testContainer.getTotalWeight()).isEqualTo(UPDATED_TOTAL_WEIGHT);
-        assertThat(testContainer.getPickupFromDate()).isEqualTo(UPDATED_PICKUP_FROM_DATE);
-        assertThat(testContainer.getBiddingFromDate()).isEqualTo(UPDATED_BIDDING_FROM_DATE);
-        assertThat(testContainer.getBiddingUntilDate()).isEqualTo(UPDATED_BIDDING_UNTIL_DATE);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertPersistedContainerToMatchAllProperties(updatedContainer);
     }
 
     @Test
     void putNonExistingContainer() throws Exception {
-        int databaseSizeBeforeUpdate = containerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         container.setId(longCount.incrementAndGet());
 
         // Create the Container
@@ -502,18 +468,17 @@ class ContainerResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, containerDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(containerDTO))
+                    .content(om.writeValueAsBytes(containerDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithIdMismatchContainer() throws Exception {
-        int databaseSizeBeforeUpdate = containerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         container.setId(longCount.incrementAndGet());
 
         // Create the Container
@@ -524,18 +489,17 @@ class ContainerResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(containerDTO))
+                    .content(om.writeValueAsBytes(containerDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithMissingIdPathParamContainer() throws Exception {
-        int databaseSizeBeforeUpdate = containerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         container.setId(longCount.incrementAndGet());
 
         // Create the Container
@@ -543,12 +507,11 @@ class ContainerResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restContainerMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerDTO)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -556,52 +519,39 @@ class ContainerResourceIT {
         // Initialize the database
         containerRepository.save(container);
 
-        int databaseSizeBeforeUpdate = containerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the container using partial update
         Container partialUpdatedContainer = new Container();
         partialUpdatedContainer.setId(container.getId());
 
         partialUpdatedContainer
-            .distance(UPDATED_DISTANCE)
-            .desiredPrice(UPDATED_DESIRED_PRICE)
-            .dropoffContact(UPDATED_DROPOFF_CONTACT)
+            .contNo(UPDATED_CONT_NO)
+            .estimatedPrice(UPDATED_ESTIMATED_PRICE)
+            .additionalRequirements(UPDATED_ADDITIONAL_REQUIREMENTS)
             .dropoffContactPhone(UPDATED_DROPOFF_CONTACT_PHONE)
             .dropoffAddress(UPDATED_DROPOFF_ADDRESS)
-            .dropoffLng(UPDATED_DROPOFF_LNG)
-            .state(UPDATED_STATE)
-            .shipperId(UPDATED_SHIPPER_ID);
+            .dropoffLat(UPDATED_DROPOFF_LAT)
+            .dropoffUntilDate(UPDATED_DROPOFF_UNTIL_DATE)
+            .shipperId(UPDATED_SHIPPER_ID)
+            .totalWeight(UPDATED_TOTAL_WEIGHT)
+            .biddingUntilDate(UPDATED_BIDDING_UNTIL_DATE);
 
         restContainerMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedContainer.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedContainer))
+                    .content(om.writeValueAsBytes(partialUpdatedContainer))
             )
             .andExpect(status().isOk());
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeUpdate);
-        Container testContainer = containerList.get(containerList.size() - 1);
-        assertThat(testContainer.getContNo()).isEqualTo(DEFAULT_CONT_NO);
-        assertThat(testContainer.getEstimatedPrice()).isEqualTo(DEFAULT_ESTIMATED_PRICE);
-        assertThat(testContainer.getDistance()).isEqualTo(UPDATED_DISTANCE);
-        assertThat(testContainer.getDesiredPrice()).isEqualTo(UPDATED_DESIRED_PRICE);
-        assertThat(testContainer.getAdditionalRequirements()).isEqualTo(DEFAULT_ADDITIONAL_REQUIREMENTS);
-        assertThat(testContainer.getDropoffContact()).isEqualTo(UPDATED_DROPOFF_CONTACT);
-        assertThat(testContainer.getDropoffContactPhone()).isEqualTo(UPDATED_DROPOFF_CONTACT_PHONE);
-        assertThat(testContainer.getDropoffAddress()).isEqualTo(UPDATED_DROPOFF_ADDRESS);
-        assertThat(testContainer.getDropoffLat()).isEqualTo(DEFAULT_DROPOFF_LAT);
-        assertThat(testContainer.getDropoffLng()).isEqualTo(UPDATED_DROPOFF_LNG);
-        assertThat(testContainer.getDropoffUntilDate()).isEqualTo(DEFAULT_DROPOFF_UNTIL_DATE);
-        assertThat(testContainer.getState()).isEqualTo(UPDATED_STATE);
-        assertThat(testContainer.getShipperId()).isEqualTo(UPDATED_SHIPPER_ID);
-        assertThat(testContainer.getCarrierId()).isEqualTo(DEFAULT_CARRIER_ID);
-        assertThat(testContainer.getTotalWeight()).isEqualTo(DEFAULT_TOTAL_WEIGHT);
-        assertThat(testContainer.getPickupFromDate()).isEqualTo(DEFAULT_PICKUP_FROM_DATE);
-        assertThat(testContainer.getBiddingFromDate()).isEqualTo(DEFAULT_BIDDING_FROM_DATE);
-        assertThat(testContainer.getBiddingUntilDate()).isEqualTo(DEFAULT_BIDDING_UNTIL_DATE);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertContainerUpdatableFieldsEquals(
+            createUpdateProxyForBean(partialUpdatedContainer, container),
+            getPersistedContainer(container)
+        );
     }
 
     @Test
@@ -609,7 +559,7 @@ class ContainerResourceIT {
         // Initialize the database
         containerRepository.save(container);
 
-        int databaseSizeBeforeUpdate = containerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the container using partial update
         Container partialUpdatedContainer = new Container();
@@ -639,37 +589,19 @@ class ContainerResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedContainer.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedContainer))
+                    .content(om.writeValueAsBytes(partialUpdatedContainer))
             )
             .andExpect(status().isOk());
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeUpdate);
-        Container testContainer = containerList.get(containerList.size() - 1);
-        assertThat(testContainer.getContNo()).isEqualTo(UPDATED_CONT_NO);
-        assertThat(testContainer.getEstimatedPrice()).isEqualTo(UPDATED_ESTIMATED_PRICE);
-        assertThat(testContainer.getDistance()).isEqualTo(UPDATED_DISTANCE);
-        assertThat(testContainer.getDesiredPrice()).isEqualTo(UPDATED_DESIRED_PRICE);
-        assertThat(testContainer.getAdditionalRequirements()).isEqualTo(UPDATED_ADDITIONAL_REQUIREMENTS);
-        assertThat(testContainer.getDropoffContact()).isEqualTo(UPDATED_DROPOFF_CONTACT);
-        assertThat(testContainer.getDropoffContactPhone()).isEqualTo(UPDATED_DROPOFF_CONTACT_PHONE);
-        assertThat(testContainer.getDropoffAddress()).isEqualTo(UPDATED_DROPOFF_ADDRESS);
-        assertThat(testContainer.getDropoffLat()).isEqualTo(UPDATED_DROPOFF_LAT);
-        assertThat(testContainer.getDropoffLng()).isEqualTo(UPDATED_DROPOFF_LNG);
-        assertThat(testContainer.getDropoffUntilDate()).isEqualTo(UPDATED_DROPOFF_UNTIL_DATE);
-        assertThat(testContainer.getState()).isEqualTo(UPDATED_STATE);
-        assertThat(testContainer.getShipperId()).isEqualTo(UPDATED_SHIPPER_ID);
-        assertThat(testContainer.getCarrierId()).isEqualTo(UPDATED_CARRIER_ID);
-        assertThat(testContainer.getTotalWeight()).isEqualTo(UPDATED_TOTAL_WEIGHT);
-        assertThat(testContainer.getPickupFromDate()).isEqualTo(UPDATED_PICKUP_FROM_DATE);
-        assertThat(testContainer.getBiddingFromDate()).isEqualTo(UPDATED_BIDDING_FROM_DATE);
-        assertThat(testContainer.getBiddingUntilDate()).isEqualTo(UPDATED_BIDDING_UNTIL_DATE);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertContainerUpdatableFieldsEquals(partialUpdatedContainer, getPersistedContainer(partialUpdatedContainer));
     }
 
     @Test
     void patchNonExistingContainer() throws Exception {
-        int databaseSizeBeforeUpdate = containerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         container.setId(longCount.incrementAndGet());
 
         // Create the Container
@@ -680,18 +612,17 @@ class ContainerResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, containerDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(containerDTO))
+                    .content(om.writeValueAsBytes(containerDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithIdMismatchContainer() throws Exception {
-        int databaseSizeBeforeUpdate = containerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         container.setId(longCount.incrementAndGet());
 
         // Create the Container
@@ -702,18 +633,17 @@ class ContainerResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(containerDTO))
+                    .content(om.writeValueAsBytes(containerDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithMissingIdPathParamContainer() throws Exception {
-        int databaseSizeBeforeUpdate = containerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         container.setId(longCount.incrementAndGet());
 
         // Create the Container
@@ -721,14 +651,11 @@ class ContainerResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restContainerMockMvc
-            .perform(
-                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(containerDTO))
-            )
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(containerDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -736,7 +663,7 @@ class ContainerResourceIT {
         // Initialize the database
         containerRepository.save(container);
 
-        int databaseSizeBeforeDelete = containerRepository.findAll().size();
+        long databaseSizeBeforeDelete = getRepositoryCount();
 
         // Delete the container
         restContainerMockMvc
@@ -744,7 +671,34 @@ class ContainerResourceIT {
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeDelete - 1);
+        assertDecrementedRepositoryCount(databaseSizeBeforeDelete);
+    }
+
+    protected long getRepositoryCount() {
+        return containerRepository.count();
+    }
+
+    protected void assertIncrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore + 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertDecrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore - 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertSameRepositoryCount(long countBefore) {
+        assertThat(countBefore).isEqualTo(getRepositoryCount());
+    }
+
+    protected Container getPersistedContainer(Container container) {
+        return containerRepository.findById(container.getId()).orElseThrow();
+    }
+
+    protected void assertPersistedContainerToMatchAllProperties(Container expectedContainer) {
+        assertContainerAllPropertiesEquals(expectedContainer, getPersistedContainer(expectedContainer));
+    }
+
+    protected void assertPersistedContainerToMatchUpdatableProperties(Container expectedContainer) {
+        assertContainerAllUpdatablePropertiesEquals(expectedContainer, getPersistedContainer(expectedContainer));
     }
 }

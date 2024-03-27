@@ -90,7 +90,9 @@ entity Truck {
     capacity Double,
     status TruckStatus required,
     mileage Double,
-    numberPlate String required
+    numberPlate String required,
+    lat Double,
+    lng Double
 }
 
 entity Carrier {
@@ -170,6 +172,14 @@ entity ContainerType {
     description String
 }
 
+entity ContainerOwner {
+	id Long,
+    name String required,
+    phone String,
+    email String,
+    address String
+}
+
 entity Container {
 	id Long,
     contNo String required,
@@ -192,7 +202,25 @@ entity Container {
     biddingUntilDate Instant
 }
 
+entity ShipmentHistory {
+	id Long,
+    event String required,
+    timestamp Instant required,
+    executedBy String required,
+    location String,
+    lat Double,
+    lng Double
+}
+
 // Offer
+enum OfferState {
+    PENDING, // Offer has been made, waiting for acceptance
+    ACCEPTED, // Offer has been accepted
+    REJECTED, // Offer has been rejected
+    EXPIRED, // Offer has expired
+    WITHDRAWN // Offer has been withdrawn by the bidder
+}
+
 entity Offer {
 	id Long,
     message String,
@@ -200,8 +228,11 @@ entity Offer {
     pickupUntilDate Instant required,
     dropoffFromDate Instant required,
     dropoffUntilDate Instant required,
+    state OfferState required,
     price Double required,
-    carrierId Long required
+    carrierId Long required,
+    carrierPersonId Long,
+    truckId Long
 }
 
 relationship ManyToOne {
@@ -212,6 +243,8 @@ relationship ManyToOne {
     Container{status required} to ContainerStatus
     Container{truckType} to TruckType
     Container{truck} to Truck
+    Container{owner} to ContainerOwner
+    ShipmentHistory{container required} to Container
     Offer{container required} to Container
     Truck{type required} to TruckType
 }

@@ -7,7 +7,7 @@ import { mergeMap } from 'rxjs/operators';
 import { IWard } from '../ward.model';
 import { WardService } from '../service/ward.service';
 
-export const wardResolve = (route: ActivatedRouteSnapshot): Observable<null | IWard> => {
+const wardResolve = (route: ActivatedRouteSnapshot): Observable<null | IWard> => {
   const id = route.params['id'];
   if (id) {
     return inject(WardService)

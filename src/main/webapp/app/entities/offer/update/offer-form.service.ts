@@ -39,8 +39,11 @@ type OfferFormGroupContent = {
   pickupUntilDate: FormControl<OfferFormRawValue['pickupUntilDate']>;
   dropoffFromDate: FormControl<OfferFormRawValue['dropoffFromDate']>;
   dropoffUntilDate: FormControl<OfferFormRawValue['dropoffUntilDate']>;
+  state: FormControl<OfferFormRawValue['state']>;
   price: FormControl<OfferFormRawValue['price']>;
   carrierId: FormControl<OfferFormRawValue['carrierId']>;
+  carrierPersonId: FormControl<OfferFormRawValue['carrierPersonId']>;
+  truckId: FormControl<OfferFormRawValue['truckId']>;
   container: FormControl<OfferFormRawValue['container']>;
 };
 
@@ -74,12 +77,17 @@ export class OfferFormService {
       dropoffUntilDate: new FormControl(offerRawValue.dropoffUntilDate, {
         validators: [Validators.required],
       }),
+      state: new FormControl(offerRawValue.state, {
+        validators: [Validators.required],
+      }),
       price: new FormControl(offerRawValue.price, {
         validators: [Validators.required],
       }),
       carrierId: new FormControl(offerRawValue.carrierId, {
         validators: [Validators.required],
       }),
+      carrierPersonId: new FormControl(offerRawValue.carrierPersonId),
+      truckId: new FormControl(offerRawValue.truckId),
       container: new FormControl(offerRawValue.container, {
         validators: [Validators.required],
       }),

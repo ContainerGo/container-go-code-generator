@@ -60,11 +60,10 @@ public class ProviceResource {
         if (proviceDTO.getId() != null) {
             throw new BadRequestAlertException("A new provice cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        ProviceDTO result = proviceService.save(proviceDTO);
-        return ResponseEntity
-            .created(new URI("/api/provices/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        proviceDTO = proviceService.save(proviceDTO);
+        return ResponseEntity.created(new URI("/api/provices/" + proviceDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, proviceDTO.getId().toString()))
+            .body(proviceDTO);
     }
 
     /**
@@ -94,11 +93,10 @@ public class ProviceResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        ProviceDTO result = proviceService.update(proviceDTO);
-        return ResponseEntity
-            .ok()
+        proviceDTO = proviceService.update(proviceDTO);
+        return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, proviceDTO.getId().toString()))
-            .body(result);
+            .body(proviceDTO);
     }
 
     /**
@@ -174,8 +172,7 @@ public class ProviceResource {
     public ResponseEntity<Void> deleteProvice(@PathVariable("id") Long id) {
         log.debug("REST request to delete Provice : {}", id);
         proviceService.delete(id);
-        return ResponseEntity
-            .noContent()
+        return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }

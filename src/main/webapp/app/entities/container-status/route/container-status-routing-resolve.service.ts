@@ -7,7 +7,7 @@ import { mergeMap } from 'rxjs/operators';
 import { IContainerStatus } from '../container-status.model';
 import { ContainerStatusService } from '../service/container-status.service';
 
-export const containerStatusResolve = (route: ActivatedRouteSnapshot): Observable<null | IContainerStatus> => {
+const containerStatusResolve = (route: ActivatedRouteSnapshot): Observable<null | IContainerStatus> => {
   const id = route.params['id'];
   if (id) {
     return inject(ContainerStatusService)

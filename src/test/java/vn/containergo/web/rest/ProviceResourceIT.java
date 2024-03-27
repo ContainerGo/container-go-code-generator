@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static vn.containergo.domain.ProviceAsserts.*;
+import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +45,9 @@ class ProviceResourceIT {
 
     private static Random random = new Random();
     private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+
+    @Autowired
+    private ObjectMapper om;
 
     @Autowired
     private ProviceRepository proviceRepository;
@@ -85,20 +90,23 @@ class ProviceResourceIT {
 
     @Test
     void createProvice() throws Exception {
-        int databaseSizeBeforeCreate = proviceRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the Provice
         ProviceDTO proviceDTO = proviceMapper.toDto(provice);
-        restProviceMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(proviceDTO)))
-            .andExpect(status().isCreated());
+        var returnedProviceDTO = om.readValue(
+            restProviceMockMvc
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(proviceDTO)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(),
+            ProviceDTO.class
+        );
 
         // Validate the Provice in the database
-        List<Provice> proviceList = proviceRepository.findAll();
-        assertThat(proviceList).hasSize(databaseSizeBeforeCreate + 1);
-        Provice testProvice = proviceList.get(proviceList.size() - 1);
-        assertThat(testProvice.getCode()).isEqualTo(DEFAULT_CODE);
-        assertThat(testProvice.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testProvice.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
+        var returnedProvice = proviceMapper.toEntity(returnedProviceDTO);
+        assertProviceUpdatableFieldsEquals(returnedProvice, getPersistedProvice(returnedProvice));
     }
 
     @Test
@@ -107,21 +115,20 @@ class ProviceResourceIT {
         provice.setId(1L);
         ProviceDTO proviceDTO = proviceMapper.toDto(provice);
 
-        int databaseSizeBeforeCreate = proviceRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restProviceMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(proviceDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(proviceDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Provice in the database
-        List<Provice> proviceList = proviceRepository.findAll();
-        assertThat(proviceList).hasSize(databaseSizeBeforeCreate);
+        assertSameRepositoryCount(databaseSizeBeforeCreate);
     }
 
     @Test
     void checkCodeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = proviceRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         provice.setCode(null);
 
@@ -129,16 +136,15 @@ class ProviceResourceIT {
         ProviceDTO proviceDTO = proviceMapper.toDto(provice);
 
         restProviceMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(proviceDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(proviceDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Provice> proviceList = proviceRepository.findAll();
-        assertThat(proviceList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkNameIsRequired() throws Exception {
-        int databaseSizeBeforeTest = proviceRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         provice.setName(null);
 
@@ -146,11 +152,10 @@ class ProviceResourceIT {
         ProviceDTO proviceDTO = proviceMapper.toDto(provice);
 
         restProviceMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(proviceDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(proviceDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Provice> proviceList = proviceRepository.findAll();
-        assertThat(proviceList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
@@ -196,7 +201,7 @@ class ProviceResourceIT {
         // Initialize the database
         proviceRepository.save(provice);
 
-        int databaseSizeBeforeUpdate = proviceRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the provice
         Provice updatedProvice = proviceRepository.findById(provice.getId()).orElseThrow();
@@ -205,24 +210,18 @@ class ProviceResourceIT {
 
         restProviceMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, proviceDTO.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(proviceDTO))
+                put(ENTITY_API_URL_ID, proviceDTO.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(proviceDTO))
             )
             .andExpect(status().isOk());
 
         // Validate the Provice in the database
-        List<Provice> proviceList = proviceRepository.findAll();
-        assertThat(proviceList).hasSize(databaseSizeBeforeUpdate);
-        Provice testProvice = proviceList.get(proviceList.size() - 1);
-        assertThat(testProvice.getCode()).isEqualTo(UPDATED_CODE);
-        assertThat(testProvice.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testProvice.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertPersistedProviceToMatchAllProperties(updatedProvice);
     }
 
     @Test
     void putNonExistingProvice() throws Exception {
-        int databaseSizeBeforeUpdate = proviceRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         provice.setId(longCount.incrementAndGet());
 
         // Create the Provice
@@ -231,20 +230,17 @@ class ProviceResourceIT {
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restProviceMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, proviceDTO.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(proviceDTO))
+                put(ENTITY_API_URL_ID, proviceDTO.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(proviceDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Provice in the database
-        List<Provice> proviceList = proviceRepository.findAll();
-        assertThat(proviceList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithIdMismatchProvice() throws Exception {
-        int databaseSizeBeforeUpdate = proviceRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         provice.setId(longCount.incrementAndGet());
 
         // Create the Provice
@@ -255,18 +251,17 @@ class ProviceResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(proviceDTO))
+                    .content(om.writeValueAsBytes(proviceDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Provice in the database
-        List<Provice> proviceList = proviceRepository.findAll();
-        assertThat(proviceList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithMissingIdPathParamProvice() throws Exception {
-        int databaseSizeBeforeUpdate = proviceRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         provice.setId(longCount.incrementAndGet());
 
         // Create the Provice
@@ -274,12 +269,11 @@ class ProviceResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restProviceMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(proviceDTO)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(proviceDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Provice in the database
-        List<Provice> proviceList = proviceRepository.findAll();
-        assertThat(proviceList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -287,29 +281,26 @@ class ProviceResourceIT {
         // Initialize the database
         proviceRepository.save(provice);
 
-        int databaseSizeBeforeUpdate = proviceRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the provice using partial update
         Provice partialUpdatedProvice = new Provice();
         partialUpdatedProvice.setId(provice.getId());
 
-        partialUpdatedProvice.name(UPDATED_NAME);
+        partialUpdatedProvice.code(UPDATED_CODE);
 
         restProviceMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedProvice.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedProvice))
+                    .content(om.writeValueAsBytes(partialUpdatedProvice))
             )
             .andExpect(status().isOk());
 
         // Validate the Provice in the database
-        List<Provice> proviceList = proviceRepository.findAll();
-        assertThat(proviceList).hasSize(databaseSizeBeforeUpdate);
-        Provice testProvice = proviceList.get(proviceList.size() - 1);
-        assertThat(testProvice.getCode()).isEqualTo(DEFAULT_CODE);
-        assertThat(testProvice.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testProvice.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertProviceUpdatableFieldsEquals(createUpdateProxyForBean(partialUpdatedProvice, provice), getPersistedProvice(provice));
     }
 
     @Test
@@ -317,7 +308,7 @@ class ProviceResourceIT {
         // Initialize the database
         proviceRepository.save(provice);
 
-        int databaseSizeBeforeUpdate = proviceRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the provice using partial update
         Provice partialUpdatedProvice = new Provice();
@@ -329,22 +320,19 @@ class ProviceResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedProvice.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedProvice))
+                    .content(om.writeValueAsBytes(partialUpdatedProvice))
             )
             .andExpect(status().isOk());
 
         // Validate the Provice in the database
-        List<Provice> proviceList = proviceRepository.findAll();
-        assertThat(proviceList).hasSize(databaseSizeBeforeUpdate);
-        Provice testProvice = proviceList.get(proviceList.size() - 1);
-        assertThat(testProvice.getCode()).isEqualTo(UPDATED_CODE);
-        assertThat(testProvice.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testProvice.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertProviceUpdatableFieldsEquals(partialUpdatedProvice, getPersistedProvice(partialUpdatedProvice));
     }
 
     @Test
     void patchNonExistingProvice() throws Exception {
-        int databaseSizeBeforeUpdate = proviceRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         provice.setId(longCount.incrementAndGet());
 
         // Create the Provice
@@ -355,18 +343,17 @@ class ProviceResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, proviceDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(proviceDTO))
+                    .content(om.writeValueAsBytes(proviceDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Provice in the database
-        List<Provice> proviceList = proviceRepository.findAll();
-        assertThat(proviceList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithIdMismatchProvice() throws Exception {
-        int databaseSizeBeforeUpdate = proviceRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         provice.setId(longCount.incrementAndGet());
 
         // Create the Provice
@@ -377,18 +364,17 @@ class ProviceResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(proviceDTO))
+                    .content(om.writeValueAsBytes(proviceDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Provice in the database
-        List<Provice> proviceList = proviceRepository.findAll();
-        assertThat(proviceList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithMissingIdPathParamProvice() throws Exception {
-        int databaseSizeBeforeUpdate = proviceRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         provice.setId(longCount.incrementAndGet());
 
         // Create the Provice
@@ -396,14 +382,11 @@ class ProviceResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restProviceMockMvc
-            .perform(
-                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(proviceDTO))
-            )
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(proviceDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Provice in the database
-        List<Provice> proviceList = proviceRepository.findAll();
-        assertThat(proviceList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -411,7 +394,7 @@ class ProviceResourceIT {
         // Initialize the database
         proviceRepository.save(provice);
 
-        int databaseSizeBeforeDelete = proviceRepository.findAll().size();
+        long databaseSizeBeforeDelete = getRepositoryCount();
 
         // Delete the provice
         restProviceMockMvc
@@ -419,7 +402,34 @@ class ProviceResourceIT {
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<Provice> proviceList = proviceRepository.findAll();
-        assertThat(proviceList).hasSize(databaseSizeBeforeDelete - 1);
+        assertDecrementedRepositoryCount(databaseSizeBeforeDelete);
+    }
+
+    protected long getRepositoryCount() {
+        return proviceRepository.count();
+    }
+
+    protected void assertIncrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore + 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertDecrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore - 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertSameRepositoryCount(long countBefore) {
+        assertThat(countBefore).isEqualTo(getRepositoryCount());
+    }
+
+    protected Provice getPersistedProvice(Provice provice) {
+        return proviceRepository.findById(provice.getId()).orElseThrow();
+    }
+
+    protected void assertPersistedProviceToMatchAllProperties(Provice expectedProvice) {
+        assertProviceAllPropertiesEquals(expectedProvice, getPersistedProvice(expectedProvice));
+    }
+
+    protected void assertPersistedProviceToMatchUpdatableProperties(Provice expectedProvice) {
+        assertProviceAllUpdatablePropertiesEquals(expectedProvice, getPersistedProvice(expectedProvice));
     }
 }

@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static vn.containergo.domain.TruckAsserts.*;
+import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,11 +60,20 @@ class TruckResourceIT {
     private static final String DEFAULT_NUMBER_PLATE = "AAAAAAAAAA";
     private static final String UPDATED_NUMBER_PLATE = "BBBBBBBBBB";
 
+    private static final Double DEFAULT_LAT = 1D;
+    private static final Double UPDATED_LAT = 2D;
+
+    private static final Double DEFAULT_LNG = 1D;
+    private static final Double UPDATED_LNG = 2D;
+
     private static final String ENTITY_API_URL = "/api/trucks";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
     private static Random random = new Random();
     private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+
+    @Autowired
+    private ObjectMapper om;
 
     @Autowired
     private TruckRepository truckRepository;
@@ -91,7 +102,9 @@ class TruckResourceIT {
             .capacity(DEFAULT_CAPACITY)
             .status(DEFAULT_STATUS)
             .mileage(DEFAULT_MILEAGE)
-            .numberPlate(DEFAULT_NUMBER_PLATE);
+            .numberPlate(DEFAULT_NUMBER_PLATE)
+            .lat(DEFAULT_LAT)
+            .lng(DEFAULT_LNG);
         // Add required entity
         TruckType truckType;
         truckType = TruckTypeResourceIT.createEntity();
@@ -116,7 +129,9 @@ class TruckResourceIT {
             .capacity(UPDATED_CAPACITY)
             .status(UPDATED_STATUS)
             .mileage(UPDATED_MILEAGE)
-            .numberPlate(UPDATED_NUMBER_PLATE);
+            .numberPlate(UPDATED_NUMBER_PLATE)
+            .lat(UPDATED_LAT)
+            .lng(UPDATED_LNG);
         // Add required entity
         TruckType truckType;
         truckType = TruckTypeResourceIT.createUpdatedEntity();
@@ -133,26 +148,23 @@ class TruckResourceIT {
 
     @Test
     void createTruck() throws Exception {
-        int databaseSizeBeforeCreate = truckRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the Truck
         TruckDTO truckDTO = truckMapper.toDto(truck);
-        restTruckMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(truckDTO)))
-            .andExpect(status().isCreated());
+        var returnedTruckDTO = om.readValue(
+            restTruckMockMvc
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(truckDTO)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(),
+            TruckDTO.class
+        );
 
         // Validate the Truck in the database
-        List<Truck> truckList = truckRepository.findAll();
-        assertThat(truckList).hasSize(databaseSizeBeforeCreate + 1);
-        Truck testTruck = truckList.get(truckList.size() - 1);
-        assertThat(testTruck.getCode()).isEqualTo(DEFAULT_CODE);
-        assertThat(testTruck.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testTruck.getModel()).isEqualTo(DEFAULT_MODEL);
-        assertThat(testTruck.getManufacturer()).isEqualTo(DEFAULT_MANUFACTURER);
-        assertThat(testTruck.getYear()).isEqualTo(DEFAULT_YEAR);
-        assertThat(testTruck.getCapacity()).isEqualTo(DEFAULT_CAPACITY);
-        assertThat(testTruck.getStatus()).isEqualTo(DEFAULT_STATUS);
-        assertThat(testTruck.getMileage()).isEqualTo(DEFAULT_MILEAGE);
-        assertThat(testTruck.getNumberPlate()).isEqualTo(DEFAULT_NUMBER_PLATE);
+        assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
+        var returnedTruck = truckMapper.toEntity(returnedTruckDTO);
+        assertTruckUpdatableFieldsEquals(returnedTruck, getPersistedTruck(returnedTruck));
     }
 
     @Test
@@ -161,21 +173,20 @@ class TruckResourceIT {
         truck.setId(1L);
         TruckDTO truckDTO = truckMapper.toDto(truck);
 
-        int databaseSizeBeforeCreate = truckRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restTruckMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(truckDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(truckDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Truck in the database
-        List<Truck> truckList = truckRepository.findAll();
-        assertThat(truckList).hasSize(databaseSizeBeforeCreate);
+        assertSameRepositoryCount(databaseSizeBeforeCreate);
     }
 
     @Test
     void checkCodeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = truckRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         truck.setCode(null);
 
@@ -183,16 +194,15 @@ class TruckResourceIT {
         TruckDTO truckDTO = truckMapper.toDto(truck);
 
         restTruckMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(truckDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(truckDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Truck> truckList = truckRepository.findAll();
-        assertThat(truckList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkNameIsRequired() throws Exception {
-        int databaseSizeBeforeTest = truckRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         truck.setName(null);
 
@@ -200,16 +210,15 @@ class TruckResourceIT {
         TruckDTO truckDTO = truckMapper.toDto(truck);
 
         restTruckMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(truckDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(truckDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Truck> truckList = truckRepository.findAll();
-        assertThat(truckList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkStatusIsRequired() throws Exception {
-        int databaseSizeBeforeTest = truckRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         truck.setStatus(null);
 
@@ -217,16 +226,15 @@ class TruckResourceIT {
         TruckDTO truckDTO = truckMapper.toDto(truck);
 
         restTruckMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(truckDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(truckDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Truck> truckList = truckRepository.findAll();
-        assertThat(truckList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkNumberPlateIsRequired() throws Exception {
-        int databaseSizeBeforeTest = truckRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         truck.setNumberPlate(null);
 
@@ -234,11 +242,10 @@ class TruckResourceIT {
         TruckDTO truckDTO = truckMapper.toDto(truck);
 
         restTruckMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(truckDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(truckDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Truck> truckList = truckRepository.findAll();
-        assertThat(truckList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
@@ -260,7 +267,9 @@ class TruckResourceIT {
             .andExpect(jsonPath("$.[*].capacity").value(hasItem(DEFAULT_CAPACITY.doubleValue())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].mileage").value(hasItem(DEFAULT_MILEAGE.doubleValue())))
-            .andExpect(jsonPath("$.[*].numberPlate").value(hasItem(DEFAULT_NUMBER_PLATE)));
+            .andExpect(jsonPath("$.[*].numberPlate").value(hasItem(DEFAULT_NUMBER_PLATE)))
+            .andExpect(jsonPath("$.[*].lat").value(hasItem(DEFAULT_LAT.doubleValue())))
+            .andExpect(jsonPath("$.[*].lng").value(hasItem(DEFAULT_LNG.doubleValue())));
     }
 
     @Test
@@ -282,7 +291,9 @@ class TruckResourceIT {
             .andExpect(jsonPath("$.capacity").value(DEFAULT_CAPACITY.doubleValue()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
             .andExpect(jsonPath("$.mileage").value(DEFAULT_MILEAGE.doubleValue()))
-            .andExpect(jsonPath("$.numberPlate").value(DEFAULT_NUMBER_PLATE));
+            .andExpect(jsonPath("$.numberPlate").value(DEFAULT_NUMBER_PLATE))
+            .andExpect(jsonPath("$.lat").value(DEFAULT_LAT.doubleValue()))
+            .andExpect(jsonPath("$.lng").value(DEFAULT_LNG.doubleValue()));
     }
 
     @Test
@@ -296,7 +307,7 @@ class TruckResourceIT {
         // Initialize the database
         truckRepository.save(truck);
 
-        int databaseSizeBeforeUpdate = truckRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the truck
         Truck updatedTruck = truckRepository.findById(truck.getId()).orElseThrow();
@@ -309,35 +320,25 @@ class TruckResourceIT {
             .capacity(UPDATED_CAPACITY)
             .status(UPDATED_STATUS)
             .mileage(UPDATED_MILEAGE)
-            .numberPlate(UPDATED_NUMBER_PLATE);
+            .numberPlate(UPDATED_NUMBER_PLATE)
+            .lat(UPDATED_LAT)
+            .lng(UPDATED_LNG);
         TruckDTO truckDTO = truckMapper.toDto(updatedTruck);
 
         restTruckMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, truckDTO.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(truckDTO))
+                put(ENTITY_API_URL_ID, truckDTO.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(truckDTO))
             )
             .andExpect(status().isOk());
 
         // Validate the Truck in the database
-        List<Truck> truckList = truckRepository.findAll();
-        assertThat(truckList).hasSize(databaseSizeBeforeUpdate);
-        Truck testTruck = truckList.get(truckList.size() - 1);
-        assertThat(testTruck.getCode()).isEqualTo(UPDATED_CODE);
-        assertThat(testTruck.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testTruck.getModel()).isEqualTo(UPDATED_MODEL);
-        assertThat(testTruck.getManufacturer()).isEqualTo(UPDATED_MANUFACTURER);
-        assertThat(testTruck.getYear()).isEqualTo(UPDATED_YEAR);
-        assertThat(testTruck.getCapacity()).isEqualTo(UPDATED_CAPACITY);
-        assertThat(testTruck.getStatus()).isEqualTo(UPDATED_STATUS);
-        assertThat(testTruck.getMileage()).isEqualTo(UPDATED_MILEAGE);
-        assertThat(testTruck.getNumberPlate()).isEqualTo(UPDATED_NUMBER_PLATE);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertPersistedTruckToMatchAllProperties(updatedTruck);
     }
 
     @Test
     void putNonExistingTruck() throws Exception {
-        int databaseSizeBeforeUpdate = truckRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         truck.setId(longCount.incrementAndGet());
 
         // Create the Truck
@@ -346,20 +347,17 @@ class TruckResourceIT {
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restTruckMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, truckDTO.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(truckDTO))
+                put(ENTITY_API_URL_ID, truckDTO.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(truckDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Truck in the database
-        List<Truck> truckList = truckRepository.findAll();
-        assertThat(truckList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithIdMismatchTruck() throws Exception {
-        int databaseSizeBeforeUpdate = truckRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         truck.setId(longCount.incrementAndGet());
 
         // Create the Truck
@@ -370,18 +368,17 @@ class TruckResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(truckDTO))
+                    .content(om.writeValueAsBytes(truckDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Truck in the database
-        List<Truck> truckList = truckRepository.findAll();
-        assertThat(truckList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithMissingIdPathParamTruck() throws Exception {
-        int databaseSizeBeforeUpdate = truckRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         truck.setId(longCount.incrementAndGet());
 
         // Create the Truck
@@ -389,12 +386,11 @@ class TruckResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTruckMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(truckDTO)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(truckDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Truck in the database
-        List<Truck> truckList = truckRepository.findAll();
-        assertThat(truckList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -402,35 +398,26 @@ class TruckResourceIT {
         // Initialize the database
         truckRepository.save(truck);
 
-        int databaseSizeBeforeUpdate = truckRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the truck using partial update
         Truck partialUpdatedTruck = new Truck();
         partialUpdatedTruck.setId(truck.getId());
 
-        partialUpdatedTruck.name(UPDATED_NAME).year(UPDATED_YEAR).mileage(UPDATED_MILEAGE).numberPlate(UPDATED_NUMBER_PLATE);
+        partialUpdatedTruck.code(UPDATED_CODE).name(UPDATED_NAME).mileage(UPDATED_MILEAGE);
 
         restTruckMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedTruck.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedTruck))
+                    .content(om.writeValueAsBytes(partialUpdatedTruck))
             )
             .andExpect(status().isOk());
 
         // Validate the Truck in the database
-        List<Truck> truckList = truckRepository.findAll();
-        assertThat(truckList).hasSize(databaseSizeBeforeUpdate);
-        Truck testTruck = truckList.get(truckList.size() - 1);
-        assertThat(testTruck.getCode()).isEqualTo(DEFAULT_CODE);
-        assertThat(testTruck.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testTruck.getModel()).isEqualTo(DEFAULT_MODEL);
-        assertThat(testTruck.getManufacturer()).isEqualTo(DEFAULT_MANUFACTURER);
-        assertThat(testTruck.getYear()).isEqualTo(UPDATED_YEAR);
-        assertThat(testTruck.getCapacity()).isEqualTo(DEFAULT_CAPACITY);
-        assertThat(testTruck.getStatus()).isEqualTo(DEFAULT_STATUS);
-        assertThat(testTruck.getMileage()).isEqualTo(UPDATED_MILEAGE);
-        assertThat(testTruck.getNumberPlate()).isEqualTo(UPDATED_NUMBER_PLATE);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertTruckUpdatableFieldsEquals(createUpdateProxyForBean(partialUpdatedTruck, truck), getPersistedTruck(truck));
     }
 
     @Test
@@ -438,7 +425,7 @@ class TruckResourceIT {
         // Initialize the database
         truckRepository.save(truck);
 
-        int databaseSizeBeforeUpdate = truckRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the truck using partial update
         Truck partialUpdatedTruck = new Truck();
@@ -453,34 +440,27 @@ class TruckResourceIT {
             .capacity(UPDATED_CAPACITY)
             .status(UPDATED_STATUS)
             .mileage(UPDATED_MILEAGE)
-            .numberPlate(UPDATED_NUMBER_PLATE);
+            .numberPlate(UPDATED_NUMBER_PLATE)
+            .lat(UPDATED_LAT)
+            .lng(UPDATED_LNG);
 
         restTruckMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedTruck.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedTruck))
+                    .content(om.writeValueAsBytes(partialUpdatedTruck))
             )
             .andExpect(status().isOk());
 
         // Validate the Truck in the database
-        List<Truck> truckList = truckRepository.findAll();
-        assertThat(truckList).hasSize(databaseSizeBeforeUpdate);
-        Truck testTruck = truckList.get(truckList.size() - 1);
-        assertThat(testTruck.getCode()).isEqualTo(UPDATED_CODE);
-        assertThat(testTruck.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testTruck.getModel()).isEqualTo(UPDATED_MODEL);
-        assertThat(testTruck.getManufacturer()).isEqualTo(UPDATED_MANUFACTURER);
-        assertThat(testTruck.getYear()).isEqualTo(UPDATED_YEAR);
-        assertThat(testTruck.getCapacity()).isEqualTo(UPDATED_CAPACITY);
-        assertThat(testTruck.getStatus()).isEqualTo(UPDATED_STATUS);
-        assertThat(testTruck.getMileage()).isEqualTo(UPDATED_MILEAGE);
-        assertThat(testTruck.getNumberPlate()).isEqualTo(UPDATED_NUMBER_PLATE);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertTruckUpdatableFieldsEquals(partialUpdatedTruck, getPersistedTruck(partialUpdatedTruck));
     }
 
     @Test
     void patchNonExistingTruck() throws Exception {
-        int databaseSizeBeforeUpdate = truckRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         truck.setId(longCount.incrementAndGet());
 
         // Create the Truck
@@ -491,18 +471,17 @@ class TruckResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, truckDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(truckDTO))
+                    .content(om.writeValueAsBytes(truckDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Truck in the database
-        List<Truck> truckList = truckRepository.findAll();
-        assertThat(truckList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithIdMismatchTruck() throws Exception {
-        int databaseSizeBeforeUpdate = truckRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         truck.setId(longCount.incrementAndGet());
 
         // Create the Truck
@@ -513,18 +492,17 @@ class TruckResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(truckDTO))
+                    .content(om.writeValueAsBytes(truckDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Truck in the database
-        List<Truck> truckList = truckRepository.findAll();
-        assertThat(truckList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithMissingIdPathParamTruck() throws Exception {
-        int databaseSizeBeforeUpdate = truckRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         truck.setId(longCount.incrementAndGet());
 
         // Create the Truck
@@ -532,12 +510,11 @@ class TruckResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTruckMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(truckDTO)))
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(truckDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Truck in the database
-        List<Truck> truckList = truckRepository.findAll();
-        assertThat(truckList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -545,7 +522,7 @@ class TruckResourceIT {
         // Initialize the database
         truckRepository.save(truck);
 
-        int databaseSizeBeforeDelete = truckRepository.findAll().size();
+        long databaseSizeBeforeDelete = getRepositoryCount();
 
         // Delete the truck
         restTruckMockMvc
@@ -553,7 +530,34 @@ class TruckResourceIT {
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<Truck> truckList = truckRepository.findAll();
-        assertThat(truckList).hasSize(databaseSizeBeforeDelete - 1);
+        assertDecrementedRepositoryCount(databaseSizeBeforeDelete);
+    }
+
+    protected long getRepositoryCount() {
+        return truckRepository.count();
+    }
+
+    protected void assertIncrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore + 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertDecrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore - 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertSameRepositoryCount(long countBefore) {
+        assertThat(countBefore).isEqualTo(getRepositoryCount());
+    }
+
+    protected Truck getPersistedTruck(Truck truck) {
+        return truckRepository.findById(truck.getId()).orElseThrow();
+    }
+
+    protected void assertPersistedTruckToMatchAllProperties(Truck expectedTruck) {
+        assertTruckAllPropertiesEquals(expectedTruck, getPersistedTruck(expectedTruck));
+    }
+
+    protected void assertPersistedTruckToMatchUpdatableProperties(Truck expectedTruck) {
+        assertTruckAllUpdatablePropertiesEquals(expectedTruck, getPersistedTruck(expectedTruck));
     }
 }

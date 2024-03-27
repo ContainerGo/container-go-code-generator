@@ -7,7 +7,7 @@ import { mergeMap } from 'rxjs/operators';
 import { ICarrier } from '../carrier.model';
 import { CarrierService } from '../service/carrier.service';
 
-export const carrierResolve = (route: ActivatedRouteSnapshot): Observable<null | ICarrier> => {
+const carrierResolve = (route: ActivatedRouteSnapshot): Observable<null | ICarrier> => {
   const id = route.params['id'];
   if (id) {
     return inject(CarrierService)

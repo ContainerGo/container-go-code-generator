@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static vn.containergo.domain.DistrictAsserts.*;
+import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +45,9 @@ class DistrictResourceIT {
 
     private static Random random = new Random();
     private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+
+    @Autowired
+    private ObjectMapper om;
 
     @Autowired
     private DistrictRepository districtRepository;
@@ -85,20 +90,23 @@ class DistrictResourceIT {
 
     @Test
     void createDistrict() throws Exception {
-        int databaseSizeBeforeCreate = districtRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the District
         DistrictDTO districtDTO = districtMapper.toDto(district);
-        restDistrictMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(districtDTO)))
-            .andExpect(status().isCreated());
+        var returnedDistrictDTO = om.readValue(
+            restDistrictMockMvc
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(districtDTO)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(),
+            DistrictDTO.class
+        );
 
         // Validate the District in the database
-        List<District> districtList = districtRepository.findAll();
-        assertThat(districtList).hasSize(databaseSizeBeforeCreate + 1);
-        District testDistrict = districtList.get(districtList.size() - 1);
-        assertThat(testDistrict.getCode()).isEqualTo(DEFAULT_CODE);
-        assertThat(testDistrict.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testDistrict.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
+        var returnedDistrict = districtMapper.toEntity(returnedDistrictDTO);
+        assertDistrictUpdatableFieldsEquals(returnedDistrict, getPersistedDistrict(returnedDistrict));
     }
 
     @Test
@@ -107,21 +115,20 @@ class DistrictResourceIT {
         district.setId(1L);
         DistrictDTO districtDTO = districtMapper.toDto(district);
 
-        int databaseSizeBeforeCreate = districtRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restDistrictMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(districtDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(districtDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the District in the database
-        List<District> districtList = districtRepository.findAll();
-        assertThat(districtList).hasSize(databaseSizeBeforeCreate);
+        assertSameRepositoryCount(databaseSizeBeforeCreate);
     }
 
     @Test
     void checkCodeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = districtRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         district.setCode(null);
 
@@ -129,16 +136,15 @@ class DistrictResourceIT {
         DistrictDTO districtDTO = districtMapper.toDto(district);
 
         restDistrictMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(districtDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(districtDTO)))
             .andExpect(status().isBadRequest());
 
-        List<District> districtList = districtRepository.findAll();
-        assertThat(districtList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkNameIsRequired() throws Exception {
-        int databaseSizeBeforeTest = districtRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         district.setName(null);
 
@@ -146,11 +152,10 @@ class DistrictResourceIT {
         DistrictDTO districtDTO = districtMapper.toDto(district);
 
         restDistrictMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(districtDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(districtDTO)))
             .andExpect(status().isBadRequest());
 
-        List<District> districtList = districtRepository.findAll();
-        assertThat(districtList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
@@ -196,7 +201,7 @@ class DistrictResourceIT {
         // Initialize the database
         districtRepository.save(district);
 
-        int databaseSizeBeforeUpdate = districtRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the district
         District updatedDistrict = districtRepository.findById(district.getId()).orElseThrow();
@@ -207,22 +212,18 @@ class DistrictResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, districtDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(districtDTO))
+                    .content(om.writeValueAsBytes(districtDTO))
             )
             .andExpect(status().isOk());
 
         // Validate the District in the database
-        List<District> districtList = districtRepository.findAll();
-        assertThat(districtList).hasSize(databaseSizeBeforeUpdate);
-        District testDistrict = districtList.get(districtList.size() - 1);
-        assertThat(testDistrict.getCode()).isEqualTo(UPDATED_CODE);
-        assertThat(testDistrict.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testDistrict.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertPersistedDistrictToMatchAllProperties(updatedDistrict);
     }
 
     @Test
     void putNonExistingDistrict() throws Exception {
-        int databaseSizeBeforeUpdate = districtRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         district.setId(longCount.incrementAndGet());
 
         // Create the District
@@ -233,18 +234,17 @@ class DistrictResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, districtDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(districtDTO))
+                    .content(om.writeValueAsBytes(districtDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the District in the database
-        List<District> districtList = districtRepository.findAll();
-        assertThat(districtList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithIdMismatchDistrict() throws Exception {
-        int databaseSizeBeforeUpdate = districtRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         district.setId(longCount.incrementAndGet());
 
         // Create the District
@@ -255,18 +255,17 @@ class DistrictResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(districtDTO))
+                    .content(om.writeValueAsBytes(districtDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the District in the database
-        List<District> districtList = districtRepository.findAll();
-        assertThat(districtList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithMissingIdPathParamDistrict() throws Exception {
-        int databaseSizeBeforeUpdate = districtRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         district.setId(longCount.incrementAndGet());
 
         // Create the District
@@ -274,12 +273,11 @@ class DistrictResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restDistrictMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(districtDTO)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(districtDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the District in the database
-        List<District> districtList = districtRepository.findAll();
-        assertThat(districtList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -287,29 +285,26 @@ class DistrictResourceIT {
         // Initialize the database
         districtRepository.save(district);
 
-        int databaseSizeBeforeUpdate = districtRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the district using partial update
         District partialUpdatedDistrict = new District();
         partialUpdatedDistrict.setId(district.getId());
 
-        partialUpdatedDistrict.code(UPDATED_CODE).name(UPDATED_NAME);
+        partialUpdatedDistrict.name(UPDATED_NAME).description(UPDATED_DESCRIPTION);
 
         restDistrictMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedDistrict.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedDistrict))
+                    .content(om.writeValueAsBytes(partialUpdatedDistrict))
             )
             .andExpect(status().isOk());
 
         // Validate the District in the database
-        List<District> districtList = districtRepository.findAll();
-        assertThat(districtList).hasSize(databaseSizeBeforeUpdate);
-        District testDistrict = districtList.get(districtList.size() - 1);
-        assertThat(testDistrict.getCode()).isEqualTo(UPDATED_CODE);
-        assertThat(testDistrict.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testDistrict.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertDistrictUpdatableFieldsEquals(createUpdateProxyForBean(partialUpdatedDistrict, district), getPersistedDistrict(district));
     }
 
     @Test
@@ -317,7 +312,7 @@ class DistrictResourceIT {
         // Initialize the database
         districtRepository.save(district);
 
-        int databaseSizeBeforeUpdate = districtRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the district using partial update
         District partialUpdatedDistrict = new District();
@@ -329,22 +324,19 @@ class DistrictResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedDistrict.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedDistrict))
+                    .content(om.writeValueAsBytes(partialUpdatedDistrict))
             )
             .andExpect(status().isOk());
 
         // Validate the District in the database
-        List<District> districtList = districtRepository.findAll();
-        assertThat(districtList).hasSize(databaseSizeBeforeUpdate);
-        District testDistrict = districtList.get(districtList.size() - 1);
-        assertThat(testDistrict.getCode()).isEqualTo(UPDATED_CODE);
-        assertThat(testDistrict.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testDistrict.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertDistrictUpdatableFieldsEquals(partialUpdatedDistrict, getPersistedDistrict(partialUpdatedDistrict));
     }
 
     @Test
     void patchNonExistingDistrict() throws Exception {
-        int databaseSizeBeforeUpdate = districtRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         district.setId(longCount.incrementAndGet());
 
         // Create the District
@@ -355,18 +347,17 @@ class DistrictResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, districtDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(districtDTO))
+                    .content(om.writeValueAsBytes(districtDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the District in the database
-        List<District> districtList = districtRepository.findAll();
-        assertThat(districtList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithIdMismatchDistrict() throws Exception {
-        int databaseSizeBeforeUpdate = districtRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         district.setId(longCount.incrementAndGet());
 
         // Create the District
@@ -377,18 +368,17 @@ class DistrictResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(districtDTO))
+                    .content(om.writeValueAsBytes(districtDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the District in the database
-        List<District> districtList = districtRepository.findAll();
-        assertThat(districtList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithMissingIdPathParamDistrict() throws Exception {
-        int databaseSizeBeforeUpdate = districtRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         district.setId(longCount.incrementAndGet());
 
         // Create the District
@@ -396,14 +386,11 @@ class DistrictResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restDistrictMockMvc
-            .perform(
-                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(districtDTO))
-            )
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(districtDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the District in the database
-        List<District> districtList = districtRepository.findAll();
-        assertThat(districtList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -411,7 +398,7 @@ class DistrictResourceIT {
         // Initialize the database
         districtRepository.save(district);
 
-        int databaseSizeBeforeDelete = districtRepository.findAll().size();
+        long databaseSizeBeforeDelete = getRepositoryCount();
 
         // Delete the district
         restDistrictMockMvc
@@ -419,7 +406,34 @@ class DistrictResourceIT {
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<District> districtList = districtRepository.findAll();
-        assertThat(districtList).hasSize(databaseSizeBeforeDelete - 1);
+        assertDecrementedRepositoryCount(databaseSizeBeforeDelete);
+    }
+
+    protected long getRepositoryCount() {
+        return districtRepository.count();
+    }
+
+    protected void assertIncrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore + 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertDecrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore - 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertSameRepositoryCount(long countBefore) {
+        assertThat(countBefore).isEqualTo(getRepositoryCount());
+    }
+
+    protected District getPersistedDistrict(District district) {
+        return districtRepository.findById(district.getId()).orElseThrow();
+    }
+
+    protected void assertPersistedDistrictToMatchAllProperties(District expectedDistrict) {
+        assertDistrictAllPropertiesEquals(expectedDistrict, getPersistedDistrict(expectedDistrict));
+    }
+
+    protected void assertPersistedDistrictToMatchUpdatableProperties(District expectedDistrict) {
+        assertDistrictAllUpdatablePropertiesEquals(expectedDistrict, getPersistedDistrict(expectedDistrict));
     }
 }

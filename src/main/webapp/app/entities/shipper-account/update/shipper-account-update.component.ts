@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -25,14 +25,13 @@ export class ShipperAccountUpdateComponent implements OnInit {
 
   shippersSharedCollection: IShipper[] = [];
 
-  editForm: ShipperAccountFormGroup = this.shipperAccountFormService.createShipperAccountFormGroup();
+  protected shipperAccountService = inject(ShipperAccountService);
+  protected shipperAccountFormService = inject(ShipperAccountFormService);
+  protected shipperService = inject(ShipperService);
+  protected activatedRoute = inject(ActivatedRoute);
 
-  constructor(
-    protected shipperAccountService: ShipperAccountService,
-    protected shipperAccountFormService: ShipperAccountFormService,
-    protected shipperService: ShipperService,
-    protected activatedRoute: ActivatedRoute,
-  ) {}
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  editForm: ShipperAccountFormGroup = this.shipperAccountFormService.createShipperAccountFormGroup();
 
   compareShipper = (o1: IShipper | null, o2: IShipper | null): boolean => this.shipperService.compareShipper(o1, o2);
 

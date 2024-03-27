@@ -6,6 +6,7 @@ import { IContainerType } from 'app/entities/container-type/container-type.model
 import { IContainerStatus } from 'app/entities/container-status/container-status.model';
 import { ITruckType } from 'app/entities/truck-type/truck-type.model';
 import { ITruck } from 'app/entities/truck/truck.model';
+import { IContainerOwner } from 'app/entities/container-owner/container-owner.model';
 import { ContainerState } from 'app/entities/enumerations/container-state.model';
 
 export interface IContainer {
@@ -35,6 +36,7 @@ export interface IContainer {
   status?: Pick<IContainerStatus, 'id'> | null;
   truckType?: Pick<ITruckType, 'id'> | null;
   truck?: Pick<ITruck, 'id'> | null;
+  owner?: Pick<IContainerOwner, 'id'> | null;
 }
 
 export type NewContainer = Omit<IContainer, 'id'> & { id: null };

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -30,15 +30,14 @@ export class TruckUpdateComponent implements OnInit {
   truckTypesSharedCollection: ITruckType[] = [];
   carriersSharedCollection: ICarrier[] = [];
 
-  editForm: TruckFormGroup = this.truckFormService.createTruckFormGroup();
+  protected truckService = inject(TruckService);
+  protected truckFormService = inject(TruckFormService);
+  protected truckTypeService = inject(TruckTypeService);
+  protected carrierService = inject(CarrierService);
+  protected activatedRoute = inject(ActivatedRoute);
 
-  constructor(
-    protected truckService: TruckService,
-    protected truckFormService: TruckFormService,
-    protected truckTypeService: TruckTypeService,
-    protected carrierService: CarrierService,
-    protected activatedRoute: ActivatedRoute,
-  ) {}
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  editForm: TruckFormGroup = this.truckFormService.createTruckFormGroup();
 
   compareTruckType = (o1: ITruckType | null, o2: ITruckType | null): boolean => this.truckTypeService.compareTruckType(o1, o2);
 

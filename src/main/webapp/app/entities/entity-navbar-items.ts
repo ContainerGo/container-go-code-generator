@@ -91,4 +91,14 @@ export const EntityNavbarItems: NavbarItem[] = [
     route: '/offer',
     translationKey: 'global.menu.entities.offer',
   },
+  {
+    name: 'ContainerOwner',
+    route: '/container-owner',
+    translationKey: 'global.menu.entities.containerOwner',
+  },
+  {
+    name: 'ShipmentHistory',
+    route: '/shipment-history',
+    translationKey: 'global.menu.entities.shipmentHistory',
+  },
 ];

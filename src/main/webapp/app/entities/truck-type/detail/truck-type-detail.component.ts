@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 import SharedModule from 'app/shared/shared.module';
 import { DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe } from 'app/shared/date';
@@ -13,8 +13,6 @@ import { ITruckType } from '../truck-type.model';
 })
 export class TruckTypeDetailComponent {
   @Input() truckType: ITruckType | null = null;
-
-  constructor(protected activatedRoute: ActivatedRoute) {}
 
   previousState(): void {
     window.history.back();

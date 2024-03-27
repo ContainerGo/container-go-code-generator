@@ -143,6 +143,14 @@
               </div>
             }
           </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.owner">Owner</span></dt>
+          <dd>
+            @if (container.owner) {
+              <div>
+                <a [routerLink]="['/container-owner', container.owner.id, 'view']">{{ container.owner.id }}</a>
+              </div>
+            }
+          </dd>
         </dl>
 
         <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">

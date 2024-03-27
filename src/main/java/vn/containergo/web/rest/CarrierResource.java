@@ -60,11 +60,10 @@ public class CarrierResource {
         if (carrierDTO.getId() != null) {
             throw new BadRequestAlertException("A new carrier cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        CarrierDTO result = carrierService.save(carrierDTO);
-        return ResponseEntity
-            .created(new URI("/api/carriers/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        carrierDTO = carrierService.save(carrierDTO);
+        return ResponseEntity.created(new URI("/api/carriers/" + carrierDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, carrierDTO.getId().toString()))
+            .body(carrierDTO);
     }
 
     /**
@@ -94,11 +93,10 @@ public class CarrierResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        CarrierDTO result = carrierService.update(carrierDTO);
-        return ResponseEntity
-            .ok()
+        carrierDTO = carrierService.update(carrierDTO);
+        return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, carrierDTO.getId().toString()))
-            .body(result);
+            .body(carrierDTO);
     }
 
     /**
@@ -174,8 +172,7 @@ public class CarrierResource {
     public ResponseEntity<Void> deleteCarrier(@PathVariable("id") Long id) {
         log.debug("REST request to delete Carrier : {}", id);
         carrierService.delete(id);
-        return ResponseEntity
-            .noContent()
+        return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }

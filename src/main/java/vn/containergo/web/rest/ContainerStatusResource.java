@@ -61,11 +61,10 @@ public class ContainerStatusResource {
         if (containerStatusDTO.getId() != null) {
             throw new BadRequestAlertException("A new containerStatus cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        ContainerStatusDTO result = containerStatusService.save(containerStatusDTO);
-        return ResponseEntity
-            .created(new URI("/api/container-statuses/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        containerStatusDTO = containerStatusService.save(containerStatusDTO);
+        return ResponseEntity.created(new URI("/api/container-statuses/" + containerStatusDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, containerStatusDTO.getId().toString()))
+            .body(containerStatusDTO);
     }
 
     /**
@@ -95,11 +94,10 @@ public class ContainerStatusResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        ContainerStatusDTO result = containerStatusService.update(containerStatusDTO);
-        return ResponseEntity
-            .ok()
+        containerStatusDTO = containerStatusService.update(containerStatusDTO);
+        return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, containerStatusDTO.getId().toString()))
-            .body(result);
+            .body(containerStatusDTO);
     }
 
     /**
@@ -177,8 +175,7 @@ public class ContainerStatusResource {
     public ResponseEntity<Void> deleteContainerStatus(@PathVariable("id") Long id) {
         log.debug("REST request to delete ContainerStatus : {}", id);
         containerStatusService.delete(id);
-        return ResponseEntity
-            .noContent()
+        return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }

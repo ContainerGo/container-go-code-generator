@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness, RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
@@ -6,6 +6,9 @@ import { of } from 'rxjs';
 import { ContainerStatusDetailComponent } from './container-status-detail.component';
 
 describe('ContainerStatus Management Detail Component', () => {
+  let comp: ContainerStatusDetailComponent;
+  let fixture: ComponentFixture<ContainerStatusDetailComponent>;
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ContainerStatusDetailComponent, RouterTestingModule.withRoutes([], { bindToComponentInputs: true })],
@@ -26,6 +29,11 @@ describe('ContainerStatus Management Detail Component', () => {
       .compileComponents();
   });
 
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ContainerStatusDetailComponent);
+    comp = fixture.componentInstance;
+  });
+
   describe('OnInit', () => {
     it('Should load containerStatus on init', async () => {
       const harness = await RouterTestingHarness.create();
@@ -33,6 +41,14 @@ describe('ContainerStatus Management Detail Component', () => {
 
       // THEN
       expect(instance.containerStatus).toEqual(expect.objectContaining({ id: 123 }));
+    });
+  });
+
+  describe('PreviousState', () => {
+    it('Should navigate to previous state', () => {
+      jest.spyOn(window.history, 'back');
+      comp.previousState();
+      expect(window.history.back).toHaveBeenCalled();
     });
   });
 });

@@ -1,27 +1,28 @@
 import { IContainerType, NewContainerType } from './container-type.model';
 
 export const sampleWithRequiredData: IContainerType = {
-  id: 2786,
-  code: 'fast box',
-  name: 'spotted dizzy',
+  id: 10448,
+  code: 'whenever where',
+  name: 'used um defile',
 };
 
 export const sampleWithPartialData: IContainerType = {
-  id: 24642,
-  code: 'vapid very handmaiden',
-  name: 'deliberately when',
+  id: 12015,
+  code: 'where even tantalize',
+  name: 'anti football',
+  description: 'uh-huh support aw',
 };
 
 export const sampleWithFullData: IContainerType = {
-  id: 23969,
-  code: 'sideburns since',
-  name: 'birthday septicaemia',
-  description: 'carefree aw consult',
+  id: 25383,
+  code: 'heed kaleidoscopic',
+  name: 'aw satirize apud',
+  description: 'leverage',
 };
 
 export const sampleWithNewData: NewContainerType = {
-  code: 'infinite',
-  name: 'plus easy-going cluster',
+  code: 'oh root vacantly',
+  name: 'before',
   id: null,
 };
 

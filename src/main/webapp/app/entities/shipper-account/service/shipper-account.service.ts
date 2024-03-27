@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -14,12 +14,10 @@ export type EntityArrayResponseType = HttpResponse<IShipperAccount[]>;
 
 @Injectable({ providedIn: 'root' })
 export class ShipperAccountService {
-  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/shipper-accounts');
+  protected http = inject(HttpClient);
+  protected applicationConfigService = inject(ApplicationConfigService);
 
-  constructor(
-    protected http: HttpClient,
-    protected applicationConfigService: ApplicationConfigService,
-  ) {}
+  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/shipper-accounts');
 
   create(shipperAccount: NewShipperAccount): Observable<EntityResponseType> {
     return this.http.post<IShipperAccount>(this.resourceUrl, shipperAccount, { observe: 'response' });
@@ -64,8 +62,8 @@ export class ShipperAccountService {
   ): Type[] {
     const shipperAccounts: Type[] = shipperAccountsToCheck.filter(isPresent);
     if (shipperAccounts.length > 0) {
-      const shipperAccountCollectionIdentifiers = shipperAccountCollection.map(
-        shipperAccountItem => this.getShipperAccountIdentifier(shipperAccountItem)!,
+      const shipperAccountCollectionIdentifiers = shipperAccountCollection.map(shipperAccountItem =>
+        this.getShipperAccountIdentifier(shipperAccountItem),
       );
       const shipperAccountsToAdd = shipperAccounts.filter(shipperAccountItem => {
         const shipperAccountIdentifier = this.getShipperAccountIdentifier(shipperAccountItem);

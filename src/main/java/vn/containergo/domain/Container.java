@@ -113,6 +113,10 @@ public class Container implements Serializable {
     @JsonIgnoreProperties(value = { "type", "carrier" }, allowSetters = true)
     private Truck truck;
 
+    @DBRef
+    @Field("owner")
+    private ContainerOwner owner;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -450,6 +454,19 @@ public class Container implements Serializable {
 
     public Container truck(Truck truck) {
         this.setTruck(truck);
+        return this;
+    }
+
+    public ContainerOwner getOwner() {
+        return this.owner;
+    }
+
+    public void setOwner(ContainerOwner containerOwner) {
+        this.owner = containerOwner;
+    }
+
+    public Container owner(ContainerOwner containerOwner) {
+        this.setOwner(containerOwner);
         return this;
     }
 

@@ -7,7 +7,7 @@ import { mergeMap } from 'rxjs/operators';
 import { ITruckType } from '../truck-type.model';
 import { TruckTypeService } from '../service/truck-type.service';
 
-export const truckTypeResolve = (route: ActivatedRouteSnapshot): Observable<null | ITruckType> => {
+const truckTypeResolve = (route: ActivatedRouteSnapshot): Observable<null | ITruckType> => {
   const id = route.params['id'];
   if (id) {
     return inject(TruckTypeService)

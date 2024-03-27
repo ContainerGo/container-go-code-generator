@@ -1,27 +1,27 @@
 import { IDistrict, NewDistrict } from './district.model';
 
 export const sampleWithRequiredData: IDistrict = {
-  id: 28452,
-  code: 'nor delightfully regularly',
-  name: 'blaspheme',
+  id: 12858,
+  code: 'pish meaningfully warmly',
+  name: 'readiness um',
 };
 
 export const sampleWithPartialData: IDistrict = {
-  id: 906,
-  code: 'hideous',
-  name: 'yum unblock',
+  id: 18255,
+  code: 'restart via emotional',
+  name: 'rupture',
 };
 
 export const sampleWithFullData: IDistrict = {
-  id: 18383,
-  code: 'plus trouble',
-  name: 'trickle geez',
-  description: 'gah surrender',
+  id: 18244,
+  code: 'amnesty placode',
+  name: 'athwart incidentally without',
+  description: 'land',
 };
 
 export const sampleWithNewData: NewDistrict = {
-  code: 'anenst manager apropos',
-  name: 'athwart toady inasmuch',
+  code: 'pace',
+  name: 'yowza athwart',
   id: null,
 };
 

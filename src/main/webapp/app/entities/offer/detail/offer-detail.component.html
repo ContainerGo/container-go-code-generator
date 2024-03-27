@@ -35,6 +35,10 @@
           <dd>
             <span>{{ offer.dropoffUntilDate | formatMediumDatetime }}</span>
           </dd>
+          <dt><span jhiTranslate="containerGoServerApp.offer.state">State</span></dt>
+          <dd>
+            <span jhiTranslate="{{ 'containerGoServerApp.OfferState.' + offer.state }}">{{ offer.state }}</span>
+          </dd>
           <dt><span jhiTranslate="containerGoServerApp.offer.price">Price</span></dt>
           <dd>
             <span>{{ offer.price }}</span>
@@ -42,6 +46,14 @@
           <dt><span jhiTranslate="containerGoServerApp.offer.carrierId">Carrier Id</span></dt>
           <dd>
             <span>{{ offer.carrierId }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.offer.carrierPersonId">Carrier Person Id</span></dt>
+          <dd>
+            <span>{{ offer.carrierPersonId }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.offer.truckId">Truck Id</span></dt>
+          <dd>
+            <span>{{ offer.truckId }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.offer.container">Container</span></dt>
           <dd>

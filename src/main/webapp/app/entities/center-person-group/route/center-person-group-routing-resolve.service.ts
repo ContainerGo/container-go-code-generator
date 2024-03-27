@@ -7,7 +7,7 @@ import { mergeMap } from 'rxjs/operators';
 import { ICenterPersonGroup } from '../center-person-group.model';
 import { CenterPersonGroupService } from '../service/center-person-group.service';
 
-export const centerPersonGroupResolve = (route: ActivatedRouteSnapshot): Observable<null | ICenterPersonGroup> => {
+const centerPersonGroupResolve = (route: ActivatedRouteSnapshot): Observable<null | ICenterPersonGroup> => {
   const id = route.params['id'];
   if (id) {
     return inject(CenterPersonGroupService)

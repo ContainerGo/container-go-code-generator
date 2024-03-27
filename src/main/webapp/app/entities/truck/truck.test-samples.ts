@@ -1,39 +1,43 @@
 import { ITruck, NewTruck } from './truck.model';
 
 export const sampleWithRequiredData: ITruck = {
-  id: 3952,
-  code: 'esteemed eek payment',
-  name: 'dislodge for kissingly',
-  status: 'AVAILABLE',
-  numberPlate: 'daily black-and-white behind',
+  id: 7698,
+  code: 'quirkily accommodation',
+  name: 'sans',
+  status: 'UNDER_MAINTENANCE',
+  numberPlate: 'with',
 };
 
 export const sampleWithPartialData: ITruck = {
-  id: 369,
-  code: 'monthly',
-  name: 'down standardization regularly',
-  status: 'AVAILABLE',
-  numberPlate: 'absent zowie yahoo',
+  id: 23592,
+  code: 'toil',
+  name: 'prioritize geez',
+  manufacturer: 'downgrade',
+  capacity: 28415.41,
+  status: 'IN_TRANSIT',
+  numberPlate: 'gadzooks mock but',
 };
 
 export const sampleWithFullData: ITruck = {
-  id: 28806,
-  code: 'accidentally epitomise',
-  name: 'wherever',
-  model: 'quietly keen gosh',
-  manufacturer: 'cash synod frantically',
-  year: 18212,
-  capacity: 29402.98,
+  id: 24894,
+  code: 'thin than eventuate',
+  name: 'boohoo cautiously',
+  model: 'absent',
+  manufacturer: 'forceful',
+  year: 8857,
+  capacity: 14715.48,
   status: 'OUT_OF_SERVICE',
-  mileage: 10786.15,
-  numberPlate: 'smother',
+  mileage: 27659.36,
+  numberPlate: 'given',
+  lat: 626.97,
+  lng: 13064.82,
 };
 
 export const sampleWithNewData: NewTruck = {
-  code: 'evolve intensely blather',
-  name: 'with low potentially',
-  status: 'AVAILABLE',
-  numberPlate: 'hmph',
+  code: 'scrawny um',
+  name: 'guitarist geez',
+  status: 'OUT_OF_SERVICE',
+  numberPlate: 'fuzzy',
   id: null,
 };
 

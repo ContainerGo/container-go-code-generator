@@ -1,29 +1,29 @@
 import { IShipperAccount, NewShipperAccount } from './shipper-account.model';
 
 export const sampleWithRequiredData: IShipperAccount = {
-  id: 21384,
-  name: 'cartwheel giving emcee',
-  phone: '0262 3239 0766',
+  id: 24897,
+  name: 'yahoo before',
+  phone: '021 5998 9692',
 };
 
 export const sampleWithPartialData: IShipperAccount = {
-  id: 18982,
-  name: 'stonewall',
-  phone: '0289 2309 0424',
-  address: 'underneath spinach',
+  id: 25425,
+  name: 'model meh furthermore',
+  phone: '022 8023 8376',
+  email: 'ThuDuyen25@hotmail.com',
 };
 
 export const sampleWithFullData: IShipperAccount = {
-  id: 21065,
-  name: 'with',
-  phone: '025 6042 5181',
-  email: 'PhuTho_Tran@yahoo.com',
-  address: 'specialist',
+  id: 22383,
+  name: 'needily',
+  phone: '0255 3678 1862',
+  email: '7kacThanh43@yahoo.com',
+  address: 'rumble knavishly sprat',
 };
 
 export const sampleWithNewData: NewShipperAccount = {
-  name: 'rely by',
-  phone: '024 8994 5342',
+  name: 'provided whether',
+  phone: '024 1947 7324',
   id: null,
 };
 

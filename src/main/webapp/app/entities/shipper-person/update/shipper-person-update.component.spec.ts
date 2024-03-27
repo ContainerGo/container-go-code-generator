@@ -50,10 +50,10 @@ describe('ShipperPerson Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call Shipper query and add missing value', () => {
       const shipperPerson: IShipperPerson = { id: 456 };
-      const shipper: IShipper = { id: 11052 };
+      const shipper: IShipper = { id: 16090 };
       shipperPerson.shipper = shipper;
 
-      const shipperCollection: IShipper[] = [{ id: 22206 }];
+      const shipperCollection: IShipper[] = [{ id: 10554 }];
       jest.spyOn(shipperService, 'query').mockReturnValue(of(new HttpResponse({ body: shipperCollection })));
       const additionalShippers = [shipper];
       const expectedCollection: IShipper[] = [...additionalShippers, ...shipperCollection];
@@ -72,7 +72,7 @@ describe('ShipperPerson Management Update Component', () => {
 
     it('Should update editForm', () => {
       const shipperPerson: IShipperPerson = { id: 456 };
-      const shipper: IShipper = { id: 31500 };
+      const shipper: IShipper = { id: 23995 };
       shipperPerson.shipper = shipper;
 
       activatedRoute.data = of({ shipperPerson });

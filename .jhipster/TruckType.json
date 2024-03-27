@@ -4,7 +4,6 @@
   },
   "applications": ["containerGoServer"],
   "dto": "mapstruct",
-  "entityTableName": "truck_type",
   "fields": [
     {
       "fieldName": "id",

@@ -1,8 +1,6 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
-import { map } from 'rxjs/operators';
+import { map, Observable } from 'rxjs';
 
 import dayjs from 'dayjs/esm';
 
@@ -34,12 +32,10 @@ export type EntityArrayResponseType = HttpResponse<IContainer[]>;
 
 @Injectable({ providedIn: 'root' })
 export class ContainerService {
-  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/containers');
+  protected http = inject(HttpClient);
+  protected applicationConfigService = inject(ApplicationConfigService);
 
-  constructor(
-    protected http: HttpClient,
-    protected applicationConfigService: ApplicationConfigService,
-  ) {}
+  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/containers');
 
   create(container: NewContainer): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(container);
@@ -93,7 +89,7 @@ export class ContainerService {
   ): Type[] {
     const containers: Type[] = containersToCheck.filter(isPresent);
     if (containers.length > 0) {
-      const containerCollectionIdentifiers = containerCollection.map(containerItem => this.getContainerIdentifier(containerItem)!);
+      const containerCollectionIdentifiers = containerCollection.map(containerItem => this.getContainerIdentifier(containerItem));
       const containersToAdd = containers.filter(containerItem => {
         const containerIdentifier = this.getContainerIdentifier(containerItem);
         if (containerCollectionIdentifiers.includes(containerIdentifier)) {

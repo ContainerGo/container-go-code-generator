@@ -4,7 +4,6 @@
   },
   "applications": ["containerGoServer"],
   "dto": "mapstruct",
-  "entityTableName": "container_status",
   "fields": [
     {
       "fieldName": "id",

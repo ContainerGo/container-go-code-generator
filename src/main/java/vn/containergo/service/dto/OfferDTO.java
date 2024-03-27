@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
+import vn.containergo.domain.enumeration.OfferState;
 
 /**
  * A DTO for the {@link vn.containergo.domain.Offer} entity.
@@ -28,11 +29,19 @@ public class OfferDTO implements Serializable {
     private Instant dropoffUntilDate;
 
     @NotNull
+    private OfferState state;
+
+    @NotNull
     private Double price;
 
     @NotNull
     private Long carrierId;
 
+    private Long carrierPersonId;
+
+    private Long truckId;
+
+    @NotNull
     private ContainerDTO container;
 
     public Long getId() {
@@ -83,6 +92,14 @@ public class OfferDTO implements Serializable {
         this.dropoffUntilDate = dropoffUntilDate;
     }
 
+    public OfferState getState() {
+        return state;
+    }
+
+    public void setState(OfferState state) {
+        this.state = state;
+    }
+
     public Double getPrice() {
         return price;
     }
@@ -97,6 +114,22 @@ public class OfferDTO implements Serializable {
 
     public void setCarrierId(Long carrierId) {
         this.carrierId = carrierId;
+    }
+
+    public Long getCarrierPersonId() {
+        return carrierPersonId;
+    }
+
+    public void setCarrierPersonId(Long carrierPersonId) {
+        this.carrierPersonId = carrierPersonId;
+    }
+
+    public Long getTruckId() {
+        return truckId;
+    }
+
+    public void setTruckId(Long truckId) {
+        this.truckId = truckId;
     }
 
     public ContainerDTO getContainer() {
@@ -138,8 +171,11 @@ public class OfferDTO implements Serializable {
             ", pickupUntilDate='" + getPickupUntilDate() + "'" +
             ", dropoffFromDate='" + getDropoffFromDate() + "'" +
             ", dropoffUntilDate='" + getDropoffUntilDate() + "'" +
+            ", state='" + getState() + "'" +
             ", price=" + getPrice() +
             ", carrierId=" + getCarrierId() +
+            ", carrierPersonId=" + getCarrierPersonId() +
+            ", truckId=" + getTruckId() +
             ", container=" + getContainer() +
             "}";
     }

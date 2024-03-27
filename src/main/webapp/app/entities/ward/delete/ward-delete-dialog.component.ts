@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -15,10 +15,8 @@ import { WardService } from '../service/ward.service';
 export class WardDeleteDialogComponent {
   ward?: IWard;
 
-  constructor(
-    protected wardService: WardService,
-    protected activeModal: NgbActiveModal,
-  ) {}
+  protected wardService = inject(WardService);
+  protected activeModal = inject(NgbActiveModal);
 
   cancel(): void {
     this.activeModal.dismiss();
