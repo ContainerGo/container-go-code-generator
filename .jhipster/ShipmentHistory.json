@@ -1,0 +1,54 @@
+{
+  "annotations": {
+    "changelogDate": "20240327044307"
+  },
+  "applications": ["containerGoServer"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "event",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "timestamp",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "executedBy",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "location",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "lat",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "lng",
+      "fieldType": "Double"
+    }
+  ],
+  "jpaMetamodelFiltering": false,
+  "name": "ShipmentHistory",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "container",
+      "relationshipName": "container",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

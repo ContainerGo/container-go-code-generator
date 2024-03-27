@@ -4,7 +4,6 @@
   },
   "applications": ["containerGoServer"],
   "dto": "mapstruct",
-  "entityTableName": "shipper_person",
   "fields": [
     {
       "fieldName": "id",

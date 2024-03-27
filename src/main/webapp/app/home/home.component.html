@@ -9,11 +9,11 @@
     <p class="lead" jhiTranslate="home.subtitle">Đây là trang chủ của bạn</p>
 
     <div>
-      @if (account !== null) {
+      @if (account() !== null) {
         <div class="alert alert-success">
-          @if (account) {
-            <span id="home-logged-message" jhiTranslate="home.logged.message" [translateValues]="{ username: account.login }"
-              >Bạn đang đăng nhập bằng tài khoản &quot;{{ account.login }}&quot;.</span
+          @if (account()) {
+            <span id="home-logged-message" jhiTranslate="home.logged.message" [translateValues]="{ username: account()!.login }"
+              >Bạn đang đăng nhập bằng tài khoản &quot;{{ account()!.login }}&quot;.</span
             >
           }
         </div>

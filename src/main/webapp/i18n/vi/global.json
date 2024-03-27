@@ -8,6 +8,7 @@
       "entities": {
         "main": "Thực thể",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
+        "adminAuthority": "Authority",
         "shipper": "Shipper",
         "shipperAccount": "Shipper Account",
         "carrier": "Carrier",
@@ -25,7 +26,9 @@
         "containerStatusGroup": "Container Status Group",
         "containerType": "Container Type",
         "container": "Container",
-        "offer": "Offer"
+        "offer": "Offer",
+        "containerOwner": "Container Owner",
+        "shipmentHistory": "Shipment History"
       },
       "account": {
         "main": "Tài khoản",

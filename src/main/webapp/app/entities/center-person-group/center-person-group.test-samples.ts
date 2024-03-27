@@ -1,24 +1,23 @@
 import { ICenterPersonGroup, NewCenterPersonGroup } from './center-person-group.model';
 
 export const sampleWithRequiredData: ICenterPersonGroup = {
-  id: 2617,
-  name: 'even desegregate',
+  id: 31167,
+  name: 'if repeatedly',
 };
 
 export const sampleWithPartialData: ICenterPersonGroup = {
-  id: 3722,
-  name: 'wind',
-  description: 'broadly harmful',
+  id: 3758,
+  name: 'cent huzzah the',
 };
 
 export const sampleWithFullData: ICenterPersonGroup = {
-  id: 18163,
-  name: 'prohibit apropos innocently',
-  description: 'flintlock an',
+  id: 29137,
+  name: 'scarily category meh',
+  description: 'uh-huh swiftly',
 };
 
 export const sampleWithNewData: NewCenterPersonGroup = {
-  name: 'er',
+  name: 'gadzooks',
   id: null,
 };
 

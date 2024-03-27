@@ -1,6 +1,7 @@
 package vn.containergo.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static vn.containergo.domain.ContainerOwnerTestSamples.*;
 import static vn.containergo.domain.ContainerStatusTestSamples.*;
 import static vn.containergo.domain.ContainerTestSamples.*;
 import static vn.containergo.domain.ContainerTypeTestSamples.*;
@@ -27,6 +28,42 @@ class ContainerTest {
 
         container2 = getContainerSample2();
         assertThat(container1).isNotEqualTo(container2);
+    }
+
+    @Test
+    void pickupProviceTest() throws Exception {
+        Container container = getContainerRandomSampleGenerator();
+        Provice proviceBack = getProviceRandomSampleGenerator();
+
+        container.setPickupProvice(proviceBack);
+        assertThat(container.getPickupProvice()).isEqualTo(proviceBack);
+
+        container.pickupProvice(null);
+        assertThat(container.getPickupProvice()).isNull();
+    }
+
+    @Test
+    void pickupDistrictTest() throws Exception {
+        Container container = getContainerRandomSampleGenerator();
+        District districtBack = getDistrictRandomSampleGenerator();
+
+        container.setPickupDistrict(districtBack);
+        assertThat(container.getPickupDistrict()).isEqualTo(districtBack);
+
+        container.pickupDistrict(null);
+        assertThat(container.getPickupDistrict()).isNull();
+    }
+
+    @Test
+    void pickupWardTest() throws Exception {
+        Container container = getContainerRandomSampleGenerator();
+        Ward wardBack = getWardRandomSampleGenerator();
+
+        container.setPickupWard(wardBack);
+        assertThat(container.getPickupWard()).isEqualTo(wardBack);
+
+        container.pickupWard(null);
+        assertThat(container.getPickupWard()).isNull();
     }
 
     @Test
@@ -111,5 +148,17 @@ class ContainerTest {
 
         container.truck(null);
         assertThat(container.getTruck()).isNull();
+    }
+
+    @Test
+    void ownerTest() throws Exception {
+        Container container = getContainerRandomSampleGenerator();
+        ContainerOwner containerOwnerBack = getContainerOwnerRandomSampleGenerator();
+
+        container.setOwner(containerOwnerBack);
+        assertThat(container.getOwner()).isEqualTo(containerOwnerBack);
+
+        container.owner(null);
+        assertThat(container.getOwner()).isNull();
     }
 }

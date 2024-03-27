@@ -60,11 +60,10 @@ public class DistrictResource {
         if (districtDTO.getId() != null) {
             throw new BadRequestAlertException("A new district cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        DistrictDTO result = districtService.save(districtDTO);
-        return ResponseEntity
-            .created(new URI("/api/districts/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        districtDTO = districtService.save(districtDTO);
+        return ResponseEntity.created(new URI("/api/districts/" + districtDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, districtDTO.getId().toString()))
+            .body(districtDTO);
     }
 
     /**
@@ -94,11 +93,10 @@ public class DistrictResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        DistrictDTO result = districtService.update(districtDTO);
-        return ResponseEntity
-            .ok()
+        districtDTO = districtService.update(districtDTO);
+        return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, districtDTO.getId().toString()))
-            .body(result);
+            .body(districtDTO);
     }
 
     /**
@@ -174,8 +172,7 @@ public class DistrictResource {
     public ResponseEntity<Void> deleteDistrict(@PathVariable("id") Long id) {
         log.debug("REST request to delete District : {}", id);
         districtService.delete(id);
-        return ResponseEntity
-            .noContent()
+        return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }

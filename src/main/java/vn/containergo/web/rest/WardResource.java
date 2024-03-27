@@ -60,11 +60,10 @@ public class WardResource {
         if (wardDTO.getId() != null) {
             throw new BadRequestAlertException("A new ward cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        WardDTO result = wardService.save(wardDTO);
-        return ResponseEntity
-            .created(new URI("/api/wards/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        wardDTO = wardService.save(wardDTO);
+        return ResponseEntity.created(new URI("/api/wards/" + wardDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, wardDTO.getId().toString()))
+            .body(wardDTO);
     }
 
     /**
@@ -94,11 +93,10 @@ public class WardResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        WardDTO result = wardService.update(wardDTO);
-        return ResponseEntity
-            .ok()
+        wardDTO = wardService.update(wardDTO);
+        return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, wardDTO.getId().toString()))
-            .body(result);
+            .body(wardDTO);
     }
 
     /**
@@ -174,8 +172,7 @@ public class WardResource {
     public ResponseEntity<Void> deleteWard(@PathVariable("id") Long id) {
         log.debug("REST request to delete Ward : {}", id);
         wardService.delete(id);
-        return ResponseEntity
-            .noContent()
+        return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }

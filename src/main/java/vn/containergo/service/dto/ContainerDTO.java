@@ -28,15 +28,36 @@ public class ContainerDTO implements Serializable {
 
     private String additionalRequirements;
 
+    @NotNull
+    private String pickupContact;
+
+    @NotNull
+    private String pickupContactPhone;
+
+    @NotNull
+    private String pickupAddress;
+
+    @NotNull
+    private Double pickupLat;
+
+    @NotNull
+    private Double pickupLng;
+
+    @NotNull
+    private Instant pickupFromDate;
+
     private String dropoffContact;
 
     private String dropoffContactPhone;
 
+    @NotNull
     private String dropoffAddress;
 
     private Double dropoffLat;
 
     private Double dropoffLng;
+
+    private String points;
 
     private Instant dropoffUntilDate;
 
@@ -51,25 +72,38 @@ public class ContainerDTO implements Serializable {
     @NotNull
     private Double totalWeight;
 
-    private Instant pickupFromDate;
-
     private Instant biddingFromDate;
 
     private Instant biddingUntilDate;
 
+    @NotNull
+    private ProviceDTO pickupProvice;
+
+    @NotNull
+    private DistrictDTO pickupDistrict;
+
+    @NotNull
+    private WardDTO pickupWard;
+
+    @NotNull
     private ProviceDTO dropoffProvice;
 
+    @NotNull
     private DistrictDTO dropoffDistrict;
 
     private WardDTO dropoffWard;
 
+    @NotNull
     private ContainerTypeDTO type;
 
+    @NotNull
     private ContainerStatusDTO status;
 
     private TruckTypeDTO truckType;
 
     private TruckDTO truck;
+
+    private ContainerOwnerDTO owner;
 
     public Long getId() {
         return id;
@@ -119,6 +153,54 @@ public class ContainerDTO implements Serializable {
         this.additionalRequirements = additionalRequirements;
     }
 
+    public String getPickupContact() {
+        return pickupContact;
+    }
+
+    public void setPickupContact(String pickupContact) {
+        this.pickupContact = pickupContact;
+    }
+
+    public String getPickupContactPhone() {
+        return pickupContactPhone;
+    }
+
+    public void setPickupContactPhone(String pickupContactPhone) {
+        this.pickupContactPhone = pickupContactPhone;
+    }
+
+    public String getPickupAddress() {
+        return pickupAddress;
+    }
+
+    public void setPickupAddress(String pickupAddress) {
+        this.pickupAddress = pickupAddress;
+    }
+
+    public Double getPickupLat() {
+        return pickupLat;
+    }
+
+    public void setPickupLat(Double pickupLat) {
+        this.pickupLat = pickupLat;
+    }
+
+    public Double getPickupLng() {
+        return pickupLng;
+    }
+
+    public void setPickupLng(Double pickupLng) {
+        this.pickupLng = pickupLng;
+    }
+
+    public Instant getPickupFromDate() {
+        return pickupFromDate;
+    }
+
+    public void setPickupFromDate(Instant pickupFromDate) {
+        this.pickupFromDate = pickupFromDate;
+    }
+
     public String getDropoffContact() {
         return dropoffContact;
     }
@@ -157,6 +239,14 @@ public class ContainerDTO implements Serializable {
 
     public void setDropoffLng(Double dropoffLng) {
         this.dropoffLng = dropoffLng;
+    }
+
+    public String getPoints() {
+        return points;
+    }
+
+    public void setPoints(String points) {
+        this.points = points;
     }
 
     public Instant getDropoffUntilDate() {
@@ -199,14 +289,6 @@ public class ContainerDTO implements Serializable {
         this.totalWeight = totalWeight;
     }
 
-    public Instant getPickupFromDate() {
-        return pickupFromDate;
-    }
-
-    public void setPickupFromDate(Instant pickupFromDate) {
-        this.pickupFromDate = pickupFromDate;
-    }
-
     public Instant getBiddingFromDate() {
         return biddingFromDate;
     }
@@ -221,6 +303,30 @@ public class ContainerDTO implements Serializable {
 
     public void setBiddingUntilDate(Instant biddingUntilDate) {
         this.biddingUntilDate = biddingUntilDate;
+    }
+
+    public ProviceDTO getPickupProvice() {
+        return pickupProvice;
+    }
+
+    public void setPickupProvice(ProviceDTO pickupProvice) {
+        this.pickupProvice = pickupProvice;
+    }
+
+    public DistrictDTO getPickupDistrict() {
+        return pickupDistrict;
+    }
+
+    public void setPickupDistrict(DistrictDTO pickupDistrict) {
+        this.pickupDistrict = pickupDistrict;
+    }
+
+    public WardDTO getPickupWard() {
+        return pickupWard;
+    }
+
+    public void setPickupWard(WardDTO pickupWard) {
+        this.pickupWard = pickupWard;
     }
 
     public ProviceDTO getDropoffProvice() {
@@ -279,6 +385,14 @@ public class ContainerDTO implements Serializable {
         this.truck = truck;
     }
 
+    public ContainerOwnerDTO getOwner() {
+        return owner;
+    }
+
+    public void setOwner(ContainerOwnerDTO owner) {
+        this.owner = owner;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -310,19 +424,28 @@ public class ContainerDTO implements Serializable {
             ", distance=" + getDistance() +
             ", desiredPrice=" + getDesiredPrice() +
             ", additionalRequirements='" + getAdditionalRequirements() + "'" +
+            ", pickupContact='" + getPickupContact() + "'" +
+            ", pickupContactPhone='" + getPickupContactPhone() + "'" +
+            ", pickupAddress='" + getPickupAddress() + "'" +
+            ", pickupLat=" + getPickupLat() +
+            ", pickupLng=" + getPickupLng() +
+            ", pickupFromDate='" + getPickupFromDate() + "'" +
             ", dropoffContact='" + getDropoffContact() + "'" +
             ", dropoffContactPhone='" + getDropoffContactPhone() + "'" +
             ", dropoffAddress='" + getDropoffAddress() + "'" +
             ", dropoffLat=" + getDropoffLat() +
             ", dropoffLng=" + getDropoffLng() +
+            ", points='" + getPoints() + "'" +
             ", dropoffUntilDate='" + getDropoffUntilDate() + "'" +
             ", state='" + getState() + "'" +
             ", shipperId=" + getShipperId() +
             ", carrierId=" + getCarrierId() +
             ", totalWeight=" + getTotalWeight() +
-            ", pickupFromDate='" + getPickupFromDate() + "'" +
             ", biddingFromDate='" + getBiddingFromDate() + "'" +
             ", biddingUntilDate='" + getBiddingUntilDate() + "'" +
+            ", pickupProvice=" + getPickupProvice() +
+            ", pickupDistrict=" + getPickupDistrict() +
+            ", pickupWard=" + getPickupWard() +
             ", dropoffProvice=" + getDropoffProvice() +
             ", dropoffDistrict=" + getDropoffDistrict() +
             ", dropoffWard=" + getDropoffWard() +
@@ -330,6 +453,7 @@ public class ContainerDTO implements Serializable {
             ", status=" + getStatus() +
             ", truckType=" + getTruckType() +
             ", truck=" + getTruck() +
+            ", owner=" + getOwner() +
             "}";
     }
 }

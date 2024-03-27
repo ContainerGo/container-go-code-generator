@@ -35,6 +35,11 @@ public class TruckDTO implements Serializable {
     @NotNull
     private String numberPlate;
 
+    private Double lat;
+
+    private Double lng;
+
+    @NotNull
     private TruckTypeDTO type;
 
     private CarrierDTO carrier;
@@ -119,6 +124,22 @@ public class TruckDTO implements Serializable {
         this.numberPlate = numberPlate;
     }
 
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLng() {
+        return lng;
+    }
+
+    public void setLng(Double lng) {
+        this.lng = lng;
+    }
+
     public TruckTypeDTO getType() {
         return type;
     }
@@ -170,6 +191,8 @@ public class TruckDTO implements Serializable {
             ", status='" + getStatus() + "'" +
             ", mileage=" + getMileage() +
             ", numberPlate='" + getNumberPlate() + "'" +
+            ", lat=" + getLat() +
+            ", lng=" + getLng() +
             ", type=" + getType() +
             ", carrier=" + getCarrier() +
             "}";

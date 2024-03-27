@@ -60,11 +60,10 @@ public class ContainerResource {
         if (containerDTO.getId() != null) {
             throw new BadRequestAlertException("A new container cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        ContainerDTO result = containerService.save(containerDTO);
-        return ResponseEntity
-            .created(new URI("/api/containers/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        containerDTO = containerService.save(containerDTO);
+        return ResponseEntity.created(new URI("/api/containers/" + containerDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, containerDTO.getId().toString()))
+            .body(containerDTO);
     }
 
     /**
@@ -94,11 +93,10 @@ public class ContainerResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        ContainerDTO result = containerService.update(containerDTO);
-        return ResponseEntity
-            .ok()
+        containerDTO = containerService.update(containerDTO);
+        return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, containerDTO.getId().toString()))
-            .body(result);
+            .body(containerDTO);
     }
 
     /**
@@ -174,8 +172,7 @@ public class ContainerResource {
     public ResponseEntity<Void> deleteContainer(@PathVariable("id") Long id) {
         log.debug("REST request to delete Container : {}", id);
         containerService.delete(id);
-        return ResponseEntity
-            .noContent()
+        return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }

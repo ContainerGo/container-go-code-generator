@@ -4,7 +4,6 @@
   },
   "applications": ["containerGoServer"],
   "dto": "mapstruct",
-  "entityTableName": "truck",
   "fields": [
     {
       "fieldName": "id",
@@ -50,6 +49,14 @@
       "fieldName": "numberPlate",
       "fieldType": "String",
       "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "lat",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "lng",
+      "fieldType": "Double"
     }
   ],
   "jpaMetamodelFiltering": false,

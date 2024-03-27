@@ -1,6 +1,4 @@
 import dayjs from 'dayjs/esm';
-import { ITruck } from 'app/entities/truck/truck.model';
-import { ICarrierPerson } from 'app/entities/carrier-person/carrier-person.model';
 
 export interface ICarrier {
   id: number;
@@ -17,8 +15,6 @@ export interface ICarrier {
   vehicles?: number | null;
   shipmentsLeftForDay?: number | null;
   verifiedSince?: dayjs.Dayjs | null;
-  trucks?: Pick<ITruck, 'id'>[] | null;
-  carrierPeople?: Pick<ICarrierPerson, 'id'>[] | null;
 }
 
 export type NewCarrier = Omit<ICarrier, 'id'> & { id: null };

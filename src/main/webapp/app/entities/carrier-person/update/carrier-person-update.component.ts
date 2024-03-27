@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -25,14 +25,13 @@ export class CarrierPersonUpdateComponent implements OnInit {
 
   carriersSharedCollection: ICarrier[] = [];
 
-  editForm: CarrierPersonFormGroup = this.carrierPersonFormService.createCarrierPersonFormGroup();
+  protected carrierPersonService = inject(CarrierPersonService);
+  protected carrierPersonFormService = inject(CarrierPersonFormService);
+  protected carrierService = inject(CarrierService);
+  protected activatedRoute = inject(ActivatedRoute);
 
-  constructor(
-    protected carrierPersonService: CarrierPersonService,
-    protected carrierPersonFormService: CarrierPersonFormService,
-    protected carrierService: CarrierService,
-    protected activatedRoute: ActivatedRoute,
-  ) {}
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  editForm: CarrierPersonFormGroup = this.carrierPersonFormService.createCarrierPersonFormGroup();
 
   compareCarrier = (o1: ICarrier | null, o2: ICarrier | null): boolean => this.carrierService.compareCarrier(o1, o2);
 

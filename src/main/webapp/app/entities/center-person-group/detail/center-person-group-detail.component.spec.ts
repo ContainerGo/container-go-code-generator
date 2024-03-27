@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness, RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
@@ -6,6 +6,9 @@ import { of } from 'rxjs';
 import { CenterPersonGroupDetailComponent } from './center-person-group-detail.component';
 
 describe('CenterPersonGroup Management Detail Component', () => {
+  let comp: CenterPersonGroupDetailComponent;
+  let fixture: ComponentFixture<CenterPersonGroupDetailComponent>;
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CenterPersonGroupDetailComponent, RouterTestingModule.withRoutes([], { bindToComponentInputs: true })],
@@ -26,6 +29,11 @@ describe('CenterPersonGroup Management Detail Component', () => {
       .compileComponents();
   });
 
+  beforeEach(() => {
+    fixture = TestBed.createComponent(CenterPersonGroupDetailComponent);
+    comp = fixture.componentInstance;
+  });
+
   describe('OnInit', () => {
     it('Should load centerPersonGroup on init', async () => {
       const harness = await RouterTestingHarness.create();
@@ -33,6 +41,14 @@ describe('CenterPersonGroup Management Detail Component', () => {
 
       // THEN
       expect(instance.centerPersonGroup).toEqual(expect.objectContaining({ id: 123 }));
+    });
+  });
+
+  describe('PreviousState', () => {
+    it('Should navigate to previous state', () => {
+      jest.spyOn(window.history, 'back');
+      comp.previousState();
+      expect(window.history.back).toHaveBeenCalled();
     });
   });
 });

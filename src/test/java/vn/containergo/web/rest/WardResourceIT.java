@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static vn.containergo.domain.WardAsserts.*;
+import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +45,9 @@ class WardResourceIT {
 
     private static Random random = new Random();
     private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+
+    @Autowired
+    private ObjectMapper om;
 
     @Autowired
     private WardRepository wardRepository;
@@ -85,20 +90,23 @@ class WardResourceIT {
 
     @Test
     void createWard() throws Exception {
-        int databaseSizeBeforeCreate = wardRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the Ward
         WardDTO wardDTO = wardMapper.toDto(ward);
-        restWardMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(wardDTO)))
-            .andExpect(status().isCreated());
+        var returnedWardDTO = om.readValue(
+            restWardMockMvc
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(wardDTO)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(),
+            WardDTO.class
+        );
 
         // Validate the Ward in the database
-        List<Ward> wardList = wardRepository.findAll();
-        assertThat(wardList).hasSize(databaseSizeBeforeCreate + 1);
-        Ward testWard = wardList.get(wardList.size() - 1);
-        assertThat(testWard.getCode()).isEqualTo(DEFAULT_CODE);
-        assertThat(testWard.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testWard.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
+        var returnedWard = wardMapper.toEntity(returnedWardDTO);
+        assertWardUpdatableFieldsEquals(returnedWard, getPersistedWard(returnedWard));
     }
 
     @Test
@@ -107,21 +115,20 @@ class WardResourceIT {
         ward.setId(1L);
         WardDTO wardDTO = wardMapper.toDto(ward);
 
-        int databaseSizeBeforeCreate = wardRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restWardMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(wardDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(wardDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Ward in the database
-        List<Ward> wardList = wardRepository.findAll();
-        assertThat(wardList).hasSize(databaseSizeBeforeCreate);
+        assertSameRepositoryCount(databaseSizeBeforeCreate);
     }
 
     @Test
     void checkCodeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = wardRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         ward.setCode(null);
 
@@ -129,16 +136,15 @@ class WardResourceIT {
         WardDTO wardDTO = wardMapper.toDto(ward);
 
         restWardMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(wardDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(wardDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Ward> wardList = wardRepository.findAll();
-        assertThat(wardList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkNameIsRequired() throws Exception {
-        int databaseSizeBeforeTest = wardRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         ward.setName(null);
 
@@ -146,11 +152,10 @@ class WardResourceIT {
         WardDTO wardDTO = wardMapper.toDto(ward);
 
         restWardMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(wardDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(wardDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Ward> wardList = wardRepository.findAll();
-        assertThat(wardList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
@@ -196,7 +201,7 @@ class WardResourceIT {
         // Initialize the database
         wardRepository.save(ward);
 
-        int databaseSizeBeforeUpdate = wardRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the ward
         Ward updatedWard = wardRepository.findById(ward.getId()).orElseThrow();
@@ -204,25 +209,17 @@ class WardResourceIT {
         WardDTO wardDTO = wardMapper.toDto(updatedWard);
 
         restWardMockMvc
-            .perform(
-                put(ENTITY_API_URL_ID, wardDTO.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(wardDTO))
-            )
+            .perform(put(ENTITY_API_URL_ID, wardDTO.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(wardDTO)))
             .andExpect(status().isOk());
 
         // Validate the Ward in the database
-        List<Ward> wardList = wardRepository.findAll();
-        assertThat(wardList).hasSize(databaseSizeBeforeUpdate);
-        Ward testWard = wardList.get(wardList.size() - 1);
-        assertThat(testWard.getCode()).isEqualTo(UPDATED_CODE);
-        assertThat(testWard.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testWard.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertPersistedWardToMatchAllProperties(updatedWard);
     }
 
     @Test
     void putNonExistingWard() throws Exception {
-        int databaseSizeBeforeUpdate = wardRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         ward.setId(longCount.incrementAndGet());
 
         // Create the Ward
@@ -230,21 +227,16 @@ class WardResourceIT {
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restWardMockMvc
-            .perform(
-                put(ENTITY_API_URL_ID, wardDTO.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(wardDTO))
-            )
+            .perform(put(ENTITY_API_URL_ID, wardDTO.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(wardDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Ward in the database
-        List<Ward> wardList = wardRepository.findAll();
-        assertThat(wardList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithIdMismatchWard() throws Exception {
-        int databaseSizeBeforeUpdate = wardRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         ward.setId(longCount.incrementAndGet());
 
         // Create the Ward
@@ -255,18 +247,17 @@ class WardResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(wardDTO))
+                    .content(om.writeValueAsBytes(wardDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Ward in the database
-        List<Ward> wardList = wardRepository.findAll();
-        assertThat(wardList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithMissingIdPathParamWard() throws Exception {
-        int databaseSizeBeforeUpdate = wardRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         ward.setId(longCount.incrementAndGet());
 
         // Create the Ward
@@ -274,12 +265,11 @@ class WardResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restWardMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(wardDTO)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(wardDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Ward in the database
-        List<Ward> wardList = wardRepository.findAll();
-        assertThat(wardList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -287,7 +277,7 @@ class WardResourceIT {
         // Initialize the database
         wardRepository.save(ward);
 
-        int databaseSizeBeforeUpdate = wardRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the ward using partial update
         Ward partialUpdatedWard = new Ward();
@@ -297,17 +287,14 @@ class WardResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedWard.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedWard))
+                    .content(om.writeValueAsBytes(partialUpdatedWard))
             )
             .andExpect(status().isOk());
 
         // Validate the Ward in the database
-        List<Ward> wardList = wardRepository.findAll();
-        assertThat(wardList).hasSize(databaseSizeBeforeUpdate);
-        Ward testWard = wardList.get(wardList.size() - 1);
-        assertThat(testWard.getCode()).isEqualTo(DEFAULT_CODE);
-        assertThat(testWard.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testWard.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertWardUpdatableFieldsEquals(createUpdateProxyForBean(partialUpdatedWard, ward), getPersistedWard(ward));
     }
 
     @Test
@@ -315,7 +302,7 @@ class WardResourceIT {
         // Initialize the database
         wardRepository.save(ward);
 
-        int databaseSizeBeforeUpdate = wardRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the ward using partial update
         Ward partialUpdatedWard = new Ward();
@@ -327,22 +314,19 @@ class WardResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedWard.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedWard))
+                    .content(om.writeValueAsBytes(partialUpdatedWard))
             )
             .andExpect(status().isOk());
 
         // Validate the Ward in the database
-        List<Ward> wardList = wardRepository.findAll();
-        assertThat(wardList).hasSize(databaseSizeBeforeUpdate);
-        Ward testWard = wardList.get(wardList.size() - 1);
-        assertThat(testWard.getCode()).isEqualTo(UPDATED_CODE);
-        assertThat(testWard.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testWard.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertWardUpdatableFieldsEquals(partialUpdatedWard, getPersistedWard(partialUpdatedWard));
     }
 
     @Test
     void patchNonExistingWard() throws Exception {
-        int databaseSizeBeforeUpdate = wardRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         ward.setId(longCount.incrementAndGet());
 
         // Create the Ward
@@ -351,20 +335,17 @@ class WardResourceIT {
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restWardMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, wardDTO.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(wardDTO))
+                patch(ENTITY_API_URL_ID, wardDTO.getId()).contentType("application/merge-patch+json").content(om.writeValueAsBytes(wardDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Ward in the database
-        List<Ward> wardList = wardRepository.findAll();
-        assertThat(wardList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithIdMismatchWard() throws Exception {
-        int databaseSizeBeforeUpdate = wardRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         ward.setId(longCount.incrementAndGet());
 
         // Create the Ward
@@ -375,18 +356,17 @@ class WardResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(wardDTO))
+                    .content(om.writeValueAsBytes(wardDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Ward in the database
-        List<Ward> wardList = wardRepository.findAll();
-        assertThat(wardList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithMissingIdPathParamWard() throws Exception {
-        int databaseSizeBeforeUpdate = wardRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         ward.setId(longCount.incrementAndGet());
 
         // Create the Ward
@@ -394,12 +374,11 @@ class WardResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restWardMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(wardDTO)))
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(wardDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Ward in the database
-        List<Ward> wardList = wardRepository.findAll();
-        assertThat(wardList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -407,7 +386,7 @@ class WardResourceIT {
         // Initialize the database
         wardRepository.save(ward);
 
-        int databaseSizeBeforeDelete = wardRepository.findAll().size();
+        long databaseSizeBeforeDelete = getRepositoryCount();
 
         // Delete the ward
         restWardMockMvc
@@ -415,7 +394,34 @@ class WardResourceIT {
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<Ward> wardList = wardRepository.findAll();
-        assertThat(wardList).hasSize(databaseSizeBeforeDelete - 1);
+        assertDecrementedRepositoryCount(databaseSizeBeforeDelete);
+    }
+
+    protected long getRepositoryCount() {
+        return wardRepository.count();
+    }
+
+    protected void assertIncrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore + 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertDecrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore - 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertSameRepositoryCount(long countBefore) {
+        assertThat(countBefore).isEqualTo(getRepositoryCount());
+    }
+
+    protected Ward getPersistedWard(Ward ward) {
+        return wardRepository.findById(ward.getId()).orElseThrow();
+    }
+
+    protected void assertPersistedWardToMatchAllProperties(Ward expectedWard) {
+        assertWardAllPropertiesEquals(expectedWard, getPersistedWard(expectedWard));
+    }
+
+    protected void assertPersistedWardToMatchUpdatableProperties(Ward expectedWard) {
+        assertWardAllUpdatablePropertiesEquals(expectedWard, getPersistedWard(expectedWard));
     }
 }

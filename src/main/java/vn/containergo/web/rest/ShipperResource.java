@@ -60,11 +60,10 @@ public class ShipperResource {
         if (shipperDTO.getId() != null) {
             throw new BadRequestAlertException("A new shipper cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        ShipperDTO result = shipperService.save(shipperDTO);
-        return ResponseEntity
-            .created(new URI("/api/shippers/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        shipperDTO = shipperService.save(shipperDTO);
+        return ResponseEntity.created(new URI("/api/shippers/" + shipperDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, shipperDTO.getId().toString()))
+            .body(shipperDTO);
     }
 
     /**
@@ -94,11 +93,10 @@ public class ShipperResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        ShipperDTO result = shipperService.update(shipperDTO);
-        return ResponseEntity
-            .ok()
+        shipperDTO = shipperService.update(shipperDTO);
+        return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, shipperDTO.getId().toString()))
-            .body(result);
+            .body(shipperDTO);
     }
 
     /**
@@ -174,8 +172,7 @@ public class ShipperResource {
     public ResponseEntity<Void> deleteShipper(@PathVariable("id") Long id) {
         log.debug("REST request to delete Shipper : {}", id);
         shipperService.delete(id);
-        return ResponseEntity
-            .noContent()
+        return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }

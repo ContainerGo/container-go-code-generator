@@ -7,7 +7,7 @@ import { mergeMap } from 'rxjs/operators';
 import { IOffer } from '../offer.model';
 import { OfferService } from '../service/offer.service';
 
-export const offerResolve = (route: ActivatedRouteSnapshot): Observable<null | IOffer> => {
+const offerResolve = (route: ActivatedRouteSnapshot): Observable<null | IOffer> => {
   const id = route.params['id'];
   if (id) {
     return inject(OfferService)

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -14,12 +14,10 @@ export type EntityArrayResponseType = HttpResponse<IContainerStatusGroup[]>;
 
 @Injectable({ providedIn: 'root' })
 export class ContainerStatusGroupService {
-  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/container-status-groups');
+  protected http = inject(HttpClient);
+  protected applicationConfigService = inject(ApplicationConfigService);
 
-  constructor(
-    protected http: HttpClient,
-    protected applicationConfigService: ApplicationConfigService,
-  ) {}
+  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/container-status-groups');
 
   create(containerStatusGroup: NewContainerStatusGroup): Observable<EntityResponseType> {
     return this.http.post<IContainerStatusGroup>(this.resourceUrl, containerStatusGroup, { observe: 'response' });
@@ -68,8 +66,8 @@ export class ContainerStatusGroupService {
   ): Type[] {
     const containerStatusGroups: Type[] = containerStatusGroupsToCheck.filter(isPresent);
     if (containerStatusGroups.length > 0) {
-      const containerStatusGroupCollectionIdentifiers = containerStatusGroupCollection.map(
-        containerStatusGroupItem => this.getContainerStatusGroupIdentifier(containerStatusGroupItem)!,
+      const containerStatusGroupCollectionIdentifiers = containerStatusGroupCollection.map(containerStatusGroupItem =>
+        this.getContainerStatusGroupIdentifier(containerStatusGroupItem),
       );
       const containerStatusGroupsToAdd = containerStatusGroups.filter(containerStatusGroupItem => {
         const containerStatusGroupIdentifier = this.getContainerStatusGroupIdentifier(containerStatusGroupItem);

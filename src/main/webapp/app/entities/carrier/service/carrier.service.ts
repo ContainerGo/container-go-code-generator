@@ -1,8 +1,6 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
-import { map } from 'rxjs/operators';
+import { map, Observable } from 'rxjs';
 
 import dayjs from 'dayjs/esm';
 
@@ -28,12 +26,10 @@ export type EntityArrayResponseType = HttpResponse<ICarrier[]>;
 
 @Injectable({ providedIn: 'root' })
 export class CarrierService {
-  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/carriers');
+  protected http = inject(HttpClient);
+  protected applicationConfigService = inject(ApplicationConfigService);
 
-  constructor(
-    protected http: HttpClient,
-    protected applicationConfigService: ApplicationConfigService,
-  ) {}
+  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/carriers');
 
   create(carrier: NewCarrier): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(carrier);
@@ -87,7 +83,7 @@ export class CarrierService {
   ): Type[] {
     const carriers: Type[] = carriersToCheck.filter(isPresent);
     if (carriers.length > 0) {
-      const carrierCollectionIdentifiers = carrierCollection.map(carrierItem => this.getCarrierIdentifier(carrierItem)!);
+      const carrierCollectionIdentifiers = carrierCollection.map(carrierItem => this.getCarrierIdentifier(carrierItem));
       const carriersToAdd = carriers.filter(carrierItem => {
         const carrierIdentifier = this.getCarrierIdentifier(carrierItem);
         if (carrierCollectionIdentifiers.includes(carrierIdentifier)) {

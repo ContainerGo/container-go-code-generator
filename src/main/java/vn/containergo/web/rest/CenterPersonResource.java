@@ -61,11 +61,10 @@ public class CenterPersonResource {
         if (centerPersonDTO.getId() != null) {
             throw new BadRequestAlertException("A new centerPerson cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        CenterPersonDTO result = centerPersonService.save(centerPersonDTO);
-        return ResponseEntity
-            .created(new URI("/api/center-people/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        centerPersonDTO = centerPersonService.save(centerPersonDTO);
+        return ResponseEntity.created(new URI("/api/center-people/" + centerPersonDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, centerPersonDTO.getId().toString()))
+            .body(centerPersonDTO);
     }
 
     /**
@@ -95,11 +94,10 @@ public class CenterPersonResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        CenterPersonDTO result = centerPersonService.update(centerPersonDTO);
-        return ResponseEntity
-            .ok()
+        centerPersonDTO = centerPersonService.update(centerPersonDTO);
+        return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, centerPersonDTO.getId().toString()))
-            .body(result);
+            .body(centerPersonDTO);
     }
 
     /**
@@ -184,8 +182,7 @@ public class CenterPersonResource {
     public ResponseEntity<Void> deleteCenterPerson(@PathVariable("id") Long id) {
         log.debug("REST request to delete CenterPerson : {}", id);
         centerPersonService.delete(id);
-        return ResponseEntity
-            .noContent()
+        return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }

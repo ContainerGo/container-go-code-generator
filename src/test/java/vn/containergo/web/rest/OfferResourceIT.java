@@ -4,10 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static vn.containergo.domain.OfferAsserts.*;
+import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import vn.containergo.IntegrationTest;
 import vn.containergo.domain.Container;
 import vn.containergo.domain.Offer;
+import vn.containergo.domain.enumeration.OfferState;
 import vn.containergo.repository.OfferRepository;
 import vn.containergo.service.dto.OfferDTO;
 import vn.containergo.service.mapper.OfferMapper;
@@ -47,17 +50,29 @@ class OfferResourceIT {
     private static final Instant DEFAULT_DROPOFF_UNTIL_DATE = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_DROPOFF_UNTIL_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
+    private static final OfferState DEFAULT_STATE = OfferState.PENDING;
+    private static final OfferState UPDATED_STATE = OfferState.ACCEPTED;
+
     private static final Double DEFAULT_PRICE = 1D;
     private static final Double UPDATED_PRICE = 2D;
 
     private static final Long DEFAULT_CARRIER_ID = 1L;
     private static final Long UPDATED_CARRIER_ID = 2L;
 
+    private static final Long DEFAULT_CARRIER_PERSON_ID = 1L;
+    private static final Long UPDATED_CARRIER_PERSON_ID = 2L;
+
+    private static final Long DEFAULT_TRUCK_ID = 1L;
+    private static final Long UPDATED_TRUCK_ID = 2L;
+
     private static final String ENTITY_API_URL = "/api/offers";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
     private static Random random = new Random();
     private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+
+    @Autowired
+    private ObjectMapper om;
 
     @Autowired
     private OfferRepository offerRepository;
@@ -83,8 +98,11 @@ class OfferResourceIT {
             .pickupUntilDate(DEFAULT_PICKUP_UNTIL_DATE)
             .dropoffFromDate(DEFAULT_DROPOFF_FROM_DATE)
             .dropoffUntilDate(DEFAULT_DROPOFF_UNTIL_DATE)
+            .state(DEFAULT_STATE)
             .price(DEFAULT_PRICE)
-            .carrierId(DEFAULT_CARRIER_ID);
+            .carrierId(DEFAULT_CARRIER_ID)
+            .carrierPersonId(DEFAULT_CARRIER_PERSON_ID)
+            .truckId(DEFAULT_TRUCK_ID);
         // Add required entity
         Container container;
         container = ContainerResourceIT.createEntity();
@@ -106,8 +124,11 @@ class OfferResourceIT {
             .pickupUntilDate(UPDATED_PICKUP_UNTIL_DATE)
             .dropoffFromDate(UPDATED_DROPOFF_FROM_DATE)
             .dropoffUntilDate(UPDATED_DROPOFF_UNTIL_DATE)
+            .state(UPDATED_STATE)
             .price(UPDATED_PRICE)
-            .carrierId(UPDATED_CARRIER_ID);
+            .carrierId(UPDATED_CARRIER_ID)
+            .carrierPersonId(UPDATED_CARRIER_PERSON_ID)
+            .truckId(UPDATED_TRUCK_ID);
         // Add required entity
         Container container;
         container = ContainerResourceIT.createUpdatedEntity();
@@ -124,24 +145,23 @@ class OfferResourceIT {
 
     @Test
     void createOffer() throws Exception {
-        int databaseSizeBeforeCreate = offerRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the Offer
         OfferDTO offerDTO = offerMapper.toDto(offer);
-        restOfferMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(offerDTO)))
-            .andExpect(status().isCreated());
+        var returnedOfferDTO = om.readValue(
+            restOfferMockMvc
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(offerDTO)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(),
+            OfferDTO.class
+        );
 
         // Validate the Offer in the database
-        List<Offer> offerList = offerRepository.findAll();
-        assertThat(offerList).hasSize(databaseSizeBeforeCreate + 1);
-        Offer testOffer = offerList.get(offerList.size() - 1);
-        assertThat(testOffer.getMessage()).isEqualTo(DEFAULT_MESSAGE);
-        assertThat(testOffer.getPickupFromDate()).isEqualTo(DEFAULT_PICKUP_FROM_DATE);
-        assertThat(testOffer.getPickupUntilDate()).isEqualTo(DEFAULT_PICKUP_UNTIL_DATE);
-        assertThat(testOffer.getDropoffFromDate()).isEqualTo(DEFAULT_DROPOFF_FROM_DATE);
-        assertThat(testOffer.getDropoffUntilDate()).isEqualTo(DEFAULT_DROPOFF_UNTIL_DATE);
-        assertThat(testOffer.getPrice()).isEqualTo(DEFAULT_PRICE);
-        assertThat(testOffer.getCarrierId()).isEqualTo(DEFAULT_CARRIER_ID);
+        assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
+        var returnedOffer = offerMapper.toEntity(returnedOfferDTO);
+        assertOfferUpdatableFieldsEquals(returnedOffer, getPersistedOffer(returnedOffer));
     }
 
     @Test
@@ -150,21 +170,20 @@ class OfferResourceIT {
         offer.setId(1L);
         OfferDTO offerDTO = offerMapper.toDto(offer);
 
-        int databaseSizeBeforeCreate = offerRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restOfferMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(offerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(offerDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Offer in the database
-        List<Offer> offerList = offerRepository.findAll();
-        assertThat(offerList).hasSize(databaseSizeBeforeCreate);
+        assertSameRepositoryCount(databaseSizeBeforeCreate);
     }
 
     @Test
     void checkPickupFromDateIsRequired() throws Exception {
-        int databaseSizeBeforeTest = offerRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         offer.setPickupFromDate(null);
 
@@ -172,16 +191,15 @@ class OfferResourceIT {
         OfferDTO offerDTO = offerMapper.toDto(offer);
 
         restOfferMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(offerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(offerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Offer> offerList = offerRepository.findAll();
-        assertThat(offerList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkPickupUntilDateIsRequired() throws Exception {
-        int databaseSizeBeforeTest = offerRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         offer.setPickupUntilDate(null);
 
@@ -189,16 +207,15 @@ class OfferResourceIT {
         OfferDTO offerDTO = offerMapper.toDto(offer);
 
         restOfferMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(offerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(offerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Offer> offerList = offerRepository.findAll();
-        assertThat(offerList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkDropoffFromDateIsRequired() throws Exception {
-        int databaseSizeBeforeTest = offerRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         offer.setDropoffFromDate(null);
 
@@ -206,16 +223,15 @@ class OfferResourceIT {
         OfferDTO offerDTO = offerMapper.toDto(offer);
 
         restOfferMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(offerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(offerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Offer> offerList = offerRepository.findAll();
-        assertThat(offerList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkDropoffUntilDateIsRequired() throws Exception {
-        int databaseSizeBeforeTest = offerRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         offer.setDropoffUntilDate(null);
 
@@ -223,16 +239,31 @@ class OfferResourceIT {
         OfferDTO offerDTO = offerMapper.toDto(offer);
 
         restOfferMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(offerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(offerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Offer> offerList = offerRepository.findAll();
-        assertThat(offerList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
+    void checkStateIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        // set the field null
+        offer.setState(null);
+
+        // Create the Offer, which fails.
+        OfferDTO offerDTO = offerMapper.toDto(offer);
+
+        restOfferMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(offerDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkPriceIsRequired() throws Exception {
-        int databaseSizeBeforeTest = offerRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         offer.setPrice(null);
 
@@ -240,16 +271,15 @@ class OfferResourceIT {
         OfferDTO offerDTO = offerMapper.toDto(offer);
 
         restOfferMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(offerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(offerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Offer> offerList = offerRepository.findAll();
-        assertThat(offerList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkCarrierIdIsRequired() throws Exception {
-        int databaseSizeBeforeTest = offerRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         offer.setCarrierId(null);
 
@@ -257,11 +287,10 @@ class OfferResourceIT {
         OfferDTO offerDTO = offerMapper.toDto(offer);
 
         restOfferMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(offerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(offerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Offer> offerList = offerRepository.findAll();
-        assertThat(offerList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
@@ -280,8 +309,11 @@ class OfferResourceIT {
             .andExpect(jsonPath("$.[*].pickupUntilDate").value(hasItem(DEFAULT_PICKUP_UNTIL_DATE.toString())))
             .andExpect(jsonPath("$.[*].dropoffFromDate").value(hasItem(DEFAULT_DROPOFF_FROM_DATE.toString())))
             .andExpect(jsonPath("$.[*].dropoffUntilDate").value(hasItem(DEFAULT_DROPOFF_UNTIL_DATE.toString())))
+            .andExpect(jsonPath("$.[*].state").value(hasItem(DEFAULT_STATE.toString())))
             .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.doubleValue())))
-            .andExpect(jsonPath("$.[*].carrierId").value(hasItem(DEFAULT_CARRIER_ID.intValue())));
+            .andExpect(jsonPath("$.[*].carrierId").value(hasItem(DEFAULT_CARRIER_ID.intValue())))
+            .andExpect(jsonPath("$.[*].carrierPersonId").value(hasItem(DEFAULT_CARRIER_PERSON_ID.intValue())))
+            .andExpect(jsonPath("$.[*].truckId").value(hasItem(DEFAULT_TRUCK_ID.intValue())));
     }
 
     @Test
@@ -300,8 +332,11 @@ class OfferResourceIT {
             .andExpect(jsonPath("$.pickupUntilDate").value(DEFAULT_PICKUP_UNTIL_DATE.toString()))
             .andExpect(jsonPath("$.dropoffFromDate").value(DEFAULT_DROPOFF_FROM_DATE.toString()))
             .andExpect(jsonPath("$.dropoffUntilDate").value(DEFAULT_DROPOFF_UNTIL_DATE.toString()))
+            .andExpect(jsonPath("$.state").value(DEFAULT_STATE.toString()))
             .andExpect(jsonPath("$.price").value(DEFAULT_PRICE.doubleValue()))
-            .andExpect(jsonPath("$.carrierId").value(DEFAULT_CARRIER_ID.intValue()));
+            .andExpect(jsonPath("$.carrierId").value(DEFAULT_CARRIER_ID.intValue()))
+            .andExpect(jsonPath("$.carrierPersonId").value(DEFAULT_CARRIER_PERSON_ID.intValue()))
+            .andExpect(jsonPath("$.truckId").value(DEFAULT_TRUCK_ID.intValue()));
     }
 
     @Test
@@ -315,7 +350,7 @@ class OfferResourceIT {
         // Initialize the database
         offerRepository.save(offer);
 
-        int databaseSizeBeforeUpdate = offerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the offer
         Offer updatedOffer = offerRepository.findById(offer.getId()).orElseThrow();
@@ -325,34 +360,27 @@ class OfferResourceIT {
             .pickupUntilDate(UPDATED_PICKUP_UNTIL_DATE)
             .dropoffFromDate(UPDATED_DROPOFF_FROM_DATE)
             .dropoffUntilDate(UPDATED_DROPOFF_UNTIL_DATE)
+            .state(UPDATED_STATE)
             .price(UPDATED_PRICE)
-            .carrierId(UPDATED_CARRIER_ID);
+            .carrierId(UPDATED_CARRIER_ID)
+            .carrierPersonId(UPDATED_CARRIER_PERSON_ID)
+            .truckId(UPDATED_TRUCK_ID);
         OfferDTO offerDTO = offerMapper.toDto(updatedOffer);
 
         restOfferMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, offerDTO.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(offerDTO))
+                put(ENTITY_API_URL_ID, offerDTO.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(offerDTO))
             )
             .andExpect(status().isOk());
 
         // Validate the Offer in the database
-        List<Offer> offerList = offerRepository.findAll();
-        assertThat(offerList).hasSize(databaseSizeBeforeUpdate);
-        Offer testOffer = offerList.get(offerList.size() - 1);
-        assertThat(testOffer.getMessage()).isEqualTo(UPDATED_MESSAGE);
-        assertThat(testOffer.getPickupFromDate()).isEqualTo(UPDATED_PICKUP_FROM_DATE);
-        assertThat(testOffer.getPickupUntilDate()).isEqualTo(UPDATED_PICKUP_UNTIL_DATE);
-        assertThat(testOffer.getDropoffFromDate()).isEqualTo(UPDATED_DROPOFF_FROM_DATE);
-        assertThat(testOffer.getDropoffUntilDate()).isEqualTo(UPDATED_DROPOFF_UNTIL_DATE);
-        assertThat(testOffer.getPrice()).isEqualTo(UPDATED_PRICE);
-        assertThat(testOffer.getCarrierId()).isEqualTo(UPDATED_CARRIER_ID);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertPersistedOfferToMatchAllProperties(updatedOffer);
     }
 
     @Test
     void putNonExistingOffer() throws Exception {
-        int databaseSizeBeforeUpdate = offerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         offer.setId(longCount.incrementAndGet());
 
         // Create the Offer
@@ -361,20 +389,17 @@ class OfferResourceIT {
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restOfferMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, offerDTO.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(offerDTO))
+                put(ENTITY_API_URL_ID, offerDTO.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(offerDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Offer in the database
-        List<Offer> offerList = offerRepository.findAll();
-        assertThat(offerList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithIdMismatchOffer() throws Exception {
-        int databaseSizeBeforeUpdate = offerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         offer.setId(longCount.incrementAndGet());
 
         // Create the Offer
@@ -385,18 +410,17 @@ class OfferResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(offerDTO))
+                    .content(om.writeValueAsBytes(offerDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Offer in the database
-        List<Offer> offerList = offerRepository.findAll();
-        assertThat(offerList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithMissingIdPathParamOffer() throws Exception {
-        int databaseSizeBeforeUpdate = offerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         offer.setId(longCount.incrementAndGet());
 
         // Create the Offer
@@ -404,12 +428,11 @@ class OfferResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restOfferMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(offerDTO)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(offerDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Offer in the database
-        List<Offer> offerList = offerRepository.findAll();
-        assertThat(offerList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -417,37 +440,32 @@ class OfferResourceIT {
         // Initialize the database
         offerRepository.save(offer);
 
-        int databaseSizeBeforeUpdate = offerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the offer using partial update
         Offer partialUpdatedOffer = new Offer();
         partialUpdatedOffer.setId(offer.getId());
 
         partialUpdatedOffer
-            .pickupFromDate(UPDATED_PICKUP_FROM_DATE)
+            .message(UPDATED_MESSAGE)
             .dropoffFromDate(UPDATED_DROPOFF_FROM_DATE)
             .dropoffUntilDate(UPDATED_DROPOFF_UNTIL_DATE)
-            .price(UPDATED_PRICE);
+            .state(UPDATED_STATE)
+            .carrierId(UPDATED_CARRIER_ID)
+            .carrierPersonId(UPDATED_CARRIER_PERSON_ID);
 
         restOfferMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedOffer.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedOffer))
+                    .content(om.writeValueAsBytes(partialUpdatedOffer))
             )
             .andExpect(status().isOk());
 
         // Validate the Offer in the database
-        List<Offer> offerList = offerRepository.findAll();
-        assertThat(offerList).hasSize(databaseSizeBeforeUpdate);
-        Offer testOffer = offerList.get(offerList.size() - 1);
-        assertThat(testOffer.getMessage()).isEqualTo(DEFAULT_MESSAGE);
-        assertThat(testOffer.getPickupFromDate()).isEqualTo(UPDATED_PICKUP_FROM_DATE);
-        assertThat(testOffer.getPickupUntilDate()).isEqualTo(DEFAULT_PICKUP_UNTIL_DATE);
-        assertThat(testOffer.getDropoffFromDate()).isEqualTo(UPDATED_DROPOFF_FROM_DATE);
-        assertThat(testOffer.getDropoffUntilDate()).isEqualTo(UPDATED_DROPOFF_UNTIL_DATE);
-        assertThat(testOffer.getPrice()).isEqualTo(UPDATED_PRICE);
-        assertThat(testOffer.getCarrierId()).isEqualTo(DEFAULT_CARRIER_ID);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertOfferUpdatableFieldsEquals(createUpdateProxyForBean(partialUpdatedOffer, offer), getPersistedOffer(offer));
     }
 
     @Test
@@ -455,7 +473,7 @@ class OfferResourceIT {
         // Initialize the database
         offerRepository.save(offer);
 
-        int databaseSizeBeforeUpdate = offerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the offer using partial update
         Offer partialUpdatedOffer = new Offer();
@@ -467,33 +485,29 @@ class OfferResourceIT {
             .pickupUntilDate(UPDATED_PICKUP_UNTIL_DATE)
             .dropoffFromDate(UPDATED_DROPOFF_FROM_DATE)
             .dropoffUntilDate(UPDATED_DROPOFF_UNTIL_DATE)
+            .state(UPDATED_STATE)
             .price(UPDATED_PRICE)
-            .carrierId(UPDATED_CARRIER_ID);
+            .carrierId(UPDATED_CARRIER_ID)
+            .carrierPersonId(UPDATED_CARRIER_PERSON_ID)
+            .truckId(UPDATED_TRUCK_ID);
 
         restOfferMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedOffer.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedOffer))
+                    .content(om.writeValueAsBytes(partialUpdatedOffer))
             )
             .andExpect(status().isOk());
 
         // Validate the Offer in the database
-        List<Offer> offerList = offerRepository.findAll();
-        assertThat(offerList).hasSize(databaseSizeBeforeUpdate);
-        Offer testOffer = offerList.get(offerList.size() - 1);
-        assertThat(testOffer.getMessage()).isEqualTo(UPDATED_MESSAGE);
-        assertThat(testOffer.getPickupFromDate()).isEqualTo(UPDATED_PICKUP_FROM_DATE);
-        assertThat(testOffer.getPickupUntilDate()).isEqualTo(UPDATED_PICKUP_UNTIL_DATE);
-        assertThat(testOffer.getDropoffFromDate()).isEqualTo(UPDATED_DROPOFF_FROM_DATE);
-        assertThat(testOffer.getDropoffUntilDate()).isEqualTo(UPDATED_DROPOFF_UNTIL_DATE);
-        assertThat(testOffer.getPrice()).isEqualTo(UPDATED_PRICE);
-        assertThat(testOffer.getCarrierId()).isEqualTo(UPDATED_CARRIER_ID);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertOfferUpdatableFieldsEquals(partialUpdatedOffer, getPersistedOffer(partialUpdatedOffer));
     }
 
     @Test
     void patchNonExistingOffer() throws Exception {
-        int databaseSizeBeforeUpdate = offerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         offer.setId(longCount.incrementAndGet());
 
         // Create the Offer
@@ -504,18 +518,17 @@ class OfferResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, offerDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(offerDTO))
+                    .content(om.writeValueAsBytes(offerDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Offer in the database
-        List<Offer> offerList = offerRepository.findAll();
-        assertThat(offerList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithIdMismatchOffer() throws Exception {
-        int databaseSizeBeforeUpdate = offerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         offer.setId(longCount.incrementAndGet());
 
         // Create the Offer
@@ -526,18 +539,17 @@ class OfferResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(offerDTO))
+                    .content(om.writeValueAsBytes(offerDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Offer in the database
-        List<Offer> offerList = offerRepository.findAll();
-        assertThat(offerList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithMissingIdPathParamOffer() throws Exception {
-        int databaseSizeBeforeUpdate = offerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         offer.setId(longCount.incrementAndGet());
 
         // Create the Offer
@@ -545,12 +557,11 @@ class OfferResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restOfferMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(offerDTO)))
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(offerDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Offer in the database
-        List<Offer> offerList = offerRepository.findAll();
-        assertThat(offerList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -558,7 +569,7 @@ class OfferResourceIT {
         // Initialize the database
         offerRepository.save(offer);
 
-        int databaseSizeBeforeDelete = offerRepository.findAll().size();
+        long databaseSizeBeforeDelete = getRepositoryCount();
 
         // Delete the offer
         restOfferMockMvc
@@ -566,7 +577,34 @@ class OfferResourceIT {
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<Offer> offerList = offerRepository.findAll();
-        assertThat(offerList).hasSize(databaseSizeBeforeDelete - 1);
+        assertDecrementedRepositoryCount(databaseSizeBeforeDelete);
+    }
+
+    protected long getRepositoryCount() {
+        return offerRepository.count();
+    }
+
+    protected void assertIncrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore + 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertDecrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore - 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertSameRepositoryCount(long countBefore) {
+        assertThat(countBefore).isEqualTo(getRepositoryCount());
+    }
+
+    protected Offer getPersistedOffer(Offer offer) {
+        return offerRepository.findById(offer.getId()).orElseThrow();
+    }
+
+    protected void assertPersistedOfferToMatchAllProperties(Offer expectedOffer) {
+        assertOfferAllPropertiesEquals(expectedOffer, getPersistedOffer(expectedOffer));
+    }
+
+    protected void assertPersistedOfferToMatchUpdatableProperties(Offer expectedOffer) {
+        assertOfferAllUpdatablePropertiesEquals(expectedOffer, getPersistedOffer(expectedOffer));
     }
 }

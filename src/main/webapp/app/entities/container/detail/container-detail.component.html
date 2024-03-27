@@ -35,6 +35,30 @@
           <dd>
             <span>{{ container.additionalRequirements }}</span>
           </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.pickupContact">Pickup Contact</span></dt>
+          <dd>
+            <span>{{ container.pickupContact }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.pickupContactPhone">Pickup Contact Phone</span></dt>
+          <dd>
+            <span>{{ container.pickupContactPhone }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.pickupAddress">Pickup Address</span></dt>
+          <dd>
+            <span>{{ container.pickupAddress }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.pickupLat">Pickup Lat</span></dt>
+          <dd>
+            <span>{{ container.pickupLat }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.pickupLng">Pickup Lng</span></dt>
+          <dd>
+            <span>{{ container.pickupLng }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.pickupFromDate">Pickup From Date</span></dt>
+          <dd>
+            <span>{{ container.pickupFromDate | formatMediumDatetime }}</span>
+          </dd>
           <dt><span jhiTranslate="containerGoServerApp.container.dropoffContact">Dropoff Contact</span></dt>
           <dd>
             <span>{{ container.dropoffContact }}</span>
@@ -54,6 +78,10 @@
           <dt><span jhiTranslate="containerGoServerApp.container.dropoffLng">Dropoff Lng</span></dt>
           <dd>
             <span>{{ container.dropoffLng }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.points">Points</span></dt>
+          <dd>
+            <span>{{ container.points }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.container.dropoffUntilDate">Dropoff Until Date</span></dt>
           <dd>
@@ -75,10 +103,6 @@
           <dd>
             <span>{{ container.totalWeight }}</span>
           </dd>
-          <dt><span jhiTranslate="containerGoServerApp.container.pickupFromDate">Pickup From Date</span></dt>
-          <dd>
-            <span>{{ container.pickupFromDate | formatMediumDatetime }}</span>
-          </dd>
           <dt><span jhiTranslate="containerGoServerApp.container.biddingFromDate">Bidding From Date</span></dt>
           <dd>
             <span>{{ container.biddingFromDate | formatMediumDatetime }}</span>
@@ -86,6 +110,30 @@
           <dt><span jhiTranslate="containerGoServerApp.container.biddingUntilDate">Bidding Until Date</span></dt>
           <dd>
             <span>{{ container.biddingUntilDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.pickupProvice">Pickup Provice</span></dt>
+          <dd>
+            @if (container.pickupProvice) {
+              <div>
+                <a [routerLink]="['/provice', container.pickupProvice.id, 'view']">{{ container.pickupProvice.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.pickupDistrict">Pickup District</span></dt>
+          <dd>
+            @if (container.pickupDistrict) {
+              <div>
+                <a [routerLink]="['/district', container.pickupDistrict.id, 'view']">{{ container.pickupDistrict.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.pickupWard">Pickup Ward</span></dt>
+          <dd>
+            @if (container.pickupWard) {
+              <div>
+                <a [routerLink]="['/ward', container.pickupWard.id, 'view']">{{ container.pickupWard.id }}</a>
+              </div>
+            }
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.container.dropoffProvice">Dropoff Provice</span></dt>
           <dd>
@@ -140,6 +188,14 @@
             @if (container.truck) {
               <div>
                 <a [routerLink]="['/truck', container.truck.id, 'view']">{{ container.truck.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.container.owner">Owner</span></dt>
+          <dd>
+            @if (container.owner) {
+              <div>
+                <a [routerLink]="['/container-owner', container.owner.id, 'view']">{{ container.owner.id }}</a>
               </div>
             }
           </dd>

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -14,12 +14,10 @@ export type EntityArrayResponseType = HttpResponse<ICarrierPerson[]>;
 
 @Injectable({ providedIn: 'root' })
 export class CarrierPersonService {
-  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/carrier-people');
+  protected http = inject(HttpClient);
+  protected applicationConfigService = inject(ApplicationConfigService);
 
-  constructor(
-    protected http: HttpClient,
-    protected applicationConfigService: ApplicationConfigService,
-  ) {}
+  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/carrier-people');
 
   create(carrierPerson: NewCarrierPerson): Observable<EntityResponseType> {
     return this.http.post<ICarrierPerson>(this.resourceUrl, carrierPerson, { observe: 'response' });
@@ -64,8 +62,8 @@ export class CarrierPersonService {
   ): Type[] {
     const carrierPeople: Type[] = carrierPeopleToCheck.filter(isPresent);
     if (carrierPeople.length > 0) {
-      const carrierPersonCollectionIdentifiers = carrierPersonCollection.map(
-        carrierPersonItem => this.getCarrierPersonIdentifier(carrierPersonItem)!,
+      const carrierPersonCollectionIdentifiers = carrierPersonCollection.map(carrierPersonItem =>
+        this.getCarrierPersonIdentifier(carrierPersonItem),
       );
       const carrierPeopleToAdd = carrierPeople.filter(carrierPersonItem => {
         const carrierPersonIdentifier = this.getCarrierPersonIdentifier(carrierPersonItem);

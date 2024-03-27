@@ -8,8 +8,8 @@ import { ContainerService, RestContainer } from './container.service';
 
 const requireRestSample: RestContainer = {
   ...sampleWithRequiredData,
-  dropoffUntilDate: sampleWithRequiredData.dropoffUntilDate?.toJSON(),
   pickupFromDate: sampleWithRequiredData.pickupFromDate?.toJSON(),
+  dropoffUntilDate: sampleWithRequiredData.dropoffUntilDate?.toJSON(),
   biddingFromDate: sampleWithRequiredData.biddingFromDate?.toJSON(),
   biddingUntilDate: sampleWithRequiredData.biddingUntilDate?.toJSON(),
 };

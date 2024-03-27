@@ -27,6 +27,8 @@
       "status": "Status",
       "mileage": "Mileage",
       "numberPlate": "Number Plate",
+      "lat": "Lat",
+      "lng": "Lng",
       "type": "Type",
       "carrier": "Carrier"
     }

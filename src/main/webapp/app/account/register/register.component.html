@@ -3,31 +3,31 @@
     <div class="col-md-8">
       <h1 jhiTranslate="register.title" data-cy="registerTitle">Đăng ký</h1>
 
-      @if (success) {
+      @if (success()) {
         <div class="alert alert-success" jhiTranslate="register.messages.success">
           <strong>Đăng ký thành công!</strong> Bạn vui lòng kiểm tra hộp thư để xác nhận tài khoản.
         </div>
       }
 
-      @if (error) {
+      @if (error()) {
         <div class="alert alert-danger" jhiTranslate="register.messages.error.fail">
           <strong>Đăng ký thất bại!</strong> Vui lòng thử lại sau.
         </div>
       }
 
-      @if (errorUserExists) {
+      @if (errorUserExists()) {
         <div class="alert alert-danger" jhiTranslate="register.messages.error.userexists">
           <strong>Tên tài khoản này đã được sử dụng!</strong> Bạn vui lòng chọn tên tài khoản khác.
         </div>
       }
 
-      @if (errorEmailExists) {
+      @if (errorEmailExists()) {
         <div class="alert alert-danger" jhiTranslate="register.messages.error.emailexists">
           <strong>Email này đã được sử dụng!</strong> Bạn vui lòng nhập email khác.
         </div>
       }
 
-      @if (doNotMatch) {
+      @if (doNotMatch()) {
         <div class="alert alert-danger" jhiTranslate="global.messages.error.dontmatch">Xác nhận mật khẩu không khớp!</div>
       }
     </div>
@@ -35,7 +35,7 @@
 
   <div class="d-flex justify-content-center">
     <div class="col-md-8">
-      @if (!success) {
+      @if (!success()) {
         <form name="form" role="form" (ngSubmit)="register()" [formGroup]="registerForm">
           <div class="mb-3">
             <label class="form-label" for="login" jhiTranslate="global.form.username.label">Tên tài khoản</label>

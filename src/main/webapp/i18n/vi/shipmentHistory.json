@@ -1,0 +1,30 @@
+{
+  "containerGoServerApp": {
+    "shipmentHistory": {
+      "home": {
+        "title": "Shipment Histories",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Shipment History",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Shipment History",
+        "notFound": "No Shipment Histories found"
+      },
+      "created": "Một Shipment History mới được tạo với định danh {{ param }}",
+      "updated": "Một Shipment History cập nhật với định danh {{ param }}",
+      "deleted": "Một Shipment History đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Shipment History {{ id }}?"
+      },
+      "detail": {
+        "title": "Shipment History"
+      },
+      "id": "Id",
+      "event": "Event",
+      "timestamp": "Timestamp",
+      "executedBy": "Executed By",
+      "location": "Location",
+      "lat": "Lat",
+      "lng": "Lng",
+      "container": "Container"
+    }
+  }
+}

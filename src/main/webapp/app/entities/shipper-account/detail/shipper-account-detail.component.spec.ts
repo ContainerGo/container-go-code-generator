@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness, RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
@@ -6,6 +6,9 @@ import { of } from 'rxjs';
 import { ShipperAccountDetailComponent } from './shipper-account-detail.component';
 
 describe('ShipperAccount Management Detail Component', () => {
+  let comp: ShipperAccountDetailComponent;
+  let fixture: ComponentFixture<ShipperAccountDetailComponent>;
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ShipperAccountDetailComponent, RouterTestingModule.withRoutes([], { bindToComponentInputs: true })],
@@ -26,6 +29,11 @@ describe('ShipperAccount Management Detail Component', () => {
       .compileComponents();
   });
 
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ShipperAccountDetailComponent);
+    comp = fixture.componentInstance;
+  });
+
   describe('OnInit', () => {
     it('Should load shipperAccount on init', async () => {
       const harness = await RouterTestingHarness.create();
@@ -33,6 +41,14 @@ describe('ShipperAccount Management Detail Component', () => {
 
       // THEN
       expect(instance.shipperAccount).toEqual(expect.objectContaining({ id: 123 }));
+    });
+  });
+
+  describe('PreviousState', () => {
+    it('Should navigate to previous state', () => {
+      jest.spyOn(window.history, 'back');
+      comp.previousState();
+      expect(window.history.back).toHaveBeenCalled();
     });
   });
 });

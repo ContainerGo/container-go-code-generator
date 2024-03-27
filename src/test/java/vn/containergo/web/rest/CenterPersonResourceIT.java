@@ -5,9 +5,11 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static vn.containergo.domain.CenterPersonAsserts.*;
+import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,6 +57,9 @@ class CenterPersonResourceIT {
 
     private static Random random = new Random();
     private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+
+    @Autowired
+    private ObjectMapper om;
 
     @Autowired
     private CenterPersonRepository centerPersonRepository;
@@ -111,23 +116,23 @@ class CenterPersonResourceIT {
 
     @Test
     void createCenterPerson() throws Exception {
-        int databaseSizeBeforeCreate = centerPersonRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the CenterPerson
         CenterPersonDTO centerPersonDTO = centerPersonMapper.toDto(centerPerson);
-        restCenterPersonMockMvc
-            .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(centerPersonDTO))
-            )
-            .andExpect(status().isCreated());
+        var returnedCenterPersonDTO = om.readValue(
+            restCenterPersonMockMvc
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(centerPersonDTO)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(),
+            CenterPersonDTO.class
+        );
 
         // Validate the CenterPerson in the database
-        List<CenterPerson> centerPersonList = centerPersonRepository.findAll();
-        assertThat(centerPersonList).hasSize(databaseSizeBeforeCreate + 1);
-        CenterPerson testCenterPerson = centerPersonList.get(centerPersonList.size() - 1);
-        assertThat(testCenterPerson.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testCenterPerson.getPhone()).isEqualTo(DEFAULT_PHONE);
-        assertThat(testCenterPerson.getEmail()).isEqualTo(DEFAULT_EMAIL);
-        assertThat(testCenterPerson.getAddress()).isEqualTo(DEFAULT_ADDRESS);
+        assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
+        var returnedCenterPerson = centerPersonMapper.toEntity(returnedCenterPersonDTO);
+        assertCenterPersonUpdatableFieldsEquals(returnedCenterPerson, getPersistedCenterPerson(returnedCenterPerson));
     }
 
     @Test
@@ -136,23 +141,20 @@ class CenterPersonResourceIT {
         centerPerson.setId(1L);
         CenterPersonDTO centerPersonDTO = centerPersonMapper.toDto(centerPerson);
 
-        int databaseSizeBeforeCreate = centerPersonRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restCenterPersonMockMvc
-            .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(centerPersonDTO))
-            )
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(centerPersonDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the CenterPerson in the database
-        List<CenterPerson> centerPersonList = centerPersonRepository.findAll();
-        assertThat(centerPersonList).hasSize(databaseSizeBeforeCreate);
+        assertSameRepositoryCount(databaseSizeBeforeCreate);
     }
 
     @Test
     void checkNameIsRequired() throws Exception {
-        int databaseSizeBeforeTest = centerPersonRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         centerPerson.setName(null);
 
@@ -160,18 +162,15 @@ class CenterPersonResourceIT {
         CenterPersonDTO centerPersonDTO = centerPersonMapper.toDto(centerPerson);
 
         restCenterPersonMockMvc
-            .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(centerPersonDTO))
-            )
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(centerPersonDTO)))
             .andExpect(status().isBadRequest());
 
-        List<CenterPerson> centerPersonList = centerPersonRepository.findAll();
-        assertThat(centerPersonList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkPhoneIsRequired() throws Exception {
-        int databaseSizeBeforeTest = centerPersonRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         centerPerson.setPhone(null);
 
@@ -179,13 +178,10 @@ class CenterPersonResourceIT {
         CenterPersonDTO centerPersonDTO = centerPersonMapper.toDto(centerPerson);
 
         restCenterPersonMockMvc
-            .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(centerPersonDTO))
-            )
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(centerPersonDTO)))
             .andExpect(status().isBadRequest());
 
-        List<CenterPerson> centerPersonList = centerPersonRepository.findAll();
-        assertThat(centerPersonList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
@@ -250,7 +246,7 @@ class CenterPersonResourceIT {
         // Initialize the database
         centerPersonRepository.save(centerPerson);
 
-        int databaseSizeBeforeUpdate = centerPersonRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the centerPerson
         CenterPerson updatedCenterPerson = centerPersonRepository.findById(centerPerson.getId()).orElseThrow();
@@ -261,23 +257,18 @@ class CenterPersonResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, centerPersonDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(centerPersonDTO))
+                    .content(om.writeValueAsBytes(centerPersonDTO))
             )
             .andExpect(status().isOk());
 
         // Validate the CenterPerson in the database
-        List<CenterPerson> centerPersonList = centerPersonRepository.findAll();
-        assertThat(centerPersonList).hasSize(databaseSizeBeforeUpdate);
-        CenterPerson testCenterPerson = centerPersonList.get(centerPersonList.size() - 1);
-        assertThat(testCenterPerson.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testCenterPerson.getPhone()).isEqualTo(UPDATED_PHONE);
-        assertThat(testCenterPerson.getEmail()).isEqualTo(UPDATED_EMAIL);
-        assertThat(testCenterPerson.getAddress()).isEqualTo(UPDATED_ADDRESS);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertPersistedCenterPersonToMatchAllProperties(updatedCenterPerson);
     }
 
     @Test
     void putNonExistingCenterPerson() throws Exception {
-        int databaseSizeBeforeUpdate = centerPersonRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         centerPerson.setId(longCount.incrementAndGet());
 
         // Create the CenterPerson
@@ -288,18 +279,17 @@ class CenterPersonResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, centerPersonDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(centerPersonDTO))
+                    .content(om.writeValueAsBytes(centerPersonDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the CenterPerson in the database
-        List<CenterPerson> centerPersonList = centerPersonRepository.findAll();
-        assertThat(centerPersonList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithIdMismatchCenterPerson() throws Exception {
-        int databaseSizeBeforeUpdate = centerPersonRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         centerPerson.setId(longCount.incrementAndGet());
 
         // Create the CenterPerson
@@ -310,18 +300,17 @@ class CenterPersonResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(centerPersonDTO))
+                    .content(om.writeValueAsBytes(centerPersonDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the CenterPerson in the database
-        List<CenterPerson> centerPersonList = centerPersonRepository.findAll();
-        assertThat(centerPersonList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithMissingIdPathParamCenterPerson() throws Exception {
-        int databaseSizeBeforeUpdate = centerPersonRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         centerPerson.setId(longCount.incrementAndGet());
 
         // Create the CenterPerson
@@ -329,14 +318,11 @@ class CenterPersonResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCenterPersonMockMvc
-            .perform(
-                put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(centerPersonDTO))
-            )
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(centerPersonDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the CenterPerson in the database
-        List<CenterPerson> centerPersonList = centerPersonRepository.findAll();
-        assertThat(centerPersonList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -344,30 +330,29 @@ class CenterPersonResourceIT {
         // Initialize the database
         centerPersonRepository.save(centerPerson);
 
-        int databaseSizeBeforeUpdate = centerPersonRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the centerPerson using partial update
         CenterPerson partialUpdatedCenterPerson = new CenterPerson();
         partialUpdatedCenterPerson.setId(centerPerson.getId());
 
-        partialUpdatedCenterPerson.name(UPDATED_NAME).address(UPDATED_ADDRESS);
+        partialUpdatedCenterPerson.email(UPDATED_EMAIL).address(UPDATED_ADDRESS);
 
         restCenterPersonMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedCenterPerson.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedCenterPerson))
+                    .content(om.writeValueAsBytes(partialUpdatedCenterPerson))
             )
             .andExpect(status().isOk());
 
         // Validate the CenterPerson in the database
-        List<CenterPerson> centerPersonList = centerPersonRepository.findAll();
-        assertThat(centerPersonList).hasSize(databaseSizeBeforeUpdate);
-        CenterPerson testCenterPerson = centerPersonList.get(centerPersonList.size() - 1);
-        assertThat(testCenterPerson.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testCenterPerson.getPhone()).isEqualTo(DEFAULT_PHONE);
-        assertThat(testCenterPerson.getEmail()).isEqualTo(DEFAULT_EMAIL);
-        assertThat(testCenterPerson.getAddress()).isEqualTo(UPDATED_ADDRESS);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertCenterPersonUpdatableFieldsEquals(
+            createUpdateProxyForBean(partialUpdatedCenterPerson, centerPerson),
+            getPersistedCenterPerson(centerPerson)
+        );
     }
 
     @Test
@@ -375,7 +360,7 @@ class CenterPersonResourceIT {
         // Initialize the database
         centerPersonRepository.save(centerPerson);
 
-        int databaseSizeBeforeUpdate = centerPersonRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the centerPerson using partial update
         CenterPerson partialUpdatedCenterPerson = new CenterPerson();
@@ -387,23 +372,19 @@ class CenterPersonResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedCenterPerson.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedCenterPerson))
+                    .content(om.writeValueAsBytes(partialUpdatedCenterPerson))
             )
             .andExpect(status().isOk());
 
         // Validate the CenterPerson in the database
-        List<CenterPerson> centerPersonList = centerPersonRepository.findAll();
-        assertThat(centerPersonList).hasSize(databaseSizeBeforeUpdate);
-        CenterPerson testCenterPerson = centerPersonList.get(centerPersonList.size() - 1);
-        assertThat(testCenterPerson.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testCenterPerson.getPhone()).isEqualTo(UPDATED_PHONE);
-        assertThat(testCenterPerson.getEmail()).isEqualTo(UPDATED_EMAIL);
-        assertThat(testCenterPerson.getAddress()).isEqualTo(UPDATED_ADDRESS);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertCenterPersonUpdatableFieldsEquals(partialUpdatedCenterPerson, getPersistedCenterPerson(partialUpdatedCenterPerson));
     }
 
     @Test
     void patchNonExistingCenterPerson() throws Exception {
-        int databaseSizeBeforeUpdate = centerPersonRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         centerPerson.setId(longCount.incrementAndGet());
 
         // Create the CenterPerson
@@ -414,18 +395,17 @@ class CenterPersonResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, centerPersonDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(centerPersonDTO))
+                    .content(om.writeValueAsBytes(centerPersonDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the CenterPerson in the database
-        List<CenterPerson> centerPersonList = centerPersonRepository.findAll();
-        assertThat(centerPersonList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithIdMismatchCenterPerson() throws Exception {
-        int databaseSizeBeforeUpdate = centerPersonRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         centerPerson.setId(longCount.incrementAndGet());
 
         // Create the CenterPerson
@@ -436,18 +416,17 @@ class CenterPersonResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(centerPersonDTO))
+                    .content(om.writeValueAsBytes(centerPersonDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the CenterPerson in the database
-        List<CenterPerson> centerPersonList = centerPersonRepository.findAll();
-        assertThat(centerPersonList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithMissingIdPathParamCenterPerson() throws Exception {
-        int databaseSizeBeforeUpdate = centerPersonRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         centerPerson.setId(longCount.incrementAndGet());
 
         // Create the CenterPerson
@@ -455,16 +434,11 @@ class CenterPersonResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCenterPersonMockMvc
-            .perform(
-                patch(ENTITY_API_URL)
-                    .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(centerPersonDTO))
-            )
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(centerPersonDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the CenterPerson in the database
-        List<CenterPerson> centerPersonList = centerPersonRepository.findAll();
-        assertThat(centerPersonList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -472,7 +446,7 @@ class CenterPersonResourceIT {
         // Initialize the database
         centerPersonRepository.save(centerPerson);
 
-        int databaseSizeBeforeDelete = centerPersonRepository.findAll().size();
+        long databaseSizeBeforeDelete = getRepositoryCount();
 
         // Delete the centerPerson
         restCenterPersonMockMvc
@@ -480,7 +454,34 @@ class CenterPersonResourceIT {
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<CenterPerson> centerPersonList = centerPersonRepository.findAll();
-        assertThat(centerPersonList).hasSize(databaseSizeBeforeDelete - 1);
+        assertDecrementedRepositoryCount(databaseSizeBeforeDelete);
+    }
+
+    protected long getRepositoryCount() {
+        return centerPersonRepository.count();
+    }
+
+    protected void assertIncrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore + 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertDecrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore - 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertSameRepositoryCount(long countBefore) {
+        assertThat(countBefore).isEqualTo(getRepositoryCount());
+    }
+
+    protected CenterPerson getPersistedCenterPerson(CenterPerson centerPerson) {
+        return centerPersonRepository.findById(centerPerson.getId()).orElseThrow();
+    }
+
+    protected void assertPersistedCenterPersonToMatchAllProperties(CenterPerson expectedCenterPerson) {
+        assertCenterPersonAllPropertiesEquals(expectedCenterPerson, getPersistedCenterPerson(expectedCenterPerson));
+    }
+
+    protected void assertPersistedCenterPersonToMatchUpdatableProperties(CenterPerson expectedCenterPerson) {
+        assertCenterPersonAllUpdatablePropertiesEquals(expectedCenterPerson, getPersistedCenterPerson(expectedCenterPerson));
     }
 }

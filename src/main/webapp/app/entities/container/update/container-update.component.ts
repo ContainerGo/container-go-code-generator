@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -21,6 +21,8 @@ import { ITruckType } from 'app/entities/truck-type/truck-type.model';
 import { TruckTypeService } from 'app/entities/truck-type/service/truck-type.service';
 import { ITruck } from 'app/entities/truck/truck.model';
 import { TruckService } from 'app/entities/truck/service/truck.service';
+import { IContainerOwner } from 'app/entities/container-owner/container-owner.model';
+import { ContainerOwnerService } from 'app/entities/container-owner/service/container-owner.service';
 import { ContainerState } from 'app/entities/enumerations/container-state.model';
 import { ContainerService } from '../service/container.service';
 import { IContainer } from '../container.model';
@@ -44,21 +46,22 @@ export class ContainerUpdateComponent implements OnInit {
   containerStatusesSharedCollection: IContainerStatus[] = [];
   truckTypesSharedCollection: ITruckType[] = [];
   trucksSharedCollection: ITruck[] = [];
+  containerOwnersSharedCollection: IContainerOwner[] = [];
 
+  protected containerService = inject(ContainerService);
+  protected containerFormService = inject(ContainerFormService);
+  protected proviceService = inject(ProviceService);
+  protected districtService = inject(DistrictService);
+  protected wardService = inject(WardService);
+  protected containerTypeService = inject(ContainerTypeService);
+  protected containerStatusService = inject(ContainerStatusService);
+  protected truckTypeService = inject(TruckTypeService);
+  protected truckService = inject(TruckService);
+  protected containerOwnerService = inject(ContainerOwnerService);
+  protected activatedRoute = inject(ActivatedRoute);
+
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: ContainerFormGroup = this.containerFormService.createContainerFormGroup();
-
-  constructor(
-    protected containerService: ContainerService,
-    protected containerFormService: ContainerFormService,
-    protected proviceService: ProviceService,
-    protected districtService: DistrictService,
-    protected wardService: WardService,
-    protected containerTypeService: ContainerTypeService,
-    protected containerStatusService: ContainerStatusService,
-    protected truckTypeService: TruckTypeService,
-    protected truckService: TruckService,
-    protected activatedRoute: ActivatedRoute,
-  ) {}
 
   compareProvice = (o1: IProvice | null, o2: IProvice | null): boolean => this.proviceService.compareProvice(o1, o2);
 
@@ -75,6 +78,9 @@ export class ContainerUpdateComponent implements OnInit {
   compareTruckType = (o1: ITruckType | null, o2: ITruckType | null): boolean => this.truckTypeService.compareTruckType(o1, o2);
 
   compareTruck = (o1: ITruck | null, o2: ITruck | null): boolean => this.truckService.compareTruck(o1, o2);
+
+  compareContainerOwner = (o1: IContainerOwner | null, o2: IContainerOwner | null): boolean =>
+    this.containerOwnerService.compareContainerOwner(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ container }) => {
@@ -126,13 +132,19 @@ export class ContainerUpdateComponent implements OnInit {
 
     this.provicesSharedCollection = this.proviceService.addProviceToCollectionIfMissing<IProvice>(
       this.provicesSharedCollection,
+      container.pickupProvice,
       container.dropoffProvice,
     );
     this.districtsSharedCollection = this.districtService.addDistrictToCollectionIfMissing<IDistrict>(
       this.districtsSharedCollection,
+      container.pickupDistrict,
       container.dropoffDistrict,
     );
-    this.wardsSharedCollection = this.wardService.addWardToCollectionIfMissing<IWard>(this.wardsSharedCollection, container.dropoffWard);
+    this.wardsSharedCollection = this.wardService.addWardToCollectionIfMissing<IWard>(
+      this.wardsSharedCollection,
+      container.pickupWard,
+      container.dropoffWard,
+    );
     this.containerTypesSharedCollection = this.containerTypeService.addContainerTypeToCollectionIfMissing<IContainerType>(
       this.containerTypesSharedCollection,
       container.type,
@@ -146,6 +158,10 @@ export class ContainerUpdateComponent implements OnInit {
       container.truckType,
     );
     this.trucksSharedCollection = this.truckService.addTruckToCollectionIfMissing<ITruck>(this.trucksSharedCollection, container.truck);
+    this.containerOwnersSharedCollection = this.containerOwnerService.addContainerOwnerToCollectionIfMissing<IContainerOwner>(
+      this.containerOwnersSharedCollection,
+      container.owner,
+    );
   }
 
   protected loadRelationshipsOptions(): void {
@@ -154,7 +170,11 @@ export class ContainerUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IProvice[]>) => res.body ?? []))
       .pipe(
         map((provices: IProvice[]) =>
-          this.proviceService.addProviceToCollectionIfMissing<IProvice>(provices, this.container?.dropoffProvice),
+          this.proviceService.addProviceToCollectionIfMissing<IProvice>(
+            provices,
+            this.container?.pickupProvice,
+            this.container?.dropoffProvice,
+          ),
         ),
       )
       .subscribe((provices: IProvice[]) => (this.provicesSharedCollection = provices));
@@ -164,7 +184,11 @@ export class ContainerUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IDistrict[]>) => res.body ?? []))
       .pipe(
         map((districts: IDistrict[]) =>
-          this.districtService.addDistrictToCollectionIfMissing<IDistrict>(districts, this.container?.dropoffDistrict),
+          this.districtService.addDistrictToCollectionIfMissing<IDistrict>(
+            districts,
+            this.container?.pickupDistrict,
+            this.container?.dropoffDistrict,
+          ),
         ),
       )
       .subscribe((districts: IDistrict[]) => (this.districtsSharedCollection = districts));
@@ -172,7 +196,11 @@ export class ContainerUpdateComponent implements OnInit {
     this.wardService
       .query()
       .pipe(map((res: HttpResponse<IWard[]>) => res.body ?? []))
-      .pipe(map((wards: IWard[]) => this.wardService.addWardToCollectionIfMissing<IWard>(wards, this.container?.dropoffWard)))
+      .pipe(
+        map((wards: IWard[]) =>
+          this.wardService.addWardToCollectionIfMissing<IWard>(wards, this.container?.pickupWard, this.container?.dropoffWard),
+        ),
+      )
       .subscribe((wards: IWard[]) => (this.wardsSharedCollection = wards));
 
     this.containerTypeService
@@ -210,5 +238,15 @@ export class ContainerUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<ITruck[]>) => res.body ?? []))
       .pipe(map((trucks: ITruck[]) => this.truckService.addTruckToCollectionIfMissing<ITruck>(trucks, this.container?.truck)))
       .subscribe((trucks: ITruck[]) => (this.trucksSharedCollection = trucks));
+
+    this.containerOwnerService
+      .query()
+      .pipe(map((res: HttpResponse<IContainerOwner[]>) => res.body ?? []))
+      .pipe(
+        map((containerOwners: IContainerOwner[]) =>
+          this.containerOwnerService.addContainerOwnerToCollectionIfMissing<IContainerOwner>(containerOwners, this.container?.owner),
+        ),
+      )
+      .subscribe((containerOwners: IContainerOwner[]) => (this.containerOwnersSharedCollection = containerOwners));
   }
 }

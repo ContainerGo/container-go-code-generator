@@ -4,7 +4,6 @@
   },
   "applications": ["containerGoServer"],
   "dto": "mapstruct",
-  "entityTableName": "offer",
   "fields": [
     {
       "fieldName": "id",
@@ -35,6 +34,12 @@
       "fieldValidateRules": ["required"]
     },
     {
+      "fieldName": "state",
+      "fieldType": "OfferState",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "PENDING,ACCEPTED,REJECTED,EXPIRED,WITHDRAWN"
+    },
+    {
       "fieldName": "price",
       "fieldType": "Double",
       "fieldValidateRules": ["required"]
@@ -43,6 +48,14 @@
       "fieldName": "carrierId",
       "fieldType": "Long",
       "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "carrierPersonId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "truckId",
+      "fieldType": "Long"
     }
   ],
   "jpaMetamodelFiltering": false,

@@ -1,8 +1,6 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
-import { map } from 'rxjs/operators';
+import { map, Observable } from 'rxjs';
 
 import dayjs from 'dayjs/esm';
 
@@ -15,10 +13,10 @@ export type PartialUpdateContainer = Partial<IContainer> & Pick<IContainer, 'id'
 
 type RestOf<T extends IContainer | NewContainer> = Omit<
   T,
-  'dropoffUntilDate' | 'pickupFromDate' | 'biddingFromDate' | 'biddingUntilDate'
+  'pickupFromDate' | 'dropoffUntilDate' | 'biddingFromDate' | 'biddingUntilDate'
 > & {
-  dropoffUntilDate?: string | null;
   pickupFromDate?: string | null;
+  dropoffUntilDate?: string | null;
   biddingFromDate?: string | null;
   biddingUntilDate?: string | null;
 };
@@ -34,12 +32,10 @@ export type EntityArrayResponseType = HttpResponse<IContainer[]>;
 
 @Injectable({ providedIn: 'root' })
 export class ContainerService {
-  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/containers');
+  protected http = inject(HttpClient);
+  protected applicationConfigService = inject(ApplicationConfigService);
 
-  constructor(
-    protected http: HttpClient,
-    protected applicationConfigService: ApplicationConfigService,
-  ) {}
+  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/containers');
 
   create(container: NewContainer): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(container);
@@ -93,7 +89,7 @@ export class ContainerService {
   ): Type[] {
     const containers: Type[] = containersToCheck.filter(isPresent);
     if (containers.length > 0) {
-      const containerCollectionIdentifiers = containerCollection.map(containerItem => this.getContainerIdentifier(containerItem)!);
+      const containerCollectionIdentifiers = containerCollection.map(containerItem => this.getContainerIdentifier(containerItem));
       const containersToAdd = containers.filter(containerItem => {
         const containerIdentifier = this.getContainerIdentifier(containerItem);
         if (containerCollectionIdentifiers.includes(containerIdentifier)) {
@@ -110,8 +106,8 @@ export class ContainerService {
   protected convertDateFromClient<T extends IContainer | NewContainer | PartialUpdateContainer>(container: T): RestOf<T> {
     return {
       ...container,
-      dropoffUntilDate: container.dropoffUntilDate?.toJSON() ?? null,
       pickupFromDate: container.pickupFromDate?.toJSON() ?? null,
+      dropoffUntilDate: container.dropoffUntilDate?.toJSON() ?? null,
       biddingFromDate: container.biddingFromDate?.toJSON() ?? null,
       biddingUntilDate: container.biddingUntilDate?.toJSON() ?? null,
     };
@@ -120,8 +116,8 @@ export class ContainerService {
   protected convertDateFromServer(restContainer: RestContainer): IContainer {
     return {
       ...restContainer,
-      dropoffUntilDate: restContainer.dropoffUntilDate ? dayjs(restContainer.dropoffUntilDate) : undefined,
       pickupFromDate: restContainer.pickupFromDate ? dayjs(restContainer.pickupFromDate) : undefined,
+      dropoffUntilDate: restContainer.dropoffUntilDate ? dayjs(restContainer.dropoffUntilDate) : undefined,
       biddingFromDate: restContainer.biddingFromDate ? dayjs(restContainer.biddingFromDate) : undefined,
       biddingUntilDate: restContainer.biddingUntilDate ? dayjs(restContainer.biddingUntilDate) : undefined,
     };

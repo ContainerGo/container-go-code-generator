@@ -23,8 +23,11 @@
       "pickupUntilDate": "Pickup Until Date",
       "dropoffFromDate": "Dropoff From Date",
       "dropoffUntilDate": "Dropoff Until Date",
+      "state": "State",
       "price": "Price",
       "carrierId": "Carrier Id",
+      "carrierPersonId": "Carrier Person Id",
+      "truckId": "Truck Id",
       "container": "Container"
     }
   }

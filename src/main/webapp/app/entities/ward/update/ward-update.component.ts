@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -21,13 +21,12 @@ export class WardUpdateComponent implements OnInit {
   isSaving = false;
   ward: IWard | null = null;
 
-  editForm: WardFormGroup = this.wardFormService.createWardFormGroup();
+  protected wardService = inject(WardService);
+  protected wardFormService = inject(WardFormService);
+  protected activatedRoute = inject(ActivatedRoute);
 
-  constructor(
-    protected wardService: WardService,
-    protected wardFormService: WardFormService,
-    protected activatedRoute: ActivatedRoute,
-  ) {}
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  editForm: WardFormGroup = this.wardFormService.createWardFormGroup();
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ ward }) => {

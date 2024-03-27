@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -14,12 +14,10 @@ export type EntityArrayResponseType = HttpResponse<ICarrierAccount[]>;
 
 @Injectable({ providedIn: 'root' })
 export class CarrierAccountService {
-  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/carrier-accounts');
+  protected http = inject(HttpClient);
+  protected applicationConfigService = inject(ApplicationConfigService);
 
-  constructor(
-    protected http: HttpClient,
-    protected applicationConfigService: ApplicationConfigService,
-  ) {}
+  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/carrier-accounts');
 
   create(carrierAccount: NewCarrierAccount): Observable<EntityResponseType> {
     return this.http.post<ICarrierAccount>(this.resourceUrl, carrierAccount, { observe: 'response' });
@@ -64,8 +62,8 @@ export class CarrierAccountService {
   ): Type[] {
     const carrierAccounts: Type[] = carrierAccountsToCheck.filter(isPresent);
     if (carrierAccounts.length > 0) {
-      const carrierAccountCollectionIdentifiers = carrierAccountCollection.map(
-        carrierAccountItem => this.getCarrierAccountIdentifier(carrierAccountItem)!,
+      const carrierAccountCollectionIdentifiers = carrierAccountCollection.map(carrierAccountItem =>
+        this.getCarrierAccountIdentifier(carrierAccountItem),
       );
       const carrierAccountsToAdd = carrierAccounts.filter(carrierAccountItem => {
         const carrierAccountIdentifier = this.getCarrierAccountIdentifier(carrierAccountItem);

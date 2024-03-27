@@ -61,11 +61,10 @@ public class CarrierPersonResource {
         if (carrierPersonDTO.getId() != null) {
             throw new BadRequestAlertException("A new carrierPerson cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        CarrierPersonDTO result = carrierPersonService.save(carrierPersonDTO);
-        return ResponseEntity
-            .created(new URI("/api/carrier-people/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        carrierPersonDTO = carrierPersonService.save(carrierPersonDTO);
+        return ResponseEntity.created(new URI("/api/carrier-people/" + carrierPersonDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, carrierPersonDTO.getId().toString()))
+            .body(carrierPersonDTO);
     }
 
     /**
@@ -95,11 +94,10 @@ public class CarrierPersonResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        CarrierPersonDTO result = carrierPersonService.update(carrierPersonDTO);
-        return ResponseEntity
-            .ok()
+        carrierPersonDTO = carrierPersonService.update(carrierPersonDTO);
+        return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, carrierPersonDTO.getId().toString()))
-            .body(result);
+            .body(carrierPersonDTO);
     }
 
     /**
@@ -175,8 +173,7 @@ public class CarrierPersonResource {
     public ResponseEntity<Void> deleteCarrierPerson(@PathVariable("id") Long id) {
         log.debug("REST request to delete CarrierPerson : {}", id);
         carrierPersonService.delete(id);
-        return ResponseEntity
-            .noContent()
+        return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }

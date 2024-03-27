@@ -1,0 +1,27 @@
+{
+  "containerGoServerApp": {
+    "containerOwner": {
+      "home": {
+        "title": "Container Owners",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Container Owner",
+        "createOrEditLabel": "Create or edit a Container Owner",
+        "notFound": "No Container Owners found"
+      },
+      "created": "A new Container Owner is created with identifier {{ param }}",
+      "updated": "A Container Owner is updated with identifier {{ param }}",
+      "deleted": "A Container Owner is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Container Owner {{ id }}?"
+      },
+      "detail": {
+        "title": "Container Owner"
+      },
+      "id": "Id",
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address"
+    }
+  }
+}

@@ -1,27 +1,27 @@
 import { IContainerStatusGroup, NewContainerStatusGroup } from './container-status-group.model';
 
 export const sampleWithRequiredData: IContainerStatusGroup = {
-  id: 5442,
-  code: 'unto plump sneakers',
-  name: 'hence',
+  id: 12926,
+  code: 'hence puny solid',
+  name: 'oh',
 };
 
 export const sampleWithPartialData: IContainerStatusGroup = {
-  id: 29491,
-  code: 'worth damaged pish',
-  name: 'ancient pervade prevention',
+  id: 19001,
+  code: 'randomize failing',
+  name: 'namecheck',
 };
 
 export const sampleWithFullData: IContainerStatusGroup = {
-  id: 7568,
-  code: 'jealousy',
-  name: 'whenever',
-  description: 'pessimistic',
+  id: 10449,
+  code: 'since',
+  name: 'until even',
+  description: 'phew',
 };
 
 export const sampleWithNewData: NewContainerStatusGroup = {
-  code: 'when rake',
-  name: 'inasmuch excepting too',
+  code: 'supposing',
+  name: 'safely mmm',
   id: null,
 };
 

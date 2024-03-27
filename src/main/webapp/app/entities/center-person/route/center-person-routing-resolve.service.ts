@@ -7,7 +7,7 @@ import { mergeMap } from 'rxjs/operators';
 import { ICenterPerson } from '../center-person.model';
 import { CenterPersonService } from '../service/center-person.service';
 
-export const centerPersonResolve = (route: ActivatedRouteSnapshot): Observable<null | ICenterPerson> => {
+const centerPersonResolve = (route: ActivatedRouteSnapshot): Observable<null | ICenterPerson> => {
   const id = route.params['id'];
   if (id) {
     return inject(CenterPersonService)

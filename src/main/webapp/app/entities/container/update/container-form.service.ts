@@ -21,10 +21,10 @@ type ContainerFormGroupInput = IContainer | PartialWithRequiredKeyOf<NewContaine
  */
 type FormValueOf<T extends IContainer | NewContainer> = Omit<
   T,
-  'dropoffUntilDate' | 'pickupFromDate' | 'biddingFromDate' | 'biddingUntilDate'
+  'pickupFromDate' | 'dropoffUntilDate' | 'biddingFromDate' | 'biddingUntilDate'
 > & {
-  dropoffUntilDate?: string | null;
   pickupFromDate?: string | null;
+  dropoffUntilDate?: string | null;
   biddingFromDate?: string | null;
   biddingUntilDate?: string | null;
 };
@@ -33,7 +33,7 @@ type ContainerFormRawValue = FormValueOf<IContainer>;
 
 type NewContainerFormRawValue = FormValueOf<NewContainer>;
 
-type ContainerFormDefaults = Pick<NewContainer, 'id' | 'dropoffUntilDate' | 'pickupFromDate' | 'biddingFromDate' | 'biddingUntilDate'>;
+type ContainerFormDefaults = Pick<NewContainer, 'id' | 'pickupFromDate' | 'dropoffUntilDate' | 'biddingFromDate' | 'biddingUntilDate'>;
 
 type ContainerFormGroupContent = {
   id: FormControl<ContainerFormRawValue['id'] | NewContainer['id']>;
@@ -42,19 +42,28 @@ type ContainerFormGroupContent = {
   distance: FormControl<ContainerFormRawValue['distance']>;
   desiredPrice: FormControl<ContainerFormRawValue['desiredPrice']>;
   additionalRequirements: FormControl<ContainerFormRawValue['additionalRequirements']>;
+  pickupContact: FormControl<ContainerFormRawValue['pickupContact']>;
+  pickupContactPhone: FormControl<ContainerFormRawValue['pickupContactPhone']>;
+  pickupAddress: FormControl<ContainerFormRawValue['pickupAddress']>;
+  pickupLat: FormControl<ContainerFormRawValue['pickupLat']>;
+  pickupLng: FormControl<ContainerFormRawValue['pickupLng']>;
+  pickupFromDate: FormControl<ContainerFormRawValue['pickupFromDate']>;
   dropoffContact: FormControl<ContainerFormRawValue['dropoffContact']>;
   dropoffContactPhone: FormControl<ContainerFormRawValue['dropoffContactPhone']>;
   dropoffAddress: FormControl<ContainerFormRawValue['dropoffAddress']>;
   dropoffLat: FormControl<ContainerFormRawValue['dropoffLat']>;
   dropoffLng: FormControl<ContainerFormRawValue['dropoffLng']>;
+  points: FormControl<ContainerFormRawValue['points']>;
   dropoffUntilDate: FormControl<ContainerFormRawValue['dropoffUntilDate']>;
   state: FormControl<ContainerFormRawValue['state']>;
   shipperId: FormControl<ContainerFormRawValue['shipperId']>;
   carrierId: FormControl<ContainerFormRawValue['carrierId']>;
   totalWeight: FormControl<ContainerFormRawValue['totalWeight']>;
-  pickupFromDate: FormControl<ContainerFormRawValue['pickupFromDate']>;
   biddingFromDate: FormControl<ContainerFormRawValue['biddingFromDate']>;
   biddingUntilDate: FormControl<ContainerFormRawValue['biddingUntilDate']>;
+  pickupProvice: FormControl<ContainerFormRawValue['pickupProvice']>;
+  pickupDistrict: FormControl<ContainerFormRawValue['pickupDistrict']>;
+  pickupWard: FormControl<ContainerFormRawValue['pickupWard']>;
   dropoffProvice: FormControl<ContainerFormRawValue['dropoffProvice']>;
   dropoffDistrict: FormControl<ContainerFormRawValue['dropoffDistrict']>;
   dropoffWard: FormControl<ContainerFormRawValue['dropoffWard']>;
@@ -62,6 +71,7 @@ type ContainerFormGroupContent = {
   status: FormControl<ContainerFormRawValue['status']>;
   truckType: FormControl<ContainerFormRawValue['truckType']>;
   truck: FormControl<ContainerFormRawValue['truck']>;
+  owner: FormControl<ContainerFormRawValue['owner']>;
 };
 
 export type ContainerFormGroup = FormGroup<ContainerFormGroupContent>;
@@ -94,11 +104,32 @@ export class ContainerFormService {
         validators: [Validators.required],
       }),
       additionalRequirements: new FormControl(containerRawValue.additionalRequirements),
+      pickupContact: new FormControl(containerRawValue.pickupContact, {
+        validators: [Validators.required],
+      }),
+      pickupContactPhone: new FormControl(containerRawValue.pickupContactPhone, {
+        validators: [Validators.required],
+      }),
+      pickupAddress: new FormControl(containerRawValue.pickupAddress, {
+        validators: [Validators.required],
+      }),
+      pickupLat: new FormControl(containerRawValue.pickupLat, {
+        validators: [Validators.required],
+      }),
+      pickupLng: new FormControl(containerRawValue.pickupLng, {
+        validators: [Validators.required],
+      }),
+      pickupFromDate: new FormControl(containerRawValue.pickupFromDate, {
+        validators: [Validators.required],
+      }),
       dropoffContact: new FormControl(containerRawValue.dropoffContact),
       dropoffContactPhone: new FormControl(containerRawValue.dropoffContactPhone),
-      dropoffAddress: new FormControl(containerRawValue.dropoffAddress),
+      dropoffAddress: new FormControl(containerRawValue.dropoffAddress, {
+        validators: [Validators.required],
+      }),
       dropoffLat: new FormControl(containerRawValue.dropoffLat),
       dropoffLng: new FormControl(containerRawValue.dropoffLng),
+      points: new FormControl(containerRawValue.points),
       dropoffUntilDate: new FormControl(containerRawValue.dropoffUntilDate),
       state: new FormControl(containerRawValue.state, {
         validators: [Validators.required],
@@ -110,11 +141,23 @@ export class ContainerFormService {
       totalWeight: new FormControl(containerRawValue.totalWeight, {
         validators: [Validators.required],
       }),
-      pickupFromDate: new FormControl(containerRawValue.pickupFromDate),
       biddingFromDate: new FormControl(containerRawValue.biddingFromDate),
       biddingUntilDate: new FormControl(containerRawValue.biddingUntilDate),
-      dropoffProvice: new FormControl(containerRawValue.dropoffProvice),
-      dropoffDistrict: new FormControl(containerRawValue.dropoffDistrict),
+      pickupProvice: new FormControl(containerRawValue.pickupProvice, {
+        validators: [Validators.required],
+      }),
+      pickupDistrict: new FormControl(containerRawValue.pickupDistrict, {
+        validators: [Validators.required],
+      }),
+      pickupWard: new FormControl(containerRawValue.pickupWard, {
+        validators: [Validators.required],
+      }),
+      dropoffProvice: new FormControl(containerRawValue.dropoffProvice, {
+        validators: [Validators.required],
+      }),
+      dropoffDistrict: new FormControl(containerRawValue.dropoffDistrict, {
+        validators: [Validators.required],
+      }),
       dropoffWard: new FormControl(containerRawValue.dropoffWard),
       type: new FormControl(containerRawValue.type, {
         validators: [Validators.required],
@@ -124,6 +167,7 @@ export class ContainerFormService {
       }),
       truckType: new FormControl(containerRawValue.truckType),
       truck: new FormControl(containerRawValue.truck),
+      owner: new FormControl(containerRawValue.owner),
     });
   }
 
@@ -146,8 +190,8 @@ export class ContainerFormService {
 
     return {
       id: null,
-      dropoffUntilDate: currentTime,
       pickupFromDate: currentTime,
+      dropoffUntilDate: currentTime,
       biddingFromDate: currentTime,
       biddingUntilDate: currentTime,
     };
@@ -156,8 +200,8 @@ export class ContainerFormService {
   private convertContainerRawValueToContainer(rawContainer: ContainerFormRawValue | NewContainerFormRawValue): IContainer | NewContainer {
     return {
       ...rawContainer,
-      dropoffUntilDate: dayjs(rawContainer.dropoffUntilDate, DATE_TIME_FORMAT),
       pickupFromDate: dayjs(rawContainer.pickupFromDate, DATE_TIME_FORMAT),
+      dropoffUntilDate: dayjs(rawContainer.dropoffUntilDate, DATE_TIME_FORMAT),
       biddingFromDate: dayjs(rawContainer.biddingFromDate, DATE_TIME_FORMAT),
       biddingUntilDate: dayjs(rawContainer.biddingUntilDate, DATE_TIME_FORMAT),
     };
@@ -168,8 +212,8 @@ export class ContainerFormService {
   ): ContainerFormRawValue | PartialWithRequiredKeyOf<NewContainerFormRawValue> {
     return {
       ...container,
-      dropoffUntilDate: container.dropoffUntilDate ? container.dropoffUntilDate.format(DATE_TIME_FORMAT) : undefined,
       pickupFromDate: container.pickupFromDate ? container.pickupFromDate.format(DATE_TIME_FORMAT) : undefined,
+      dropoffUntilDate: container.dropoffUntilDate ? container.dropoffUntilDate.format(DATE_TIME_FORMAT) : undefined,
       biddingFromDate: container.biddingFromDate ? container.biddingFromDate.format(DATE_TIME_FORMAT) : undefined,
       biddingUntilDate: container.biddingUntilDate ? container.biddingUntilDate.format(DATE_TIME_FORMAT) : undefined,
     };

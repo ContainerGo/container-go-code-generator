@@ -108,6 +108,16 @@
         </div>
 
         <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.truck.lat" for="field_lat">Lat</label>
+          <input type="number" class="form-control" name="lat" id="field_lat" data-cy="lat" formControlName="lat" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.truck.lng" for="field_lng">Lng</label>
+          <input type="number" class="form-control" name="lng" id="field_lng" data-cy="lng" formControlName="lng" />
+        </div>
+
+        <div class="mb-3">
           <label class="form-label" jhiTranslate="containerGoServerApp.truck.type" for="field_type">Type</label>
           <select class="form-control" id="field_type" data-cy="type" name="type" formControlName="type" [compareWith]="compareTruckType">
             @if (!editForm.get('type')!.value) {

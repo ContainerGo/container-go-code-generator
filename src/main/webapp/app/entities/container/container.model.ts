@@ -6,6 +6,7 @@ import { IContainerType } from 'app/entities/container-type/container-type.model
 import { IContainerStatus } from 'app/entities/container-status/container-status.model';
 import { ITruckType } from 'app/entities/truck-type/truck-type.model';
 import { ITruck } from 'app/entities/truck/truck.model';
+import { IContainerOwner } from 'app/entities/container-owner/container-owner.model';
 import { ContainerState } from 'app/entities/enumerations/container-state.model';
 
 export interface IContainer {
@@ -15,19 +16,28 @@ export interface IContainer {
   distance?: number | null;
   desiredPrice?: number | null;
   additionalRequirements?: string | null;
+  pickupContact?: string | null;
+  pickupContactPhone?: string | null;
+  pickupAddress?: string | null;
+  pickupLat?: number | null;
+  pickupLng?: number | null;
+  pickupFromDate?: dayjs.Dayjs | null;
   dropoffContact?: string | null;
   dropoffContactPhone?: string | null;
   dropoffAddress?: string | null;
   dropoffLat?: number | null;
   dropoffLng?: number | null;
+  points?: string | null;
   dropoffUntilDate?: dayjs.Dayjs | null;
   state?: keyof typeof ContainerState | null;
   shipperId?: number | null;
   carrierId?: number | null;
   totalWeight?: number | null;
-  pickupFromDate?: dayjs.Dayjs | null;
   biddingFromDate?: dayjs.Dayjs | null;
   biddingUntilDate?: dayjs.Dayjs | null;
+  pickupProvice?: Pick<IProvice, 'id'> | null;
+  pickupDistrict?: Pick<IDistrict, 'id'> | null;
+  pickupWard?: Pick<IWard, 'id'> | null;
   dropoffProvice?: Pick<IProvice, 'id'> | null;
   dropoffDistrict?: Pick<IDistrict, 'id'> | null;
   dropoffWard?: Pick<IWard, 'id'> | null;
@@ -35,6 +45,7 @@ export interface IContainer {
   status?: Pick<IContainerStatus, 'id'> | null;
   truckType?: Pick<ITruckType, 'id'> | null;
   truck?: Pick<ITruck, 'id'> | null;
+  owner?: Pick<IContainerOwner, 'id'> | null;
 }
 
 export type NewContainer = Omit<IContainer, 'id'> & { id: null };

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -21,13 +21,12 @@ export class CarrierUpdateComponent implements OnInit {
   isSaving = false;
   carrier: ICarrier | null = null;
 
-  editForm: CarrierFormGroup = this.carrierFormService.createCarrierFormGroup();
+  protected carrierService = inject(CarrierService);
+  protected carrierFormService = inject(CarrierFormService);
+  protected activatedRoute = inject(ActivatedRoute);
 
-  constructor(
-    protected carrierService: CarrierService,
-    protected carrierFormService: CarrierFormService,
-    protected activatedRoute: ActivatedRoute,
-  ) {}
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  editForm: CarrierFormGroup = this.carrierFormService.createCarrierFormGroup();
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ carrier }) => {

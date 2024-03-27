@@ -4,10 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static vn.containergo.domain.ContainerAsserts.*;
+import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +23,9 @@ import vn.containergo.IntegrationTest;
 import vn.containergo.domain.Container;
 import vn.containergo.domain.ContainerStatus;
 import vn.containergo.domain.ContainerType;
+import vn.containergo.domain.District;
+import vn.containergo.domain.Provice;
+import vn.containergo.domain.Ward;
 import vn.containergo.domain.enumeration.ContainerState;
 import vn.containergo.repository.ContainerRepository;
 import vn.containergo.service.dto.ContainerDTO;
@@ -49,6 +54,24 @@ class ContainerResourceIT {
     private static final String DEFAULT_ADDITIONAL_REQUIREMENTS = "AAAAAAAAAA";
     private static final String UPDATED_ADDITIONAL_REQUIREMENTS = "BBBBBBBBBB";
 
+    private static final String DEFAULT_PICKUP_CONTACT = "AAAAAAAAAA";
+    private static final String UPDATED_PICKUP_CONTACT = "BBBBBBBBBB";
+
+    private static final String DEFAULT_PICKUP_CONTACT_PHONE = "AAAAAAAAAA";
+    private static final String UPDATED_PICKUP_CONTACT_PHONE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_PICKUP_ADDRESS = "AAAAAAAAAA";
+    private static final String UPDATED_PICKUP_ADDRESS = "BBBBBBBBBB";
+
+    private static final Double DEFAULT_PICKUP_LAT = 1D;
+    private static final Double UPDATED_PICKUP_LAT = 2D;
+
+    private static final Double DEFAULT_PICKUP_LNG = 1D;
+    private static final Double UPDATED_PICKUP_LNG = 2D;
+
+    private static final Instant DEFAULT_PICKUP_FROM_DATE = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_PICKUP_FROM_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
     private static final String DEFAULT_DROPOFF_CONTACT = "AAAAAAAAAA";
     private static final String UPDATED_DROPOFF_CONTACT = "BBBBBBBBBB";
 
@@ -63,6 +86,9 @@ class ContainerResourceIT {
 
     private static final Double DEFAULT_DROPOFF_LNG = 1D;
     private static final Double UPDATED_DROPOFF_LNG = 2D;
+
+    private static final String DEFAULT_POINTS = "AAAAAAAAAA";
+    private static final String UPDATED_POINTS = "BBBBBBBBBB";
 
     private static final Instant DEFAULT_DROPOFF_UNTIL_DATE = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_DROPOFF_UNTIL_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
@@ -79,9 +105,6 @@ class ContainerResourceIT {
     private static final Double DEFAULT_TOTAL_WEIGHT = 1D;
     private static final Double UPDATED_TOTAL_WEIGHT = 2D;
 
-    private static final Instant DEFAULT_PICKUP_FROM_DATE = Instant.ofEpochMilli(0L);
-    private static final Instant UPDATED_PICKUP_FROM_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
-
     private static final Instant DEFAULT_BIDDING_FROM_DATE = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_BIDDING_FROM_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
@@ -93,6 +116,9 @@ class ContainerResourceIT {
 
     private static Random random = new Random();
     private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+
+    @Autowired
+    private ObjectMapper om;
 
     @Autowired
     private ContainerRepository containerRepository;
@@ -118,19 +144,44 @@ class ContainerResourceIT {
             .distance(DEFAULT_DISTANCE)
             .desiredPrice(DEFAULT_DESIRED_PRICE)
             .additionalRequirements(DEFAULT_ADDITIONAL_REQUIREMENTS)
+            .pickupContact(DEFAULT_PICKUP_CONTACT)
+            .pickupContactPhone(DEFAULT_PICKUP_CONTACT_PHONE)
+            .pickupAddress(DEFAULT_PICKUP_ADDRESS)
+            .pickupLat(DEFAULT_PICKUP_LAT)
+            .pickupLng(DEFAULT_PICKUP_LNG)
+            .pickupFromDate(DEFAULT_PICKUP_FROM_DATE)
             .dropoffContact(DEFAULT_DROPOFF_CONTACT)
             .dropoffContactPhone(DEFAULT_DROPOFF_CONTACT_PHONE)
             .dropoffAddress(DEFAULT_DROPOFF_ADDRESS)
             .dropoffLat(DEFAULT_DROPOFF_LAT)
             .dropoffLng(DEFAULT_DROPOFF_LNG)
+            .points(DEFAULT_POINTS)
             .dropoffUntilDate(DEFAULT_DROPOFF_UNTIL_DATE)
             .state(DEFAULT_STATE)
             .shipperId(DEFAULT_SHIPPER_ID)
             .carrierId(DEFAULT_CARRIER_ID)
             .totalWeight(DEFAULT_TOTAL_WEIGHT)
-            .pickupFromDate(DEFAULT_PICKUP_FROM_DATE)
             .biddingFromDate(DEFAULT_BIDDING_FROM_DATE)
             .biddingUntilDate(DEFAULT_BIDDING_UNTIL_DATE);
+        // Add required entity
+        Provice provice;
+        provice = ProviceResourceIT.createEntity();
+        provice.setId("fixed-id-for-tests");
+        container.setPickupProvice(provice);
+        // Add required entity
+        District district;
+        district = DistrictResourceIT.createEntity();
+        district.setId("fixed-id-for-tests");
+        container.setPickupDistrict(district);
+        // Add required entity
+        Ward ward;
+        ward = WardResourceIT.createEntity();
+        ward.setId("fixed-id-for-tests");
+        container.setPickupWard(ward);
+        // Add required entity
+        container.setDropoffProvice(provice);
+        // Add required entity
+        container.setDropoffDistrict(district);
         // Add required entity
         ContainerType containerType;
         containerType = ContainerTypeResourceIT.createEntity();
@@ -157,19 +208,44 @@ class ContainerResourceIT {
             .distance(UPDATED_DISTANCE)
             .desiredPrice(UPDATED_DESIRED_PRICE)
             .additionalRequirements(UPDATED_ADDITIONAL_REQUIREMENTS)
+            .pickupContact(UPDATED_PICKUP_CONTACT)
+            .pickupContactPhone(UPDATED_PICKUP_CONTACT_PHONE)
+            .pickupAddress(UPDATED_PICKUP_ADDRESS)
+            .pickupLat(UPDATED_PICKUP_LAT)
+            .pickupLng(UPDATED_PICKUP_LNG)
+            .pickupFromDate(UPDATED_PICKUP_FROM_DATE)
             .dropoffContact(UPDATED_DROPOFF_CONTACT)
             .dropoffContactPhone(UPDATED_DROPOFF_CONTACT_PHONE)
             .dropoffAddress(UPDATED_DROPOFF_ADDRESS)
             .dropoffLat(UPDATED_DROPOFF_LAT)
             .dropoffLng(UPDATED_DROPOFF_LNG)
+            .points(UPDATED_POINTS)
             .dropoffUntilDate(UPDATED_DROPOFF_UNTIL_DATE)
             .state(UPDATED_STATE)
             .shipperId(UPDATED_SHIPPER_ID)
             .carrierId(UPDATED_CARRIER_ID)
             .totalWeight(UPDATED_TOTAL_WEIGHT)
-            .pickupFromDate(UPDATED_PICKUP_FROM_DATE)
             .biddingFromDate(UPDATED_BIDDING_FROM_DATE)
             .biddingUntilDate(UPDATED_BIDDING_UNTIL_DATE);
+        // Add required entity
+        Provice provice;
+        provice = ProviceResourceIT.createUpdatedEntity();
+        provice.setId("fixed-id-for-tests");
+        container.setPickupProvice(provice);
+        // Add required entity
+        District district;
+        district = DistrictResourceIT.createUpdatedEntity();
+        district.setId("fixed-id-for-tests");
+        container.setPickupDistrict(district);
+        // Add required entity
+        Ward ward;
+        ward = WardResourceIT.createUpdatedEntity();
+        ward.setId("fixed-id-for-tests");
+        container.setPickupWard(ward);
+        // Add required entity
+        container.setDropoffProvice(provice);
+        // Add required entity
+        container.setDropoffDistrict(district);
         // Add required entity
         ContainerType containerType;
         containerType = ContainerTypeResourceIT.createUpdatedEntity();
@@ -191,35 +267,23 @@ class ContainerResourceIT {
 
     @Test
     void createContainer() throws Exception {
-        int databaseSizeBeforeCreate = containerRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the Container
         ContainerDTO containerDTO = containerMapper.toDto(container);
-        restContainerMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerDTO)))
-            .andExpect(status().isCreated());
+        var returnedContainerDTO = om.readValue(
+            restContainerMockMvc
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(),
+            ContainerDTO.class
+        );
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeCreate + 1);
-        Container testContainer = containerList.get(containerList.size() - 1);
-        assertThat(testContainer.getContNo()).isEqualTo(DEFAULT_CONT_NO);
-        assertThat(testContainer.getEstimatedPrice()).isEqualTo(DEFAULT_ESTIMATED_PRICE);
-        assertThat(testContainer.getDistance()).isEqualTo(DEFAULT_DISTANCE);
-        assertThat(testContainer.getDesiredPrice()).isEqualTo(DEFAULT_DESIRED_PRICE);
-        assertThat(testContainer.getAdditionalRequirements()).isEqualTo(DEFAULT_ADDITIONAL_REQUIREMENTS);
-        assertThat(testContainer.getDropoffContact()).isEqualTo(DEFAULT_DROPOFF_CONTACT);
-        assertThat(testContainer.getDropoffContactPhone()).isEqualTo(DEFAULT_DROPOFF_CONTACT_PHONE);
-        assertThat(testContainer.getDropoffAddress()).isEqualTo(DEFAULT_DROPOFF_ADDRESS);
-        assertThat(testContainer.getDropoffLat()).isEqualTo(DEFAULT_DROPOFF_LAT);
-        assertThat(testContainer.getDropoffLng()).isEqualTo(DEFAULT_DROPOFF_LNG);
-        assertThat(testContainer.getDropoffUntilDate()).isEqualTo(DEFAULT_DROPOFF_UNTIL_DATE);
-        assertThat(testContainer.getState()).isEqualTo(DEFAULT_STATE);
-        assertThat(testContainer.getShipperId()).isEqualTo(DEFAULT_SHIPPER_ID);
-        assertThat(testContainer.getCarrierId()).isEqualTo(DEFAULT_CARRIER_ID);
-        assertThat(testContainer.getTotalWeight()).isEqualTo(DEFAULT_TOTAL_WEIGHT);
-        assertThat(testContainer.getPickupFromDate()).isEqualTo(DEFAULT_PICKUP_FROM_DATE);
-        assertThat(testContainer.getBiddingFromDate()).isEqualTo(DEFAULT_BIDDING_FROM_DATE);
-        assertThat(testContainer.getBiddingUntilDate()).isEqualTo(DEFAULT_BIDDING_UNTIL_DATE);
+        assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
+        var returnedContainer = containerMapper.toEntity(returnedContainerDTO);
+        assertContainerUpdatableFieldsEquals(returnedContainer, getPersistedContainer(returnedContainer));
     }
 
     @Test
@@ -228,21 +292,20 @@ class ContainerResourceIT {
         container.setId(1L);
         ContainerDTO containerDTO = containerMapper.toDto(container);
 
-        int databaseSizeBeforeCreate = containerRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restContainerMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeCreate);
+        assertSameRepositoryCount(databaseSizeBeforeCreate);
     }
 
     @Test
     void checkContNoIsRequired() throws Exception {
-        int databaseSizeBeforeTest = containerRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         container.setContNo(null);
 
@@ -250,16 +313,15 @@ class ContainerResourceIT {
         ContainerDTO containerDTO = containerMapper.toDto(container);
 
         restContainerMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkEstimatedPriceIsRequired() throws Exception {
-        int databaseSizeBeforeTest = containerRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         container.setEstimatedPrice(null);
 
@@ -267,16 +329,15 @@ class ContainerResourceIT {
         ContainerDTO containerDTO = containerMapper.toDto(container);
 
         restContainerMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkDistanceIsRequired() throws Exception {
-        int databaseSizeBeforeTest = containerRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         container.setDistance(null);
 
@@ -284,16 +345,15 @@ class ContainerResourceIT {
         ContainerDTO containerDTO = containerMapper.toDto(container);
 
         restContainerMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkDesiredPriceIsRequired() throws Exception {
-        int databaseSizeBeforeTest = containerRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         container.setDesiredPrice(null);
 
@@ -301,16 +361,127 @@ class ContainerResourceIT {
         ContainerDTO containerDTO = containerMapper.toDto(container);
 
         restContainerMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
+    void checkPickupContactIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        // set the field null
+        container.setPickupContact(null);
+
+        // Create the Container, which fails.
+        ContainerDTO containerDTO = containerMapper.toDto(container);
+
+        restContainerMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
+    void checkPickupContactPhoneIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        // set the field null
+        container.setPickupContactPhone(null);
+
+        // Create the Container, which fails.
+        ContainerDTO containerDTO = containerMapper.toDto(container);
+
+        restContainerMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
+    void checkPickupAddressIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        // set the field null
+        container.setPickupAddress(null);
+
+        // Create the Container, which fails.
+        ContainerDTO containerDTO = containerMapper.toDto(container);
+
+        restContainerMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
+    void checkPickupLatIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        // set the field null
+        container.setPickupLat(null);
+
+        // Create the Container, which fails.
+        ContainerDTO containerDTO = containerMapper.toDto(container);
+
+        restContainerMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
+    void checkPickupLngIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        // set the field null
+        container.setPickupLng(null);
+
+        // Create the Container, which fails.
+        ContainerDTO containerDTO = containerMapper.toDto(container);
+
+        restContainerMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
+    void checkPickupFromDateIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        // set the field null
+        container.setPickupFromDate(null);
+
+        // Create the Container, which fails.
+        ContainerDTO containerDTO = containerMapper.toDto(container);
+
+        restContainerMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
+    void checkDropoffAddressIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        // set the field null
+        container.setDropoffAddress(null);
+
+        // Create the Container, which fails.
+        ContainerDTO containerDTO = containerMapper.toDto(container);
+
+        restContainerMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkStateIsRequired() throws Exception {
-        int databaseSizeBeforeTest = containerRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         container.setState(null);
 
@@ -318,16 +489,15 @@ class ContainerResourceIT {
         ContainerDTO containerDTO = containerMapper.toDto(container);
 
         restContainerMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkShipperIdIsRequired() throws Exception {
-        int databaseSizeBeforeTest = containerRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         container.setShipperId(null);
 
@@ -335,16 +505,15 @@ class ContainerResourceIT {
         ContainerDTO containerDTO = containerMapper.toDto(container);
 
         restContainerMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkTotalWeightIsRequired() throws Exception {
-        int databaseSizeBeforeTest = containerRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         container.setTotalWeight(null);
 
@@ -352,11 +521,10 @@ class ContainerResourceIT {
         ContainerDTO containerDTO = containerMapper.toDto(container);
 
         restContainerMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
             .andExpect(status().isBadRequest());
 
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
@@ -375,17 +543,23 @@ class ContainerResourceIT {
             .andExpect(jsonPath("$.[*].distance").value(hasItem(DEFAULT_DISTANCE.doubleValue())))
             .andExpect(jsonPath("$.[*].desiredPrice").value(hasItem(DEFAULT_DESIRED_PRICE.doubleValue())))
             .andExpect(jsonPath("$.[*].additionalRequirements").value(hasItem(DEFAULT_ADDITIONAL_REQUIREMENTS)))
+            .andExpect(jsonPath("$.[*].pickupContact").value(hasItem(DEFAULT_PICKUP_CONTACT)))
+            .andExpect(jsonPath("$.[*].pickupContactPhone").value(hasItem(DEFAULT_PICKUP_CONTACT_PHONE)))
+            .andExpect(jsonPath("$.[*].pickupAddress").value(hasItem(DEFAULT_PICKUP_ADDRESS)))
+            .andExpect(jsonPath("$.[*].pickupLat").value(hasItem(DEFAULT_PICKUP_LAT.doubleValue())))
+            .andExpect(jsonPath("$.[*].pickupLng").value(hasItem(DEFAULT_PICKUP_LNG.doubleValue())))
+            .andExpect(jsonPath("$.[*].pickupFromDate").value(hasItem(DEFAULT_PICKUP_FROM_DATE.toString())))
             .andExpect(jsonPath("$.[*].dropoffContact").value(hasItem(DEFAULT_DROPOFF_CONTACT)))
             .andExpect(jsonPath("$.[*].dropoffContactPhone").value(hasItem(DEFAULT_DROPOFF_CONTACT_PHONE)))
             .andExpect(jsonPath("$.[*].dropoffAddress").value(hasItem(DEFAULT_DROPOFF_ADDRESS)))
             .andExpect(jsonPath("$.[*].dropoffLat").value(hasItem(DEFAULT_DROPOFF_LAT.doubleValue())))
             .andExpect(jsonPath("$.[*].dropoffLng").value(hasItem(DEFAULT_DROPOFF_LNG.doubleValue())))
+            .andExpect(jsonPath("$.[*].points").value(hasItem(DEFAULT_POINTS)))
             .andExpect(jsonPath("$.[*].dropoffUntilDate").value(hasItem(DEFAULT_DROPOFF_UNTIL_DATE.toString())))
             .andExpect(jsonPath("$.[*].state").value(hasItem(DEFAULT_STATE.toString())))
             .andExpect(jsonPath("$.[*].shipperId").value(hasItem(DEFAULT_SHIPPER_ID.intValue())))
             .andExpect(jsonPath("$.[*].carrierId").value(hasItem(DEFAULT_CARRIER_ID.intValue())))
             .andExpect(jsonPath("$.[*].totalWeight").value(hasItem(DEFAULT_TOTAL_WEIGHT.doubleValue())))
-            .andExpect(jsonPath("$.[*].pickupFromDate").value(hasItem(DEFAULT_PICKUP_FROM_DATE.toString())))
             .andExpect(jsonPath("$.[*].biddingFromDate").value(hasItem(DEFAULT_BIDDING_FROM_DATE.toString())))
             .andExpect(jsonPath("$.[*].biddingUntilDate").value(hasItem(DEFAULT_BIDDING_UNTIL_DATE.toString())));
     }
@@ -406,17 +580,23 @@ class ContainerResourceIT {
             .andExpect(jsonPath("$.distance").value(DEFAULT_DISTANCE.doubleValue()))
             .andExpect(jsonPath("$.desiredPrice").value(DEFAULT_DESIRED_PRICE.doubleValue()))
             .andExpect(jsonPath("$.additionalRequirements").value(DEFAULT_ADDITIONAL_REQUIREMENTS))
+            .andExpect(jsonPath("$.pickupContact").value(DEFAULT_PICKUP_CONTACT))
+            .andExpect(jsonPath("$.pickupContactPhone").value(DEFAULT_PICKUP_CONTACT_PHONE))
+            .andExpect(jsonPath("$.pickupAddress").value(DEFAULT_PICKUP_ADDRESS))
+            .andExpect(jsonPath("$.pickupLat").value(DEFAULT_PICKUP_LAT.doubleValue()))
+            .andExpect(jsonPath("$.pickupLng").value(DEFAULT_PICKUP_LNG.doubleValue()))
+            .andExpect(jsonPath("$.pickupFromDate").value(DEFAULT_PICKUP_FROM_DATE.toString()))
             .andExpect(jsonPath("$.dropoffContact").value(DEFAULT_DROPOFF_CONTACT))
             .andExpect(jsonPath("$.dropoffContactPhone").value(DEFAULT_DROPOFF_CONTACT_PHONE))
             .andExpect(jsonPath("$.dropoffAddress").value(DEFAULT_DROPOFF_ADDRESS))
             .andExpect(jsonPath("$.dropoffLat").value(DEFAULT_DROPOFF_LAT.doubleValue()))
             .andExpect(jsonPath("$.dropoffLng").value(DEFAULT_DROPOFF_LNG.doubleValue()))
+            .andExpect(jsonPath("$.points").value(DEFAULT_POINTS))
             .andExpect(jsonPath("$.dropoffUntilDate").value(DEFAULT_DROPOFF_UNTIL_DATE.toString()))
             .andExpect(jsonPath("$.state").value(DEFAULT_STATE.toString()))
             .andExpect(jsonPath("$.shipperId").value(DEFAULT_SHIPPER_ID.intValue()))
             .andExpect(jsonPath("$.carrierId").value(DEFAULT_CARRIER_ID.intValue()))
             .andExpect(jsonPath("$.totalWeight").value(DEFAULT_TOTAL_WEIGHT.doubleValue()))
-            .andExpect(jsonPath("$.pickupFromDate").value(DEFAULT_PICKUP_FROM_DATE.toString()))
             .andExpect(jsonPath("$.biddingFromDate").value(DEFAULT_BIDDING_FROM_DATE.toString()))
             .andExpect(jsonPath("$.biddingUntilDate").value(DEFAULT_BIDDING_UNTIL_DATE.toString()));
     }
@@ -432,7 +612,7 @@ class ContainerResourceIT {
         // Initialize the database
         containerRepository.save(container);
 
-        int databaseSizeBeforeUpdate = containerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the container
         Container updatedContainer = containerRepository.findById(container.getId()).orElseThrow();
@@ -442,17 +622,23 @@ class ContainerResourceIT {
             .distance(UPDATED_DISTANCE)
             .desiredPrice(UPDATED_DESIRED_PRICE)
             .additionalRequirements(UPDATED_ADDITIONAL_REQUIREMENTS)
+            .pickupContact(UPDATED_PICKUP_CONTACT)
+            .pickupContactPhone(UPDATED_PICKUP_CONTACT_PHONE)
+            .pickupAddress(UPDATED_PICKUP_ADDRESS)
+            .pickupLat(UPDATED_PICKUP_LAT)
+            .pickupLng(UPDATED_PICKUP_LNG)
+            .pickupFromDate(UPDATED_PICKUP_FROM_DATE)
             .dropoffContact(UPDATED_DROPOFF_CONTACT)
             .dropoffContactPhone(UPDATED_DROPOFF_CONTACT_PHONE)
             .dropoffAddress(UPDATED_DROPOFF_ADDRESS)
             .dropoffLat(UPDATED_DROPOFF_LAT)
             .dropoffLng(UPDATED_DROPOFF_LNG)
+            .points(UPDATED_POINTS)
             .dropoffUntilDate(UPDATED_DROPOFF_UNTIL_DATE)
             .state(UPDATED_STATE)
             .shipperId(UPDATED_SHIPPER_ID)
             .carrierId(UPDATED_CARRIER_ID)
             .totalWeight(UPDATED_TOTAL_WEIGHT)
-            .pickupFromDate(UPDATED_PICKUP_FROM_DATE)
             .biddingFromDate(UPDATED_BIDDING_FROM_DATE)
             .biddingUntilDate(UPDATED_BIDDING_UNTIL_DATE);
         ContainerDTO containerDTO = containerMapper.toDto(updatedContainer);
@@ -461,37 +647,18 @@ class ContainerResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, containerDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(containerDTO))
+                    .content(om.writeValueAsBytes(containerDTO))
             )
             .andExpect(status().isOk());
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeUpdate);
-        Container testContainer = containerList.get(containerList.size() - 1);
-        assertThat(testContainer.getContNo()).isEqualTo(UPDATED_CONT_NO);
-        assertThat(testContainer.getEstimatedPrice()).isEqualTo(UPDATED_ESTIMATED_PRICE);
-        assertThat(testContainer.getDistance()).isEqualTo(UPDATED_DISTANCE);
-        assertThat(testContainer.getDesiredPrice()).isEqualTo(UPDATED_DESIRED_PRICE);
-        assertThat(testContainer.getAdditionalRequirements()).isEqualTo(UPDATED_ADDITIONAL_REQUIREMENTS);
-        assertThat(testContainer.getDropoffContact()).isEqualTo(UPDATED_DROPOFF_CONTACT);
-        assertThat(testContainer.getDropoffContactPhone()).isEqualTo(UPDATED_DROPOFF_CONTACT_PHONE);
-        assertThat(testContainer.getDropoffAddress()).isEqualTo(UPDATED_DROPOFF_ADDRESS);
-        assertThat(testContainer.getDropoffLat()).isEqualTo(UPDATED_DROPOFF_LAT);
-        assertThat(testContainer.getDropoffLng()).isEqualTo(UPDATED_DROPOFF_LNG);
-        assertThat(testContainer.getDropoffUntilDate()).isEqualTo(UPDATED_DROPOFF_UNTIL_DATE);
-        assertThat(testContainer.getState()).isEqualTo(UPDATED_STATE);
-        assertThat(testContainer.getShipperId()).isEqualTo(UPDATED_SHIPPER_ID);
-        assertThat(testContainer.getCarrierId()).isEqualTo(UPDATED_CARRIER_ID);
-        assertThat(testContainer.getTotalWeight()).isEqualTo(UPDATED_TOTAL_WEIGHT);
-        assertThat(testContainer.getPickupFromDate()).isEqualTo(UPDATED_PICKUP_FROM_DATE);
-        assertThat(testContainer.getBiddingFromDate()).isEqualTo(UPDATED_BIDDING_FROM_DATE);
-        assertThat(testContainer.getBiddingUntilDate()).isEqualTo(UPDATED_BIDDING_UNTIL_DATE);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertPersistedContainerToMatchAllProperties(updatedContainer);
     }
 
     @Test
     void putNonExistingContainer() throws Exception {
-        int databaseSizeBeforeUpdate = containerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         container.setId(longCount.incrementAndGet());
 
         // Create the Container
@@ -502,18 +669,17 @@ class ContainerResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, containerDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(containerDTO))
+                    .content(om.writeValueAsBytes(containerDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithIdMismatchContainer() throws Exception {
-        int databaseSizeBeforeUpdate = containerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         container.setId(longCount.incrementAndGet());
 
         // Create the Container
@@ -524,18 +690,17 @@ class ContainerResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(containerDTO))
+                    .content(om.writeValueAsBytes(containerDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithMissingIdPathParamContainer() throws Exception {
-        int databaseSizeBeforeUpdate = containerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         container.setId(longCount.incrementAndGet());
 
         // Create the Container
@@ -543,12 +708,11 @@ class ContainerResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restContainerMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerDTO)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -556,52 +720,43 @@ class ContainerResourceIT {
         // Initialize the database
         containerRepository.save(container);
 
-        int databaseSizeBeforeUpdate = containerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the container using partial update
         Container partialUpdatedContainer = new Container();
         partialUpdatedContainer.setId(container.getId());
 
         partialUpdatedContainer
-            .distance(UPDATED_DISTANCE)
-            .desiredPrice(UPDATED_DESIRED_PRICE)
-            .dropoffContact(UPDATED_DROPOFF_CONTACT)
+            .contNo(UPDATED_CONT_NO)
+            .estimatedPrice(UPDATED_ESTIMATED_PRICE)
+            .additionalRequirements(UPDATED_ADDITIONAL_REQUIREMENTS)
+            .pickupContactPhone(UPDATED_PICKUP_CONTACT_PHONE)
+            .pickupAddress(UPDATED_PICKUP_ADDRESS)
+            .pickupLat(UPDATED_PICKUP_LAT)
+            .pickupFromDate(UPDATED_PICKUP_FROM_DATE)
             .dropoffContactPhone(UPDATED_DROPOFF_CONTACT_PHONE)
-            .dropoffAddress(UPDATED_DROPOFF_ADDRESS)
-            .dropoffLng(UPDATED_DROPOFF_LNG)
+            .dropoffLat(UPDATED_DROPOFF_LAT)
+            .dropoffUntilDate(UPDATED_DROPOFF_UNTIL_DATE)
             .state(UPDATED_STATE)
-            .shipperId(UPDATED_SHIPPER_ID);
+            .carrierId(UPDATED_CARRIER_ID)
+            .biddingFromDate(UPDATED_BIDDING_FROM_DATE)
+            .biddingUntilDate(UPDATED_BIDDING_UNTIL_DATE);
 
         restContainerMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedContainer.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedContainer))
+                    .content(om.writeValueAsBytes(partialUpdatedContainer))
             )
             .andExpect(status().isOk());
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeUpdate);
-        Container testContainer = containerList.get(containerList.size() - 1);
-        assertThat(testContainer.getContNo()).isEqualTo(DEFAULT_CONT_NO);
-        assertThat(testContainer.getEstimatedPrice()).isEqualTo(DEFAULT_ESTIMATED_PRICE);
-        assertThat(testContainer.getDistance()).isEqualTo(UPDATED_DISTANCE);
-        assertThat(testContainer.getDesiredPrice()).isEqualTo(UPDATED_DESIRED_PRICE);
-        assertThat(testContainer.getAdditionalRequirements()).isEqualTo(DEFAULT_ADDITIONAL_REQUIREMENTS);
-        assertThat(testContainer.getDropoffContact()).isEqualTo(UPDATED_DROPOFF_CONTACT);
-        assertThat(testContainer.getDropoffContactPhone()).isEqualTo(UPDATED_DROPOFF_CONTACT_PHONE);
-        assertThat(testContainer.getDropoffAddress()).isEqualTo(UPDATED_DROPOFF_ADDRESS);
-        assertThat(testContainer.getDropoffLat()).isEqualTo(DEFAULT_DROPOFF_LAT);
-        assertThat(testContainer.getDropoffLng()).isEqualTo(UPDATED_DROPOFF_LNG);
-        assertThat(testContainer.getDropoffUntilDate()).isEqualTo(DEFAULT_DROPOFF_UNTIL_DATE);
-        assertThat(testContainer.getState()).isEqualTo(UPDATED_STATE);
-        assertThat(testContainer.getShipperId()).isEqualTo(UPDATED_SHIPPER_ID);
-        assertThat(testContainer.getCarrierId()).isEqualTo(DEFAULT_CARRIER_ID);
-        assertThat(testContainer.getTotalWeight()).isEqualTo(DEFAULT_TOTAL_WEIGHT);
-        assertThat(testContainer.getPickupFromDate()).isEqualTo(DEFAULT_PICKUP_FROM_DATE);
-        assertThat(testContainer.getBiddingFromDate()).isEqualTo(DEFAULT_BIDDING_FROM_DATE);
-        assertThat(testContainer.getBiddingUntilDate()).isEqualTo(DEFAULT_BIDDING_UNTIL_DATE);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertContainerUpdatableFieldsEquals(
+            createUpdateProxyForBean(partialUpdatedContainer, container),
+            getPersistedContainer(container)
+        );
     }
 
     @Test
@@ -609,7 +764,7 @@ class ContainerResourceIT {
         // Initialize the database
         containerRepository.save(container);
 
-        int databaseSizeBeforeUpdate = containerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the container using partial update
         Container partialUpdatedContainer = new Container();
@@ -621,17 +776,23 @@ class ContainerResourceIT {
             .distance(UPDATED_DISTANCE)
             .desiredPrice(UPDATED_DESIRED_PRICE)
             .additionalRequirements(UPDATED_ADDITIONAL_REQUIREMENTS)
+            .pickupContact(UPDATED_PICKUP_CONTACT)
+            .pickupContactPhone(UPDATED_PICKUP_CONTACT_PHONE)
+            .pickupAddress(UPDATED_PICKUP_ADDRESS)
+            .pickupLat(UPDATED_PICKUP_LAT)
+            .pickupLng(UPDATED_PICKUP_LNG)
+            .pickupFromDate(UPDATED_PICKUP_FROM_DATE)
             .dropoffContact(UPDATED_DROPOFF_CONTACT)
             .dropoffContactPhone(UPDATED_DROPOFF_CONTACT_PHONE)
             .dropoffAddress(UPDATED_DROPOFF_ADDRESS)
             .dropoffLat(UPDATED_DROPOFF_LAT)
             .dropoffLng(UPDATED_DROPOFF_LNG)
+            .points(UPDATED_POINTS)
             .dropoffUntilDate(UPDATED_DROPOFF_UNTIL_DATE)
             .state(UPDATED_STATE)
             .shipperId(UPDATED_SHIPPER_ID)
             .carrierId(UPDATED_CARRIER_ID)
             .totalWeight(UPDATED_TOTAL_WEIGHT)
-            .pickupFromDate(UPDATED_PICKUP_FROM_DATE)
             .biddingFromDate(UPDATED_BIDDING_FROM_DATE)
             .biddingUntilDate(UPDATED_BIDDING_UNTIL_DATE);
 
@@ -639,37 +800,19 @@ class ContainerResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedContainer.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedContainer))
+                    .content(om.writeValueAsBytes(partialUpdatedContainer))
             )
             .andExpect(status().isOk());
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeUpdate);
-        Container testContainer = containerList.get(containerList.size() - 1);
-        assertThat(testContainer.getContNo()).isEqualTo(UPDATED_CONT_NO);
-        assertThat(testContainer.getEstimatedPrice()).isEqualTo(UPDATED_ESTIMATED_PRICE);
-        assertThat(testContainer.getDistance()).isEqualTo(UPDATED_DISTANCE);
-        assertThat(testContainer.getDesiredPrice()).isEqualTo(UPDATED_DESIRED_PRICE);
-        assertThat(testContainer.getAdditionalRequirements()).isEqualTo(UPDATED_ADDITIONAL_REQUIREMENTS);
-        assertThat(testContainer.getDropoffContact()).isEqualTo(UPDATED_DROPOFF_CONTACT);
-        assertThat(testContainer.getDropoffContactPhone()).isEqualTo(UPDATED_DROPOFF_CONTACT_PHONE);
-        assertThat(testContainer.getDropoffAddress()).isEqualTo(UPDATED_DROPOFF_ADDRESS);
-        assertThat(testContainer.getDropoffLat()).isEqualTo(UPDATED_DROPOFF_LAT);
-        assertThat(testContainer.getDropoffLng()).isEqualTo(UPDATED_DROPOFF_LNG);
-        assertThat(testContainer.getDropoffUntilDate()).isEqualTo(UPDATED_DROPOFF_UNTIL_DATE);
-        assertThat(testContainer.getState()).isEqualTo(UPDATED_STATE);
-        assertThat(testContainer.getShipperId()).isEqualTo(UPDATED_SHIPPER_ID);
-        assertThat(testContainer.getCarrierId()).isEqualTo(UPDATED_CARRIER_ID);
-        assertThat(testContainer.getTotalWeight()).isEqualTo(UPDATED_TOTAL_WEIGHT);
-        assertThat(testContainer.getPickupFromDate()).isEqualTo(UPDATED_PICKUP_FROM_DATE);
-        assertThat(testContainer.getBiddingFromDate()).isEqualTo(UPDATED_BIDDING_FROM_DATE);
-        assertThat(testContainer.getBiddingUntilDate()).isEqualTo(UPDATED_BIDDING_UNTIL_DATE);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertContainerUpdatableFieldsEquals(partialUpdatedContainer, getPersistedContainer(partialUpdatedContainer));
     }
 
     @Test
     void patchNonExistingContainer() throws Exception {
-        int databaseSizeBeforeUpdate = containerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         container.setId(longCount.incrementAndGet());
 
         // Create the Container
@@ -680,18 +823,17 @@ class ContainerResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, containerDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(containerDTO))
+                    .content(om.writeValueAsBytes(containerDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithIdMismatchContainer() throws Exception {
-        int databaseSizeBeforeUpdate = containerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         container.setId(longCount.incrementAndGet());
 
         // Create the Container
@@ -702,18 +844,17 @@ class ContainerResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(containerDTO))
+                    .content(om.writeValueAsBytes(containerDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithMissingIdPathParamContainer() throws Exception {
-        int databaseSizeBeforeUpdate = containerRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         container.setId(longCount.incrementAndGet());
 
         // Create the Container
@@ -721,14 +862,11 @@ class ContainerResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restContainerMockMvc
-            .perform(
-                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(containerDTO))
-            )
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(containerDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Container in the database
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -736,7 +874,7 @@ class ContainerResourceIT {
         // Initialize the database
         containerRepository.save(container);
 
-        int databaseSizeBeforeDelete = containerRepository.findAll().size();
+        long databaseSizeBeforeDelete = getRepositoryCount();
 
         // Delete the container
         restContainerMockMvc
@@ -744,7 +882,34 @@ class ContainerResourceIT {
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<Container> containerList = containerRepository.findAll();
-        assertThat(containerList).hasSize(databaseSizeBeforeDelete - 1);
+        assertDecrementedRepositoryCount(databaseSizeBeforeDelete);
+    }
+
+    protected long getRepositoryCount() {
+        return containerRepository.count();
+    }
+
+    protected void assertIncrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore + 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertDecrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore - 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertSameRepositoryCount(long countBefore) {
+        assertThat(countBefore).isEqualTo(getRepositoryCount());
+    }
+
+    protected Container getPersistedContainer(Container container) {
+        return containerRepository.findById(container.getId()).orElseThrow();
+    }
+
+    protected void assertPersistedContainerToMatchAllProperties(Container expectedContainer) {
+        assertContainerAllPropertiesEquals(expectedContainer, getPersistedContainer(expectedContainer));
+    }
+
+    protected void assertPersistedContainerToMatchUpdatableProperties(Container expectedContainer) {
+        assertContainerAllUpdatablePropertiesEquals(expectedContainer, getPersistedContainer(expectedContainer));
     }
 }

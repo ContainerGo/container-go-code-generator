@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -15,10 +15,8 @@ import { ShipperService } from '../service/shipper.service';
 export class ShipperDeleteDialogComponent {
   shipper?: IShipper;
 
-  constructor(
-    protected shipperService: ShipperService,
-    protected activeModal: NgbActiveModal,
-  ) {}
+  protected shipperService = inject(ShipperService);
+  protected activeModal = inject(NgbActiveModal);
 
   cancel(): void {
     this.activeModal.dismiss();

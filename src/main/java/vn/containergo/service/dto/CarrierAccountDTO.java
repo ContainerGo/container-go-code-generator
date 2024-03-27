@@ -22,6 +22,7 @@ public class CarrierAccountDTO implements Serializable {
 
     private String address;
 
+    @NotNull
     private CarrierDTO carrier;
 
     public Long getId() {

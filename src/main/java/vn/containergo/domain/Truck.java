@@ -52,6 +52,12 @@ public class Truck implements Serializable {
     @Field("number_plate")
     private String numberPlate;
 
+    @Field("lat")
+    private Double lat;
+
+    @Field("lng")
+    private Double lng;
+
     @DBRef
     @Field("type")
     private TruckType type;
@@ -193,6 +199,32 @@ public class Truck implements Serializable {
         this.numberPlate = numberPlate;
     }
 
+    public Double getLat() {
+        return this.lat;
+    }
+
+    public Truck lat(Double lat) {
+        this.setLat(lat);
+        return this;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLng() {
+        return this.lng;
+    }
+
+    public Truck lng(Double lng) {
+        this.setLng(lng);
+        return this;
+    }
+
+    public void setLng(Double lng) {
+        this.lng = lng;
+    }
+
     public TruckType getType() {
         return this.type;
     }
@@ -252,6 +284,8 @@ public class Truck implements Serializable {
             ", status='" + getStatus() + "'" +
             ", mileage=" + getMileage() +
             ", numberPlate='" + getNumberPlate() + "'" +
+            ", lat=" + getLat() +
+            ", lng=" + getLng() +
             "}";
     }
 }

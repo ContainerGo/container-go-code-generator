@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -14,12 +14,10 @@ export type EntityArrayResponseType = HttpResponse<ICenterPerson[]>;
 
 @Injectable({ providedIn: 'root' })
 export class CenterPersonService {
-  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/center-people');
+  protected http = inject(HttpClient);
+  protected applicationConfigService = inject(ApplicationConfigService);
 
-  constructor(
-    protected http: HttpClient,
-    protected applicationConfigService: ApplicationConfigService,
-  ) {}
+  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/center-people');
 
   create(centerPerson: NewCenterPerson): Observable<EntityResponseType> {
     return this.http.post<ICenterPerson>(this.resourceUrl, centerPerson, { observe: 'response' });
@@ -64,8 +62,8 @@ export class CenterPersonService {
   ): Type[] {
     const centerPeople: Type[] = centerPeopleToCheck.filter(isPresent);
     if (centerPeople.length > 0) {
-      const centerPersonCollectionIdentifiers = centerPersonCollection.map(
-        centerPersonItem => this.getCenterPersonIdentifier(centerPersonItem)!,
+      const centerPersonCollectionIdentifiers = centerPersonCollection.map(centerPersonItem =>
+        this.getCenterPersonIdentifier(centerPersonItem),
       );
       const centerPeopleToAdd = centerPeople.filter(centerPersonItem => {
         const centerPersonIdentifier = this.getCenterPersonIdentifier(centerPersonItem);

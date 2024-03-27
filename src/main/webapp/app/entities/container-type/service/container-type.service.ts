@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -14,12 +14,10 @@ export type EntityArrayResponseType = HttpResponse<IContainerType[]>;
 
 @Injectable({ providedIn: 'root' })
 export class ContainerTypeService {
-  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/container-types');
+  protected http = inject(HttpClient);
+  protected applicationConfigService = inject(ApplicationConfigService);
 
-  constructor(
-    protected http: HttpClient,
-    protected applicationConfigService: ApplicationConfigService,
-  ) {}
+  protected resourceUrl = this.applicationConfigService.getEndpointFor('api/container-types');
 
   create(containerType: NewContainerType): Observable<EntityResponseType> {
     return this.http.post<IContainerType>(this.resourceUrl, containerType, { observe: 'response' });
@@ -64,8 +62,8 @@ export class ContainerTypeService {
   ): Type[] {
     const containerTypes: Type[] = containerTypesToCheck.filter(isPresent);
     if (containerTypes.length > 0) {
-      const containerTypeCollectionIdentifiers = containerTypeCollection.map(
-        containerTypeItem => this.getContainerTypeIdentifier(containerTypeItem)!,
+      const containerTypeCollectionIdentifiers = containerTypeCollection.map(containerTypeItem =>
+        this.getContainerTypeIdentifier(containerTypeItem),
       );
       const containerTypesToAdd = containerTypes.filter(containerTypeItem => {
         const containerTypeIdentifier = this.getContainerTypeIdentifier(containerTypeItem);

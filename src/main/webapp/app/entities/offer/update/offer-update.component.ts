@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -9,8 +9,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IContainer } from 'app/entities/container/container.model';
 import { ContainerService } from 'app/entities/container/service/container.service';
-import { IOffer } from '../offer.model';
+import { OfferState } from 'app/entities/enumerations/offer-state.model';
 import { OfferService } from '../service/offer.service';
+import { IOffer } from '../offer.model';
 import { OfferFormService, OfferFormGroup } from './offer-form.service';
 
 @Component({
@@ -22,17 +23,17 @@ import { OfferFormService, OfferFormGroup } from './offer-form.service';
 export class OfferUpdateComponent implements OnInit {
   isSaving = false;
   offer: IOffer | null = null;
+  offerStateValues = Object.keys(OfferState);
 
   containersSharedCollection: IContainer[] = [];
 
-  editForm: OfferFormGroup = this.offerFormService.createOfferFormGroup();
+  protected offerService = inject(OfferService);
+  protected offerFormService = inject(OfferFormService);
+  protected containerService = inject(ContainerService);
+  protected activatedRoute = inject(ActivatedRoute);
 
-  constructor(
-    protected offerService: OfferService,
-    protected offerFormService: OfferFormService,
-    protected containerService: ContainerService,
-    protected activatedRoute: ActivatedRoute,
-  ) {}
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  editForm: OfferFormGroup = this.offerFormService.createOfferFormGroup();
 
   compareContainer = (o1: IContainer | null, o2: IContainer | null): boolean => this.containerService.compareContainer(o1, o2);
 

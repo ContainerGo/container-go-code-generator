@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static vn.containergo.domain.ContainerTypeAsserts.*;
+import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +45,9 @@ class ContainerTypeResourceIT {
 
     private static Random random = new Random();
     private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+
+    @Autowired
+    private ObjectMapper om;
 
     @Autowired
     private ContainerTypeRepository containerTypeRepository;
@@ -85,22 +90,23 @@ class ContainerTypeResourceIT {
 
     @Test
     void createContainerType() throws Exception {
-        int databaseSizeBeforeCreate = containerTypeRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the ContainerType
         ContainerTypeDTO containerTypeDTO = containerTypeMapper.toDto(containerType);
-        restContainerTypeMockMvc
-            .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerTypeDTO))
-            )
-            .andExpect(status().isCreated());
+        var returnedContainerTypeDTO = om.readValue(
+            restContainerTypeMockMvc
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerTypeDTO)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(),
+            ContainerTypeDTO.class
+        );
 
         // Validate the ContainerType in the database
-        List<ContainerType> containerTypeList = containerTypeRepository.findAll();
-        assertThat(containerTypeList).hasSize(databaseSizeBeforeCreate + 1);
-        ContainerType testContainerType = containerTypeList.get(containerTypeList.size() - 1);
-        assertThat(testContainerType.getCode()).isEqualTo(DEFAULT_CODE);
-        assertThat(testContainerType.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testContainerType.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
+        var returnedContainerType = containerTypeMapper.toEntity(returnedContainerTypeDTO);
+        assertContainerTypeUpdatableFieldsEquals(returnedContainerType, getPersistedContainerType(returnedContainerType));
     }
 
     @Test
@@ -109,23 +115,20 @@ class ContainerTypeResourceIT {
         containerType.setId(1L);
         ContainerTypeDTO containerTypeDTO = containerTypeMapper.toDto(containerType);
 
-        int databaseSizeBeforeCreate = containerTypeRepository.findAll().size();
+        long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restContainerTypeMockMvc
-            .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerTypeDTO))
-            )
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerTypeDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the ContainerType in the database
-        List<ContainerType> containerTypeList = containerTypeRepository.findAll();
-        assertThat(containerTypeList).hasSize(databaseSizeBeforeCreate);
+        assertSameRepositoryCount(databaseSizeBeforeCreate);
     }
 
     @Test
     void checkCodeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = containerTypeRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         containerType.setCode(null);
 
@@ -133,18 +136,15 @@ class ContainerTypeResourceIT {
         ContainerTypeDTO containerTypeDTO = containerTypeMapper.toDto(containerType);
 
         restContainerTypeMockMvc
-            .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerTypeDTO))
-            )
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerTypeDTO)))
             .andExpect(status().isBadRequest());
 
-        List<ContainerType> containerTypeList = containerTypeRepository.findAll();
-        assertThat(containerTypeList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
     void checkNameIsRequired() throws Exception {
-        int databaseSizeBeforeTest = containerTypeRepository.findAll().size();
+        long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         containerType.setName(null);
 
@@ -152,13 +152,10 @@ class ContainerTypeResourceIT {
         ContainerTypeDTO containerTypeDTO = containerTypeMapper.toDto(containerType);
 
         restContainerTypeMockMvc
-            .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerTypeDTO))
-            )
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerTypeDTO)))
             .andExpect(status().isBadRequest());
 
-        List<ContainerType> containerTypeList = containerTypeRepository.findAll();
-        assertThat(containerTypeList).hasSize(databaseSizeBeforeTest);
+        assertSameRepositoryCount(databaseSizeBeforeTest);
     }
 
     @Test
@@ -204,7 +201,7 @@ class ContainerTypeResourceIT {
         // Initialize the database
         containerTypeRepository.save(containerType);
 
-        int databaseSizeBeforeUpdate = containerTypeRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the containerType
         ContainerType updatedContainerType = containerTypeRepository.findById(containerType.getId()).orElseThrow();
@@ -215,22 +212,18 @@ class ContainerTypeResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, containerTypeDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(containerTypeDTO))
+                    .content(om.writeValueAsBytes(containerTypeDTO))
             )
             .andExpect(status().isOk());
 
         // Validate the ContainerType in the database
-        List<ContainerType> containerTypeList = containerTypeRepository.findAll();
-        assertThat(containerTypeList).hasSize(databaseSizeBeforeUpdate);
-        ContainerType testContainerType = containerTypeList.get(containerTypeList.size() - 1);
-        assertThat(testContainerType.getCode()).isEqualTo(UPDATED_CODE);
-        assertThat(testContainerType.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testContainerType.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertPersistedContainerTypeToMatchAllProperties(updatedContainerType);
     }
 
     @Test
     void putNonExistingContainerType() throws Exception {
-        int databaseSizeBeforeUpdate = containerTypeRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         containerType.setId(longCount.incrementAndGet());
 
         // Create the ContainerType
@@ -241,18 +234,17 @@ class ContainerTypeResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, containerTypeDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(containerTypeDTO))
+                    .content(om.writeValueAsBytes(containerTypeDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the ContainerType in the database
-        List<ContainerType> containerTypeList = containerTypeRepository.findAll();
-        assertThat(containerTypeList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithIdMismatchContainerType() throws Exception {
-        int databaseSizeBeforeUpdate = containerTypeRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         containerType.setId(longCount.incrementAndGet());
 
         // Create the ContainerType
@@ -263,18 +255,17 @@ class ContainerTypeResourceIT {
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(containerTypeDTO))
+                    .content(om.writeValueAsBytes(containerTypeDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the ContainerType in the database
-        List<ContainerType> containerTypeList = containerTypeRepository.findAll();
-        assertThat(containerTypeList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void putWithMissingIdPathParamContainerType() throws Exception {
-        int databaseSizeBeforeUpdate = containerTypeRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         containerType.setId(longCount.incrementAndGet());
 
         // Create the ContainerType
@@ -282,14 +273,11 @@ class ContainerTypeResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restContainerTypeMockMvc
-            .perform(
-                put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(containerTypeDTO))
-            )
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(containerTypeDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the ContainerType in the database
-        List<ContainerType> containerTypeList = containerTypeRepository.findAll();
-        assertThat(containerTypeList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -297,29 +285,27 @@ class ContainerTypeResourceIT {
         // Initialize the database
         containerTypeRepository.save(containerType);
 
-        int databaseSizeBeforeUpdate = containerTypeRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the containerType using partial update
         ContainerType partialUpdatedContainerType = new ContainerType();
         partialUpdatedContainerType.setId(containerType.getId());
 
-        partialUpdatedContainerType.code(UPDATED_CODE).name(UPDATED_NAME).description(UPDATED_DESCRIPTION);
-
         restContainerTypeMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedContainerType.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedContainerType))
+                    .content(om.writeValueAsBytes(partialUpdatedContainerType))
             )
             .andExpect(status().isOk());
 
         // Validate the ContainerType in the database
-        List<ContainerType> containerTypeList = containerTypeRepository.findAll();
-        assertThat(containerTypeList).hasSize(databaseSizeBeforeUpdate);
-        ContainerType testContainerType = containerTypeList.get(containerTypeList.size() - 1);
-        assertThat(testContainerType.getCode()).isEqualTo(UPDATED_CODE);
-        assertThat(testContainerType.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testContainerType.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertContainerTypeUpdatableFieldsEquals(
+            createUpdateProxyForBean(partialUpdatedContainerType, containerType),
+            getPersistedContainerType(containerType)
+        );
     }
 
     @Test
@@ -327,7 +313,7 @@ class ContainerTypeResourceIT {
         // Initialize the database
         containerTypeRepository.save(containerType);
 
-        int databaseSizeBeforeUpdate = containerTypeRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the containerType using partial update
         ContainerType partialUpdatedContainerType = new ContainerType();
@@ -339,22 +325,19 @@ class ContainerTypeResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedContainerType.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedContainerType))
+                    .content(om.writeValueAsBytes(partialUpdatedContainerType))
             )
             .andExpect(status().isOk());
 
         // Validate the ContainerType in the database
-        List<ContainerType> containerTypeList = containerTypeRepository.findAll();
-        assertThat(containerTypeList).hasSize(databaseSizeBeforeUpdate);
-        ContainerType testContainerType = containerTypeList.get(containerTypeList.size() - 1);
-        assertThat(testContainerType.getCode()).isEqualTo(UPDATED_CODE);
-        assertThat(testContainerType.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testContainerType.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertContainerTypeUpdatableFieldsEquals(partialUpdatedContainerType, getPersistedContainerType(partialUpdatedContainerType));
     }
 
     @Test
     void patchNonExistingContainerType() throws Exception {
-        int databaseSizeBeforeUpdate = containerTypeRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         containerType.setId(longCount.incrementAndGet());
 
         // Create the ContainerType
@@ -365,18 +348,17 @@ class ContainerTypeResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, containerTypeDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(containerTypeDTO))
+                    .content(om.writeValueAsBytes(containerTypeDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the ContainerType in the database
-        List<ContainerType> containerTypeList = containerTypeRepository.findAll();
-        assertThat(containerTypeList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithIdMismatchContainerType() throws Exception {
-        int databaseSizeBeforeUpdate = containerTypeRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         containerType.setId(longCount.incrementAndGet());
 
         // Create the ContainerType
@@ -387,18 +369,17 @@ class ContainerTypeResourceIT {
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(containerTypeDTO))
+                    .content(om.writeValueAsBytes(containerTypeDTO))
             )
             .andExpect(status().isBadRequest());
 
         // Validate the ContainerType in the database
-        List<ContainerType> containerTypeList = containerTypeRepository.findAll();
-        assertThat(containerTypeList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     void patchWithMissingIdPathParamContainerType() throws Exception {
-        int databaseSizeBeforeUpdate = containerTypeRepository.findAll().size();
+        long databaseSizeBeforeUpdate = getRepositoryCount();
         containerType.setId(longCount.incrementAndGet());
 
         // Create the ContainerType
@@ -406,16 +387,11 @@ class ContainerTypeResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restContainerTypeMockMvc
-            .perform(
-                patch(ENTITY_API_URL)
-                    .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(containerTypeDTO))
-            )
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(containerTypeDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the ContainerType in the database
-        List<ContainerType> containerTypeList = containerTypeRepository.findAll();
-        assertThat(containerTypeList).hasSize(databaseSizeBeforeUpdate);
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -423,7 +399,7 @@ class ContainerTypeResourceIT {
         // Initialize the database
         containerTypeRepository.save(containerType);
 
-        int databaseSizeBeforeDelete = containerTypeRepository.findAll().size();
+        long databaseSizeBeforeDelete = getRepositoryCount();
 
         // Delete the containerType
         restContainerTypeMockMvc
@@ -431,7 +407,34 @@ class ContainerTypeResourceIT {
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<ContainerType> containerTypeList = containerTypeRepository.findAll();
-        assertThat(containerTypeList).hasSize(databaseSizeBeforeDelete - 1);
+        assertDecrementedRepositoryCount(databaseSizeBeforeDelete);
+    }
+
+    protected long getRepositoryCount() {
+        return containerTypeRepository.count();
+    }
+
+    protected void assertIncrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore + 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertDecrementedRepositoryCount(long countBefore) {
+        assertThat(countBefore - 1).isEqualTo(getRepositoryCount());
+    }
+
+    protected void assertSameRepositoryCount(long countBefore) {
+        assertThat(countBefore).isEqualTo(getRepositoryCount());
+    }
+
+    protected ContainerType getPersistedContainerType(ContainerType containerType) {
+        return containerTypeRepository.findById(containerType.getId()).orElseThrow();
+    }
+
+    protected void assertPersistedContainerTypeToMatchAllProperties(ContainerType expectedContainerType) {
+        assertContainerTypeAllPropertiesEquals(expectedContainerType, getPersistedContainerType(expectedContainerType));
+    }
+
+    protected void assertPersistedContainerTypeToMatchUpdatableProperties(ContainerType expectedContainerType) {
+        assertContainerTypeAllUpdatablePropertiesEquals(expectedContainerType, getPersistedContainerType(expectedContainerType));
     }
 }
