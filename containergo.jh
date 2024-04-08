@@ -17,51 +17,77 @@ application {
 
 // Common
 entity Provice {
-	id Long,
+	id UUID,
     code String required,
     name String required,
     description String
 }
 
 entity District {
-	id Long,
+	id UUID,
     code String required,
     name String required,
     description String
 }
 
 entity Ward {
-	id Long,
+	id UUID,
     code String required,
     name String required,
     description String
 }
 
+enum ContractType {
+	SIGNED_CONTRACT,
+    INDIVIDUAL
+}
+
+enum PaymentType {
+	CASH_ON_DELIVERY,
+    END_OF_MONTH
+}
+
 // Shipper
 entity Shipper {
-	id Long,
+	id UUID,
     code String required,
     name String required,
     address String required,
     taxCode String,
     companySize Integer,
-    paymentType String required,
+    paymentType PaymentType required,
+    contractType ContractType required,
+    contractValidUntil Instant,
     isApproved Boolean,
     isBillingInformationComplete Boolean,
     isProfileComplete Boolean
 }
 
+entity ShipperPersonGroup {
+	id UUID,
+    name String required
+}
+
 entity ShipperPerson {
-	id Long,
+	id UUID,
     name String required,
     phone String required,
     email String,
     address String
 }
 
+entity ShipperNotification {
+	id UUID,
+    code String required,
+    name String required,
+    isEmailNotificationEnabled Boolean,
+    isSmsNotificationEnabled Boolean,
+    isAppNotificationEnabled Boolean
+}
+
 // Carrier
 entity TruckType {
-	id Long,
+	id UUID,
     code String required,
     name String required,
     category String,
@@ -81,7 +107,7 @@ enum TruckStatus {
 }
 
 entity Truck {
-    id Long,
+    id UUID,
     code String required,
     name String required,
     model String,
@@ -96,7 +122,7 @@ entity Truck {
 }
 
 entity Carrier {
-	id Long,
+	id UUID,
     code String required,
     name String required,
     address String required,
@@ -112,8 +138,13 @@ entity Carrier {
     verifiedSince Instant
 }
 
+entity CarrierPersonGroup {
+	id UUID,
+    name String required
+}
+
 entity CarrierPerson {
-	id Long,
+	id UUID,
     name String required,
     phone String required,
     email String,
@@ -121,7 +152,7 @@ entity CarrierPerson {
 }
 
 entity CenterPerson {
-	id Long,
+	id UUID,
     name String required,
     phone String required,
     email String,
@@ -129,9 +160,8 @@ entity CenterPerson {
 }
 
 entity CenterPersonGroup {
-	id Long,
-    name String required,
-    description String
+	id UUID,
+    name String required
 }
 
 // Container
@@ -152,36 +182,46 @@ enum ShipmentStatus {
 }
 
 entity ContainerStatus {
-	id Long,
+	id UUID,
     code String required,
     name String required,
     description String
 }
 
 entity ContainerStatusGroup {
-	id Long,
+	id UUID,
     code String required,
     name String required,
     description String
 }
 
 entity ContainerType {
-	id Long,
+	id UUID,
     code String required,
     name String required,
     description String
 }
 
 entity ContainerOwner {
-	id Long,
+	id UUID,
     name String required,
     phone String,
     email String,
     address String
 }
 
+entity ShipmentPlan {
+	id UUID,
+    estimatedPickupFromDate Instant required,
+    estimatedPickupUntilDate Instant required,
+    estimatedDropoffFromDate Instant required,
+    estimatedDropoffUntilDate Instant required,
+    driverId UUID required,
+    truckId UUID required
+}
+
 entity Container {
-	id Long,
+	id UUID,
     contNo String required,
     estimatedPrice Double required,
     distance Double required,
@@ -201,15 +241,15 @@ entity Container {
     points String,
     dropoffUntilDate Instant,
     state ContainerState required,
-    shipperId Long required,
-    carrierId Long,
+    shipperId UUID required,
+    carrierId UUID,
     totalWeight Double required,
     biddingFromDate Instant,
     biddingUntilDate Instant
 }
 
 entity ShipmentHistory {
-	id Long,
+	id UUID,
     event String required,
     timestamp Instant required,
     executedBy String required,
@@ -228,17 +268,16 @@ enum OfferState {
 }
 
 entity Offer {
-	id Long,
+	id UUID,
     message String,
-    pickupFromDate Instant required,
-    pickupUntilDate Instant required,
-    dropoffFromDate Instant required,
-    dropoffUntilDate Instant required,
+    estimatedPickupFromDate Instant required,
+    estimatedPickupUntilDate Instant required,
+    estimatedDropoffFromDate Instant required,
+    estimatedDropoffUntilDate Instant required,
     state OfferState required,
     price Double required,
-    carrierId Long required,
-    carrierPersonId Long,
-    truckId Long
+    carrierId UUID required,
+    truckId UUID
 }
 
 relationship ManyToOne {
@@ -255,7 +294,10 @@ relationship ManyToOne {
     Container{owner} to ContainerOwner
     ShipmentHistory{container required} to Container
     Offer{container required} to Container
-    Truck{type required} to TruckType
+    Truck{type required} to TruckType,
+    ShipperPerson{group required} to ShipperPersonGroup,
+    CarrierPerson{group required} to CarrierPersonGroup,
+    CenterPerson{group required} to CenterPersonGroup
 }
 
 relationship OneToMany {
@@ -263,9 +305,10 @@ relationship OneToMany {
     Carrier to Truck{carrier}
     Carrier to CarrierPerson{carrier}
     Shipper to ShipperPerson{shipper}
+    Container to ShipmentPlan{container}
+    ShipperPerson{enabledNotifications} to ShipperNotification{person}
 }
 
 relationship ManyToMany {
     CenterPerson{groups} to CenterPersonGroup{users}
 }
-
