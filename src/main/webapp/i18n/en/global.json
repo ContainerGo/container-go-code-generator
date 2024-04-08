@@ -28,7 +28,11 @@
         "container": "Container",
         "offer": "Offer",
         "containerOwner": "Container Owner",
-        "shipmentHistory": "Shipment History"
+        "shipmentHistory": "Shipment History",
+        "shipperPersonGroup": "Shipper Person Group",
+        "shipperNotification": "Shipper Notification",
+        "carrierPersonGroup": "Carrier Person Group",
+        "shipmentPlan": "Shipment Plan"
       },
       "account": {
         "main": "Account",

@@ -7,7 +7,7 @@
   "fields": [
     {
       "fieldName": "id",
-      "fieldType": "Long"
+      "fieldType": "UUID"
     },
     {
       "fieldName": "name",
@@ -32,6 +32,13 @@
   "name": "CenterPerson",
   "pagination": "pagination",
   "relationships": [
+    {
+      "otherEntityName": "centerPersonGroup",
+      "relationshipName": "group",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
     {
       "otherEntityName": "centerPersonGroup",
       "otherEntityRelationshipName": "users",

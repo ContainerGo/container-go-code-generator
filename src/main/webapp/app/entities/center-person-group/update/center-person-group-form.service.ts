@@ -19,7 +19,6 @@ type CenterPersonGroupFormDefaults = Pick<NewCenterPersonGroup, 'id'>;
 type CenterPersonGroupFormGroupContent = {
   id: FormControl<ICenterPersonGroup['id'] | NewCenterPersonGroup['id']>;
   name: FormControl<ICenterPersonGroup['name']>;
-  description: FormControl<ICenterPersonGroup['description']>;
 };
 
 export type CenterPersonGroupFormGroup = FormGroup<CenterPersonGroupFormGroupContent>;
@@ -42,7 +41,6 @@ export class CenterPersonGroupFormService {
       name: new FormControl(centerPersonGroupRawValue.name, {
         validators: [Validators.required],
       }),
-      description: new FormControl(centerPersonGroupRawValue.description),
     });
   }
 

@@ -1,6 +1,7 @@
 package vn.containergo.service;
 
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import vn.containergo.service.dto.OfferDTO;
@@ -47,12 +48,12 @@ public interface OfferService {
      * @param id the id of the entity.
      * @return the entity.
      */
-    Optional<OfferDTO> findOne(Long id);
+    Optional<OfferDTO> findOne(UUID id);
 
     /**
      * Delete the "id" offer.
      *
      * @param id the id of the entity.
      */
-    void delete(Long id);
+    void delete(UUID id);
 }

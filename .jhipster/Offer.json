@@ -7,29 +7,29 @@
   "fields": [
     {
       "fieldName": "id",
-      "fieldType": "Long"
+      "fieldType": "UUID"
     },
     {
       "fieldName": "message",
       "fieldType": "String"
     },
     {
-      "fieldName": "pickupFromDate",
+      "fieldName": "estimatedPickupFromDate",
       "fieldType": "Instant",
       "fieldValidateRules": ["required"]
     },
     {
-      "fieldName": "pickupUntilDate",
+      "fieldName": "estimatedPickupUntilDate",
       "fieldType": "Instant",
       "fieldValidateRules": ["required"]
     },
     {
-      "fieldName": "dropoffFromDate",
+      "fieldName": "estimatedDropoffFromDate",
       "fieldType": "Instant",
       "fieldValidateRules": ["required"]
     },
     {
-      "fieldName": "dropoffUntilDate",
+      "fieldName": "estimatedDropoffUntilDate",
       "fieldType": "Instant",
       "fieldValidateRules": ["required"]
     },
@@ -46,16 +46,12 @@
     },
     {
       "fieldName": "carrierId",
-      "fieldType": "Long",
+      "fieldType": "UUID",
       "fieldValidateRules": ["required"]
     },
     {
-      "fieldName": "carrierPersonId",
-      "fieldType": "Long"
-    },
-    {
       "fieldName": "truckId",
-      "fieldType": "Long"
+      "fieldType": "UUID"
     }
   ],
   "jpaMetamodelFiltering": false,

@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,6 +62,7 @@ public class ShipperPersonResource {
         if (shipperPersonDTO.getId() != null) {
             throw new BadRequestAlertException("A new shipperPerson cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        shipperPersonDTO.setId(UUID.randomUUID());
         shipperPersonDTO = shipperPersonService.save(shipperPersonDTO);
         return ResponseEntity.created(new URI("/api/shipper-people/" + shipperPersonDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, shipperPersonDTO.getId().toString()))
@@ -79,7 +81,7 @@ public class ShipperPersonResource {
      */
     @PutMapping("/{id}")
     public ResponseEntity<ShipperPersonDTO> updateShipperPerson(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @Valid @RequestBody ShipperPersonDTO shipperPersonDTO
     ) throws URISyntaxException {
         log.debug("REST request to update ShipperPerson : {}, {}", id, shipperPersonDTO);
@@ -113,7 +115,7 @@ public class ShipperPersonResource {
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<ShipperPersonDTO> partialUpdateShipperPerson(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @NotNull @RequestBody ShipperPersonDTO shipperPersonDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update ShipperPerson partially : {}, {}", id, shipperPersonDTO);
@@ -157,7 +159,7 @@ public class ShipperPersonResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the shipperPersonDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ShipperPersonDTO> getShipperPerson(@PathVariable("id") Long id) {
+    public ResponseEntity<ShipperPersonDTO> getShipperPerson(@PathVariable("id") UUID id) {
         log.debug("REST request to get ShipperPerson : {}", id);
         Optional<ShipperPersonDTO> shipperPersonDTO = shipperPersonService.findOne(id);
         return ResponseUtil.wrapOrNotFound(shipperPersonDTO);
@@ -170,7 +172,7 @@ public class ShipperPersonResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteShipperPerson(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteShipperPerson(@PathVariable("id") UUID id) {
         log.debug("REST request to delete ShipperPerson : {}", id);
         shipperPersonService.delete(id);
         return ResponseEntity.noContent()

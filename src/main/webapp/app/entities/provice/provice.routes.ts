@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
-import { ASC } from 'app/config/navigation.constants';
 import { ProviceComponent } from './list/provice.component';
 import { ProviceDetailComponent } from './detail/provice-detail.component';
 import { ProviceUpdateComponent } from './update/provice-update.component';
@@ -11,9 +10,7 @@ const proviceRoute: Routes = [
   {
     path: '',
     component: ProviceComponent,
-    data: {
-      defaultSort: 'id,' + ASC,
-    },
+    data: {},
     canActivate: [UserRouteAccessService],
   },
   {

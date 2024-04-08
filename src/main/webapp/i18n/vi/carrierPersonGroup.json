@@ -1,0 +1,24 @@
+{
+  "containerGoServerApp": {
+    "carrierPersonGroup": {
+      "home": {
+        "title": "Carrier Person Groups",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Carrier Person Group",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Carrier Person Group",
+        "notFound": "No Carrier Person Groups found"
+      },
+      "created": "Một Carrier Person Group mới được tạo với định danh {{ param }}",
+      "updated": "Một Carrier Person Group cập nhật với định danh {{ param }}",
+      "deleted": "Một Carrier Person Group đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Carrier Person Group {{ id }}?"
+      },
+      "detail": {
+        "title": "Carrier Person Group"
+      },
+      "id": "Id",
+      "name": "Name"
+    }
+  }
+}

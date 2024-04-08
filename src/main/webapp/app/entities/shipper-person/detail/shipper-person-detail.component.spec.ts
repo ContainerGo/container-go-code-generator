@@ -18,7 +18,7 @@ describe('ShipperPerson Management Detail Component', () => {
             {
               path: '**',
               component: ShipperPersonDetailComponent,
-              resolve: { shipperPerson: () => of({ id: 123 }) },
+              resolve: { shipperPerson: () => of({ id: '9fec3727-3421-4967-b213-ba36557ca194' }) },
             },
           ],
           withComponentInputBinding(),
@@ -40,7 +40,7 @@ describe('ShipperPerson Management Detail Component', () => {
       const instance = await harness.navigateByUrl('/', ShipperPersonDetailComponent);
 
       // THEN
-      expect(instance.shipperPerson).toEqual(expect.objectContaining({ id: 123 }));
+      expect(instance.shipperPerson).toEqual(expect.objectContaining({ id: '9fec3727-3421-4967-b213-ba36557ca194' }));
     });
   });
 

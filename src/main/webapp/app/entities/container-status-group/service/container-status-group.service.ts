@@ -39,7 +39,7 @@ export class ContainerStatusGroupService {
     );
   }
 
-  find(id: number): Observable<EntityResponseType> {
+  find(id: string): Observable<EntityResponseType> {
     return this.http.get<IContainerStatusGroup>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
@@ -48,11 +48,11 @@ export class ContainerStatusGroupService {
     return this.http.get<IContainerStatusGroup[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
-  delete(id: number): Observable<HttpResponse<{}>> {
+  delete(id: string): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getContainerStatusGroupIdentifier(containerStatusGroup: Pick<IContainerStatusGroup, 'id'>): number {
+  getContainerStatusGroupIdentifier(containerStatusGroup: Pick<IContainerStatusGroup, 'id'>): string {
     return containerStatusGroup.id;
   }
 

@@ -18,7 +18,7 @@ describe('TruckType Management Detail Component', () => {
             {
               path: '**',
               component: TruckTypeDetailComponent,
-              resolve: { truckType: () => of({ id: 123 }) },
+              resolve: { truckType: () => of({ id: '9fec3727-3421-4967-b213-ba36557ca194' }) },
             },
           ],
           withComponentInputBinding(),
@@ -40,7 +40,7 @@ describe('TruckType Management Detail Component', () => {
       const instance = await harness.navigateByUrl('/', TruckTypeDetailComponent);
 
       // THEN
-      expect(instance.truckType).toEqual(expect.objectContaining({ id: 123 }));
+      expect(instance.truckType).toEqual(expect.objectContaining({ id: '9fec3727-3421-4967-b213-ba36557ca194' }));
     });
   });
 

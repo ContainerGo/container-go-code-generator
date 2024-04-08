@@ -19,7 +19,6 @@
       },
       "id": "Id",
       "name": "Name",
-      "description": "Description",
       "users": "Users"
     }
   }

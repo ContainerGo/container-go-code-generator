@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,6 +65,7 @@ public class CenterPersonGroupResource {
         if (centerPersonGroupDTO.getId() != null) {
             throw new BadRequestAlertException("A new centerPersonGroup cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        centerPersonGroupDTO.setId(UUID.randomUUID());
         centerPersonGroupDTO = centerPersonGroupService.save(centerPersonGroupDTO);
         return ResponseEntity.created(new URI("/api/center-person-groups/" + centerPersonGroupDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, centerPersonGroupDTO.getId().toString()))
@@ -82,7 +84,7 @@ public class CenterPersonGroupResource {
      */
     @PutMapping("/{id}")
     public ResponseEntity<CenterPersonGroupDTO> updateCenterPersonGroup(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @Valid @RequestBody CenterPersonGroupDTO centerPersonGroupDTO
     ) throws URISyntaxException {
         log.debug("REST request to update CenterPersonGroup : {}, {}", id, centerPersonGroupDTO);
@@ -116,7 +118,7 @@ public class CenterPersonGroupResource {
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<CenterPersonGroupDTO> partialUpdateCenterPersonGroup(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @NotNull @RequestBody CenterPersonGroupDTO centerPersonGroupDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update CenterPersonGroup partially : {}, {}", id, centerPersonGroupDTO);
@@ -162,7 +164,7 @@ public class CenterPersonGroupResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the centerPersonGroupDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<CenterPersonGroupDTO> getCenterPersonGroup(@PathVariable("id") Long id) {
+    public ResponseEntity<CenterPersonGroupDTO> getCenterPersonGroup(@PathVariable("id") UUID id) {
         log.debug("REST request to get CenterPersonGroup : {}", id);
         Optional<CenterPersonGroupDTO> centerPersonGroupDTO = centerPersonGroupService.findOne(id);
         return ResponseUtil.wrapOrNotFound(centerPersonGroupDTO);
@@ -175,7 +177,7 @@ public class CenterPersonGroupResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCenterPersonGroup(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteCenterPersonGroup(@PathVariable("id") UUID id) {
         log.debug("REST request to delete CenterPersonGroup : {}", id);
         centerPersonGroupService.delete(id);
         return ResponseEntity.noContent()

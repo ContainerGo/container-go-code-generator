@@ -8,8 +8,7 @@ import static vn.containergo.domain.WardAsserts.*;
 import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +41,6 @@ class WardResourceIT {
 
     private static final String ENTITY_API_URL = "/api/wards";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
-
-    private static Random random = new Random();
-    private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private ObjectMapper om;
@@ -112,7 +108,7 @@ class WardResourceIT {
     @Test
     void createWardWithExistingId() throws Exception {
         // Create the Ward with an existing ID
-        ward.setId(1L);
+        ward.setId(UUID.randomUUID());
         WardDTO wardDTO = wardMapper.toDto(ward);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
@@ -161,6 +157,7 @@ class WardResourceIT {
     @Test
     void getAllWards() throws Exception {
         // Initialize the database
+        ward.setId(UUID.randomUUID());
         wardRepository.save(ward);
 
         // Get all the wardList
@@ -168,7 +165,7 @@ class WardResourceIT {
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(ward.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(ward.getId().toString())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
@@ -177,6 +174,7 @@ class WardResourceIT {
     @Test
     void getWard() throws Exception {
         // Initialize the database
+        ward.setId(UUID.randomUUID());
         wardRepository.save(ward);
 
         // Get the ward
@@ -184,7 +182,7 @@ class WardResourceIT {
             .perform(get(ENTITY_API_URL_ID, ward.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(ward.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(ward.getId().toString()))
             .andExpect(jsonPath("$.code").value(DEFAULT_CODE))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION));
@@ -193,12 +191,13 @@ class WardResourceIT {
     @Test
     void getNonExistingWard() throws Exception {
         // Get the ward
-        restWardMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
+        restWardMockMvc.perform(get(ENTITY_API_URL_ID, UUID.randomUUID().toString())).andExpect(status().isNotFound());
     }
 
     @Test
     void putExistingWard() throws Exception {
         // Initialize the database
+        ward.setId(UUID.randomUUID());
         wardRepository.save(ward);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -220,7 +219,7 @@ class WardResourceIT {
     @Test
     void putNonExistingWard() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        ward.setId(longCount.incrementAndGet());
+        ward.setId(UUID.randomUUID());
 
         // Create the Ward
         WardDTO wardDTO = wardMapper.toDto(ward);
@@ -237,7 +236,7 @@ class WardResourceIT {
     @Test
     void putWithIdMismatchWard() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        ward.setId(longCount.incrementAndGet());
+        ward.setId(UUID.randomUUID());
 
         // Create the Ward
         WardDTO wardDTO = wardMapper.toDto(ward);
@@ -245,9 +244,7 @@ class WardResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restWardMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(wardDTO))
+                put(ENTITY_API_URL_ID, UUID.randomUUID()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(wardDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -258,7 +255,7 @@ class WardResourceIT {
     @Test
     void putWithMissingIdPathParamWard() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        ward.setId(longCount.incrementAndGet());
+        ward.setId(UUID.randomUUID());
 
         // Create the Ward
         WardDTO wardDTO = wardMapper.toDto(ward);
@@ -275,6 +272,7 @@ class WardResourceIT {
     @Test
     void partialUpdateWardWithPatch() throws Exception {
         // Initialize the database
+        ward.setId(UUID.randomUUID());
         wardRepository.save(ward);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -300,6 +298,7 @@ class WardResourceIT {
     @Test
     void fullUpdateWardWithPatch() throws Exception {
         // Initialize the database
+        ward.setId(UUID.randomUUID());
         wardRepository.save(ward);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -327,7 +326,7 @@ class WardResourceIT {
     @Test
     void patchNonExistingWard() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        ward.setId(longCount.incrementAndGet());
+        ward.setId(UUID.randomUUID());
 
         // Create the Ward
         WardDTO wardDTO = wardMapper.toDto(ward);
@@ -346,7 +345,7 @@ class WardResourceIT {
     @Test
     void patchWithIdMismatchWard() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        ward.setId(longCount.incrementAndGet());
+        ward.setId(UUID.randomUUID());
 
         // Create the Ward
         WardDTO wardDTO = wardMapper.toDto(ward);
@@ -354,7 +353,7 @@ class WardResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restWardMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                patch(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(wardDTO))
             )
@@ -367,7 +366,7 @@ class WardResourceIT {
     @Test
     void patchWithMissingIdPathParamWard() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        ward.setId(longCount.incrementAndGet());
+        ward.setId(UUID.randomUUID());
 
         // Create the Ward
         WardDTO wardDTO = wardMapper.toDto(ward);
@@ -384,6 +383,7 @@ class WardResourceIT {
     @Test
     void deleteWard() throws Exception {
         // Initialize the database
+        ward.setId(UUID.randomUUID());
         wardRepository.save(ward);
 
         long databaseSizeBeforeDelete = getRepositoryCount();

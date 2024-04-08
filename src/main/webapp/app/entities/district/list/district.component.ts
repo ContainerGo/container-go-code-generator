@@ -50,7 +50,7 @@ export class DistrictComponent implements OnInit {
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
-  trackId = (_index: number, item: IDistrict): number => this.districtService.getDistrictIdentifier(item);
+  trackId = (_index: number, item: IDistrict): string => this.districtService.getDistrictIdentifier(item);
 
   ngOnInit(): void {
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])

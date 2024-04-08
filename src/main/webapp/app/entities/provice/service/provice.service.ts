@@ -31,7 +31,7 @@ export class ProviceService {
     return this.http.patch<IProvice>(`${this.resourceUrl}/${this.getProviceIdentifier(provice)}`, provice, { observe: 'response' });
   }
 
-  find(id: number): Observable<EntityResponseType> {
+  find(id: string): Observable<EntityResponseType> {
     return this.http.get<IProvice>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
@@ -40,11 +40,11 @@ export class ProviceService {
     return this.http.get<IProvice[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
-  delete(id: number): Observable<HttpResponse<{}>> {
+  delete(id: string): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getProviceIdentifier(provice: Pick<IProvice, 'id'>): number {
+  getProviceIdentifier(provice: Pick<IProvice, 'id'>): string {
     return provice.id;
   }
 

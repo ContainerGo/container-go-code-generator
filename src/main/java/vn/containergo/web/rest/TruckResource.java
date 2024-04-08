@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,6 +61,7 @@ public class TruckResource {
         if (truckDTO.getId() != null) {
             throw new BadRequestAlertException("A new truck cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        truckDTO.setId(UUID.randomUUID());
         truckDTO = truckService.save(truckDTO);
         return ResponseEntity.created(new URI("/api/trucks/" + truckDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, truckDTO.getId().toString()))
@@ -78,7 +80,7 @@ public class TruckResource {
      */
     @PutMapping("/{id}")
     public ResponseEntity<TruckDTO> updateTruck(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @Valid @RequestBody TruckDTO truckDTO
     ) throws URISyntaxException {
         log.debug("REST request to update Truck : {}, {}", id, truckDTO);
@@ -112,7 +114,7 @@ public class TruckResource {
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<TruckDTO> partialUpdateTruck(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @NotNull @RequestBody TruckDTO truckDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update Truck partially : {}, {}", id, truckDTO);
@@ -156,7 +158,7 @@ public class TruckResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the truckDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<TruckDTO> getTruck(@PathVariable("id") Long id) {
+    public ResponseEntity<TruckDTO> getTruck(@PathVariable("id") UUID id) {
         log.debug("REST request to get Truck : {}", id);
         Optional<TruckDTO> truckDTO = truckService.findOne(id);
         return ResponseUtil.wrapOrNotFound(truckDTO);
@@ -169,7 +171,7 @@ public class TruckResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTruck(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteTruck(@PathVariable("id") UUID id) {
         log.debug("REST request to delete Truck : {}", id);
         truckService.delete(id);
         return ResponseEntity.noContent()

@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
-import { ASC } from 'app/config/navigation.constants';
 import { OfferComponent } from './list/offer.component';
 import { OfferDetailComponent } from './detail/offer-detail.component';
 import { OfferUpdateComponent } from './update/offer-update.component';
@@ -11,9 +10,7 @@ const offerRoute: Routes = [
   {
     path: '',
     component: OfferComponent,
-    data: {
-      defaultSort: 'id,' + ASC,
-    },
+    data: {},
     canActivate: [UserRouteAccessService],
   },
   {

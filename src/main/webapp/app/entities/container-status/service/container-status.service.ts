@@ -35,7 +35,7 @@ export class ContainerStatusService {
     });
   }
 
-  find(id: number): Observable<EntityResponseType> {
+  find(id: string): Observable<EntityResponseType> {
     return this.http.get<IContainerStatus>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
@@ -44,11 +44,11 @@ export class ContainerStatusService {
     return this.http.get<IContainerStatus[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
-  delete(id: number): Observable<HttpResponse<{}>> {
+  delete(id: string): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getContainerStatusIdentifier(containerStatus: Pick<IContainerStatus, 'id'>): number {
+  getContainerStatusIdentifier(containerStatus: Pick<IContainerStatus, 'id'>): string {
     return containerStatus.id;
   }
 

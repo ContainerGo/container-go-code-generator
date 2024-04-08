@@ -8,8 +8,7 @@ import static vn.containergo.domain.CarrierPersonAsserts.*;
 import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import vn.containergo.IntegrationTest;
 import vn.containergo.domain.CarrierPerson;
+import vn.containergo.domain.CarrierPersonGroup;
 import vn.containergo.repository.CarrierPersonRepository;
 import vn.containergo.service.dto.CarrierPersonDTO;
 import vn.containergo.service.mapper.CarrierPersonMapper;
@@ -46,9 +46,6 @@ class CarrierPersonResourceIT {
     private static final String ENTITY_API_URL = "/api/carrier-people";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
-    private static Random random = new Random();
-    private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
-
     @Autowired
     private ObjectMapper om;
 
@@ -75,6 +72,11 @@ class CarrierPersonResourceIT {
             .phone(DEFAULT_PHONE)
             .email(DEFAULT_EMAIL)
             .address(DEFAULT_ADDRESS);
+        // Add required entity
+        CarrierPersonGroup carrierPersonGroup;
+        carrierPersonGroup = CarrierPersonGroupResourceIT.createEntity();
+        carrierPersonGroup.setId("fixed-id-for-tests");
+        carrierPerson.setGroup(carrierPersonGroup);
         return carrierPerson;
     }
 
@@ -90,6 +92,11 @@ class CarrierPersonResourceIT {
             .phone(UPDATED_PHONE)
             .email(UPDATED_EMAIL)
             .address(UPDATED_ADDRESS);
+        // Add required entity
+        CarrierPersonGroup carrierPersonGroup;
+        carrierPersonGroup = CarrierPersonGroupResourceIT.createUpdatedEntity();
+        carrierPersonGroup.setId("fixed-id-for-tests");
+        carrierPerson.setGroup(carrierPersonGroup);
         return carrierPerson;
     }
 
@@ -123,7 +130,7 @@ class CarrierPersonResourceIT {
     @Test
     void createCarrierPersonWithExistingId() throws Exception {
         // Create the CarrierPerson with an existing ID
-        carrierPerson.setId(1L);
+        carrierPerson.setId(UUID.randomUUID());
         CarrierPersonDTO carrierPersonDTO = carrierPersonMapper.toDto(carrierPerson);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
@@ -172,6 +179,7 @@ class CarrierPersonResourceIT {
     @Test
     void getAllCarrierPeople() throws Exception {
         // Initialize the database
+        carrierPerson.setId(UUID.randomUUID());
         carrierPersonRepository.save(carrierPerson);
 
         // Get all the carrierPersonList
@@ -179,7 +187,7 @@ class CarrierPersonResourceIT {
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(carrierPerson.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(carrierPerson.getId().toString())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE)))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
@@ -189,6 +197,7 @@ class CarrierPersonResourceIT {
     @Test
     void getCarrierPerson() throws Exception {
         // Initialize the database
+        carrierPerson.setId(UUID.randomUUID());
         carrierPersonRepository.save(carrierPerson);
 
         // Get the carrierPerson
@@ -196,7 +205,7 @@ class CarrierPersonResourceIT {
             .perform(get(ENTITY_API_URL_ID, carrierPerson.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(carrierPerson.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(carrierPerson.getId().toString()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.phone").value(DEFAULT_PHONE))
             .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
@@ -206,12 +215,13 @@ class CarrierPersonResourceIT {
     @Test
     void getNonExistingCarrierPerson() throws Exception {
         // Get the carrierPerson
-        restCarrierPersonMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
+        restCarrierPersonMockMvc.perform(get(ENTITY_API_URL_ID, UUID.randomUUID().toString())).andExpect(status().isNotFound());
     }
 
     @Test
     void putExistingCarrierPerson() throws Exception {
         // Initialize the database
+        carrierPerson.setId(UUID.randomUUID());
         carrierPersonRepository.save(carrierPerson);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -237,7 +247,7 @@ class CarrierPersonResourceIT {
     @Test
     void putNonExistingCarrierPerson() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        carrierPerson.setId(longCount.incrementAndGet());
+        carrierPerson.setId(UUID.randomUUID());
 
         // Create the CarrierPerson
         CarrierPersonDTO carrierPersonDTO = carrierPersonMapper.toDto(carrierPerson);
@@ -258,7 +268,7 @@ class CarrierPersonResourceIT {
     @Test
     void putWithIdMismatchCarrierPerson() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        carrierPerson.setId(longCount.incrementAndGet());
+        carrierPerson.setId(UUID.randomUUID());
 
         // Create the CarrierPerson
         CarrierPersonDTO carrierPersonDTO = carrierPersonMapper.toDto(carrierPerson);
@@ -266,7 +276,7 @@ class CarrierPersonResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCarrierPersonMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                put(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(om.writeValueAsBytes(carrierPersonDTO))
             )
@@ -279,7 +289,7 @@ class CarrierPersonResourceIT {
     @Test
     void putWithMissingIdPathParamCarrierPerson() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        carrierPerson.setId(longCount.incrementAndGet());
+        carrierPerson.setId(UUID.randomUUID());
 
         // Create the CarrierPerson
         CarrierPersonDTO carrierPersonDTO = carrierPersonMapper.toDto(carrierPerson);
@@ -296,6 +306,7 @@ class CarrierPersonResourceIT {
     @Test
     void partialUpdateCarrierPersonWithPatch() throws Exception {
         // Initialize the database
+        carrierPerson.setId(UUID.randomUUID());
         carrierPersonRepository.save(carrierPerson);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -326,6 +337,7 @@ class CarrierPersonResourceIT {
     @Test
     void fullUpdateCarrierPersonWithPatch() throws Exception {
         // Initialize the database
+        carrierPerson.setId(UUID.randomUUID());
         carrierPersonRepository.save(carrierPerson);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -353,7 +365,7 @@ class CarrierPersonResourceIT {
     @Test
     void patchNonExistingCarrierPerson() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        carrierPerson.setId(longCount.incrementAndGet());
+        carrierPerson.setId(UUID.randomUUID());
 
         // Create the CarrierPerson
         CarrierPersonDTO carrierPersonDTO = carrierPersonMapper.toDto(carrierPerson);
@@ -374,7 +386,7 @@ class CarrierPersonResourceIT {
     @Test
     void patchWithIdMismatchCarrierPerson() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        carrierPerson.setId(longCount.incrementAndGet());
+        carrierPerson.setId(UUID.randomUUID());
 
         // Create the CarrierPerson
         CarrierPersonDTO carrierPersonDTO = carrierPersonMapper.toDto(carrierPerson);
@@ -382,7 +394,7 @@ class CarrierPersonResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCarrierPersonMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                patch(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(carrierPersonDTO))
             )
@@ -395,7 +407,7 @@ class CarrierPersonResourceIT {
     @Test
     void patchWithMissingIdPathParamCarrierPerson() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        carrierPerson.setId(longCount.incrementAndGet());
+        carrierPerson.setId(UUID.randomUUID());
 
         // Create the CarrierPerson
         CarrierPersonDTO carrierPersonDTO = carrierPersonMapper.toDto(carrierPerson);
@@ -412,6 +424,7 @@ class CarrierPersonResourceIT {
     @Test
     void deleteCarrierPerson() throws Exception {
         // Initialize the database
+        carrierPerson.setId(UUID.randomUUID());
         carrierPersonRepository.save(carrierPerson);
 
         long databaseSizeBeforeDelete = getRepositoryCount();

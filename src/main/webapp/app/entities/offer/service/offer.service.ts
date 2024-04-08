@@ -11,11 +11,14 @@ import { IOffer, NewOffer } from '../offer.model';
 
 export type PartialUpdateOffer = Partial<IOffer> & Pick<IOffer, 'id'>;
 
-type RestOf<T extends IOffer | NewOffer> = Omit<T, 'pickupFromDate' | 'pickupUntilDate' | 'dropoffFromDate' | 'dropoffUntilDate'> & {
-  pickupFromDate?: string | null;
-  pickupUntilDate?: string | null;
-  dropoffFromDate?: string | null;
-  dropoffUntilDate?: string | null;
+type RestOf<T extends IOffer | NewOffer> = Omit<
+  T,
+  'estimatedPickupFromDate' | 'estimatedPickupUntilDate' | 'estimatedDropoffFromDate' | 'estimatedDropoffUntilDate'
+> & {
+  estimatedPickupFromDate?: string | null;
+  estimatedPickupUntilDate?: string | null;
+  estimatedDropoffFromDate?: string | null;
+  estimatedDropoffUntilDate?: string | null;
 };
 
 export type RestOffer = RestOf<IOffer>;
@@ -53,7 +56,7 @@ export class OfferService {
       .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
-  find(id: number): Observable<EntityResponseType> {
+  find(id: string): Observable<EntityResponseType> {
     return this.http
       .get<RestOffer>(`${this.resourceUrl}/${id}`, { observe: 'response' })
       .pipe(map(res => this.convertResponseFromServer(res)));
@@ -66,11 +69,11 @@ export class OfferService {
       .pipe(map(res => this.convertResponseArrayFromServer(res)));
   }
 
-  delete(id: number): Observable<HttpResponse<{}>> {
+  delete(id: string): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getOfferIdentifier(offer: Pick<IOffer, 'id'>): number {
+  getOfferIdentifier(offer: Pick<IOffer, 'id'>): string {
     return offer.id;
   }
 
@@ -101,20 +104,20 @@ export class OfferService {
   protected convertDateFromClient<T extends IOffer | NewOffer | PartialUpdateOffer>(offer: T): RestOf<T> {
     return {
       ...offer,
-      pickupFromDate: offer.pickupFromDate?.toJSON() ?? null,
-      pickupUntilDate: offer.pickupUntilDate?.toJSON() ?? null,
-      dropoffFromDate: offer.dropoffFromDate?.toJSON() ?? null,
-      dropoffUntilDate: offer.dropoffUntilDate?.toJSON() ?? null,
+      estimatedPickupFromDate: offer.estimatedPickupFromDate?.toJSON() ?? null,
+      estimatedPickupUntilDate: offer.estimatedPickupUntilDate?.toJSON() ?? null,
+      estimatedDropoffFromDate: offer.estimatedDropoffFromDate?.toJSON() ?? null,
+      estimatedDropoffUntilDate: offer.estimatedDropoffUntilDate?.toJSON() ?? null,
     };
   }
 
   protected convertDateFromServer(restOffer: RestOffer): IOffer {
     return {
       ...restOffer,
-      pickupFromDate: restOffer.pickupFromDate ? dayjs(restOffer.pickupFromDate) : undefined,
-      pickupUntilDate: restOffer.pickupUntilDate ? dayjs(restOffer.pickupUntilDate) : undefined,
-      dropoffFromDate: restOffer.dropoffFromDate ? dayjs(restOffer.dropoffFromDate) : undefined,
-      dropoffUntilDate: restOffer.dropoffUntilDate ? dayjs(restOffer.dropoffUntilDate) : undefined,
+      estimatedPickupFromDate: restOffer.estimatedPickupFromDate ? dayjs(restOffer.estimatedPickupFromDate) : undefined,
+      estimatedPickupUntilDate: restOffer.estimatedPickupUntilDate ? dayjs(restOffer.estimatedPickupUntilDate) : undefined,
+      estimatedDropoffFromDate: restOffer.estimatedDropoffFromDate ? dayjs(restOffer.estimatedDropoffFromDate) : undefined,
+      estimatedDropoffUntilDate: restOffer.estimatedDropoffUntilDate ? dayjs(restOffer.estimatedDropoffUntilDate) : undefined,
     };
   }
 

@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,6 +62,7 @@ public class ShipmentHistoryResource {
         if (shipmentHistoryDTO.getId() != null) {
             throw new BadRequestAlertException("A new shipmentHistory cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        shipmentHistoryDTO.setId(UUID.randomUUID());
         shipmentHistoryDTO = shipmentHistoryService.save(shipmentHistoryDTO);
         return ResponseEntity.created(new URI("/api/shipment-histories/" + shipmentHistoryDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, shipmentHistoryDTO.getId().toString()))
@@ -79,7 +81,7 @@ public class ShipmentHistoryResource {
      */
     @PutMapping("/{id}")
     public ResponseEntity<ShipmentHistoryDTO> updateShipmentHistory(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @Valid @RequestBody ShipmentHistoryDTO shipmentHistoryDTO
     ) throws URISyntaxException {
         log.debug("REST request to update ShipmentHistory : {}, {}", id, shipmentHistoryDTO);
@@ -113,7 +115,7 @@ public class ShipmentHistoryResource {
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<ShipmentHistoryDTO> partialUpdateShipmentHistory(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @NotNull @RequestBody ShipmentHistoryDTO shipmentHistoryDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update ShipmentHistory partially : {}, {}", id, shipmentHistoryDTO);
@@ -159,7 +161,7 @@ public class ShipmentHistoryResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the shipmentHistoryDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ShipmentHistoryDTO> getShipmentHistory(@PathVariable("id") Long id) {
+    public ResponseEntity<ShipmentHistoryDTO> getShipmentHistory(@PathVariable("id") UUID id) {
         log.debug("REST request to get ShipmentHistory : {}", id);
         Optional<ShipmentHistoryDTO> shipmentHistoryDTO = shipmentHistoryService.findOne(id);
         return ResponseUtil.wrapOrNotFound(shipmentHistoryDTO);
@@ -172,7 +174,7 @@ public class ShipmentHistoryResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteShipmentHistory(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteShipmentHistory(@PathVariable("id") UUID id) {
         log.debug("REST request to delete ShipmentHistory : {}", id);
         shipmentHistoryService.delete(id);
         return ResponseEntity.noContent()

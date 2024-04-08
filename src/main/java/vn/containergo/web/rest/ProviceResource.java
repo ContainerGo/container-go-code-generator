@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,6 +61,7 @@ public class ProviceResource {
         if (proviceDTO.getId() != null) {
             throw new BadRequestAlertException("A new provice cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        proviceDTO.setId(UUID.randomUUID());
         proviceDTO = proviceService.save(proviceDTO);
         return ResponseEntity.created(new URI("/api/provices/" + proviceDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, proviceDTO.getId().toString()))
@@ -78,7 +80,7 @@ public class ProviceResource {
      */
     @PutMapping("/{id}")
     public ResponseEntity<ProviceDTO> updateProvice(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @Valid @RequestBody ProviceDTO proviceDTO
     ) throws URISyntaxException {
         log.debug("REST request to update Provice : {}, {}", id, proviceDTO);
@@ -112,7 +114,7 @@ public class ProviceResource {
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<ProviceDTO> partialUpdateProvice(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @NotNull @RequestBody ProviceDTO proviceDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update Provice partially : {}, {}", id, proviceDTO);
@@ -156,7 +158,7 @@ public class ProviceResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the proviceDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ProviceDTO> getProvice(@PathVariable("id") Long id) {
+    public ResponseEntity<ProviceDTO> getProvice(@PathVariable("id") UUID id) {
         log.debug("REST request to get Provice : {}", id);
         Optional<ProviceDTO> proviceDTO = proviceService.findOne(id);
         return ResponseUtil.wrapOrNotFound(proviceDTO);
@@ -169,7 +171,7 @@ public class ProviceResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProvice(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteProvice(@PathVariable("id") UUID id) {
         log.debug("REST request to delete Provice : {}", id);
         proviceService.delete(id);
         return ResponseEntity.noContent()

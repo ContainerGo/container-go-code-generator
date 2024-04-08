@@ -1,5 +1,7 @@
 package vn.containergo.service.mapper;
 
+import java.util.Objects;
+import java.util.UUID;
 import org.mapstruct.*;
 import vn.containergo.domain.ContainerStatus;
 import vn.containergo.domain.ContainerStatusGroup;
@@ -18,4 +20,8 @@ public interface ContainerStatusMapper extends EntityMapper<ContainerStatusDTO, 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
     ContainerStatusGroupDTO toDtoContainerStatusGroupId(ContainerStatusGroup containerStatusGroup);
+
+    default String map(UUID value) {
+        return Objects.toString(value, null);
+    }
 }

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -20,32 +21,29 @@ public class CenterPersonGroup implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private Long id;
+    private UUID id;
 
     @NotNull
     @Field("name")
     private String name;
 
-    @Field("description")
-    private String description;
-
     @DBRef
     @Field("users")
-    @JsonIgnoreProperties(value = { "groups" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "group", "groups" }, allowSetters = true)
     private Set<CenterPerson> users = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
-    public Long getId() {
+    public UUID getId() {
         return this.id;
     }
 
-    public CenterPersonGroup id(Long id) {
+    public CenterPersonGroup id(UUID id) {
         this.setId(id);
         return this;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -60,19 +58,6 @@ public class CenterPersonGroup implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public CenterPersonGroup description(String description) {
-        this.setDescription(description);
-        return this;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public Set<CenterPerson> getUsers() {
@@ -131,7 +116,6 @@ public class CenterPersonGroup implements Serializable {
         return "CenterPersonGroup{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
-            ", description='" + getDescription() + "'" +
             "}";
     }
 }

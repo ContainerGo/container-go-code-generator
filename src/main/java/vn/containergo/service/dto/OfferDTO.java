@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.UUID;
 import vn.containergo.domain.enumeration.OfferState;
 
 /**
@@ -12,21 +13,21 @@ import vn.containergo.domain.enumeration.OfferState;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class OfferDTO implements Serializable {
 
-    private Long id;
+    private UUID id;
 
     private String message;
 
     @NotNull
-    private Instant pickupFromDate;
+    private Instant estimatedPickupFromDate;
 
     @NotNull
-    private Instant pickupUntilDate;
+    private Instant estimatedPickupUntilDate;
 
     @NotNull
-    private Instant dropoffFromDate;
+    private Instant estimatedDropoffFromDate;
 
     @NotNull
-    private Instant dropoffUntilDate;
+    private Instant estimatedDropoffUntilDate;
 
     @NotNull
     private OfferState state;
@@ -35,20 +36,18 @@ public class OfferDTO implements Serializable {
     private Double price;
 
     @NotNull
-    private Long carrierId;
+    private UUID carrierId;
 
-    private Long carrierPersonId;
-
-    private Long truckId;
+    private UUID truckId;
 
     @NotNull
     private ContainerDTO container;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -60,36 +59,36 @@ public class OfferDTO implements Serializable {
         this.message = message;
     }
 
-    public Instant getPickupFromDate() {
-        return pickupFromDate;
+    public Instant getEstimatedPickupFromDate() {
+        return estimatedPickupFromDate;
     }
 
-    public void setPickupFromDate(Instant pickupFromDate) {
-        this.pickupFromDate = pickupFromDate;
+    public void setEstimatedPickupFromDate(Instant estimatedPickupFromDate) {
+        this.estimatedPickupFromDate = estimatedPickupFromDate;
     }
 
-    public Instant getPickupUntilDate() {
-        return pickupUntilDate;
+    public Instant getEstimatedPickupUntilDate() {
+        return estimatedPickupUntilDate;
     }
 
-    public void setPickupUntilDate(Instant pickupUntilDate) {
-        this.pickupUntilDate = pickupUntilDate;
+    public void setEstimatedPickupUntilDate(Instant estimatedPickupUntilDate) {
+        this.estimatedPickupUntilDate = estimatedPickupUntilDate;
     }
 
-    public Instant getDropoffFromDate() {
-        return dropoffFromDate;
+    public Instant getEstimatedDropoffFromDate() {
+        return estimatedDropoffFromDate;
     }
 
-    public void setDropoffFromDate(Instant dropoffFromDate) {
-        this.dropoffFromDate = dropoffFromDate;
+    public void setEstimatedDropoffFromDate(Instant estimatedDropoffFromDate) {
+        this.estimatedDropoffFromDate = estimatedDropoffFromDate;
     }
 
-    public Instant getDropoffUntilDate() {
-        return dropoffUntilDate;
+    public Instant getEstimatedDropoffUntilDate() {
+        return estimatedDropoffUntilDate;
     }
 
-    public void setDropoffUntilDate(Instant dropoffUntilDate) {
-        this.dropoffUntilDate = dropoffUntilDate;
+    public void setEstimatedDropoffUntilDate(Instant estimatedDropoffUntilDate) {
+        this.estimatedDropoffUntilDate = estimatedDropoffUntilDate;
     }
 
     public OfferState getState() {
@@ -108,27 +107,19 @@ public class OfferDTO implements Serializable {
         this.price = price;
     }
 
-    public Long getCarrierId() {
+    public UUID getCarrierId() {
         return carrierId;
     }
 
-    public void setCarrierId(Long carrierId) {
+    public void setCarrierId(UUID carrierId) {
         this.carrierId = carrierId;
     }
 
-    public Long getCarrierPersonId() {
-        return carrierPersonId;
-    }
-
-    public void setCarrierPersonId(Long carrierPersonId) {
-        this.carrierPersonId = carrierPersonId;
-    }
-
-    public Long getTruckId() {
+    public UUID getTruckId() {
         return truckId;
     }
 
-    public void setTruckId(Long truckId) {
+    public void setTruckId(UUID truckId) {
         this.truckId = truckId;
     }
 
@@ -165,17 +156,16 @@ public class OfferDTO implements Serializable {
     @Override
     public String toString() {
         return "OfferDTO{" +
-            "id=" + getId() +
+            "id='" + getId() + "'" +
             ", message='" + getMessage() + "'" +
-            ", pickupFromDate='" + getPickupFromDate() + "'" +
-            ", pickupUntilDate='" + getPickupUntilDate() + "'" +
-            ", dropoffFromDate='" + getDropoffFromDate() + "'" +
-            ", dropoffUntilDate='" + getDropoffUntilDate() + "'" +
+            ", estimatedPickupFromDate='" + getEstimatedPickupFromDate() + "'" +
+            ", estimatedPickupUntilDate='" + getEstimatedPickupUntilDate() + "'" +
+            ", estimatedDropoffFromDate='" + getEstimatedDropoffFromDate() + "'" +
+            ", estimatedDropoffUntilDate='" + getEstimatedDropoffUntilDate() + "'" +
             ", state='" + getState() + "'" +
             ", price=" + getPrice() +
-            ", carrierId=" + getCarrierId() +
-            ", carrierPersonId=" + getCarrierPersonId() +
-            ", truckId=" + getTruckId() +
+            ", carrierId='" + getCarrierId() + "'" +
+            ", truckId='" + getTruckId() + "'" +
             ", container=" + getContainer() +
             "}";
     }

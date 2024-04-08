@@ -53,6 +53,8 @@ public class ShipperAsserts {
             .satisfies(e -> assertThat(e.getTaxCode()).as("check taxCode").isEqualTo(actual.getTaxCode()))
             .satisfies(e -> assertThat(e.getCompanySize()).as("check companySize").isEqualTo(actual.getCompanySize()))
             .satisfies(e -> assertThat(e.getPaymentType()).as("check paymentType").isEqualTo(actual.getPaymentType()))
+            .satisfies(e -> assertThat(e.getContractType()).as("check contractType").isEqualTo(actual.getContractType()))
+            .satisfies(e -> assertThat(e.getContractValidUntil()).as("check contractValidUntil").isEqualTo(actual.getContractValidUntil()))
             .satisfies(e -> assertThat(e.getIsApproved()).as("check isApproved").isEqualTo(actual.getIsApproved()))
             .satisfies(
                 e ->

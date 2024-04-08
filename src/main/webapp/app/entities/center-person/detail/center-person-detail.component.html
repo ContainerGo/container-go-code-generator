@@ -33,6 +33,14 @@
           <dd>
             <span>{{ centerPerson.address }}</span>
           </dd>
+          <dt><span jhiTranslate="containerGoServerApp.centerPerson.group">Group</span></dt>
+          <dd>
+            @if (centerPerson.group) {
+              <div>
+                <a [routerLink]="['/center-person-group', centerPerson.group.id, 'view']">{{ centerPerson.group.id }}</a>
+              </div>
+            }
+          </dd>
           <dt><span jhiTranslate="containerGoServerApp.centerPerson.groups">Groups</span></dt>
           <dd>
             @for (groups of centerPerson.groups; track $index; let last = $last) {

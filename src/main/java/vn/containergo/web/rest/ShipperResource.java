@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,6 +61,7 @@ public class ShipperResource {
         if (shipperDTO.getId() != null) {
             throw new BadRequestAlertException("A new shipper cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        shipperDTO.setId(UUID.randomUUID());
         shipperDTO = shipperService.save(shipperDTO);
         return ResponseEntity.created(new URI("/api/shippers/" + shipperDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, shipperDTO.getId().toString()))
@@ -78,7 +80,7 @@ public class ShipperResource {
      */
     @PutMapping("/{id}")
     public ResponseEntity<ShipperDTO> updateShipper(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @Valid @RequestBody ShipperDTO shipperDTO
     ) throws URISyntaxException {
         log.debug("REST request to update Shipper : {}, {}", id, shipperDTO);
@@ -112,7 +114,7 @@ public class ShipperResource {
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<ShipperDTO> partialUpdateShipper(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @NotNull @RequestBody ShipperDTO shipperDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update Shipper partially : {}, {}", id, shipperDTO);
@@ -156,7 +158,7 @@ public class ShipperResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the shipperDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ShipperDTO> getShipper(@PathVariable("id") Long id) {
+    public ResponseEntity<ShipperDTO> getShipper(@PathVariable("id") UUID id) {
         log.debug("REST request to get Shipper : {}", id);
         Optional<ShipperDTO> shipperDTO = shipperService.findOne(id);
         return ResponseUtil.wrapOrNotFound(shipperDTO);
@@ -169,7 +171,7 @@ public class ShipperResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteShipper(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteShipper(@PathVariable("id") UUID id) {
         log.debug("REST request to delete Shipper : {}", id);
         shipperService.delete(id);
         return ResponseEntity.noContent()

@@ -2,7 +2,11 @@ package vn.containergo.service.dto;
 
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Objects;
+import java.util.UUID;
+import vn.containergo.domain.enumeration.ContractType;
+import vn.containergo.domain.enumeration.PaymentType;
 
 /**
  * A DTO for the {@link vn.containergo.domain.Shipper} entity.
@@ -10,7 +14,7 @@ import java.util.Objects;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class ShipperDTO implements Serializable {
 
-    private Long id;
+    private UUID id;
 
     @NotNull
     private String code;
@@ -26,7 +30,12 @@ public class ShipperDTO implements Serializable {
     private Integer companySize;
 
     @NotNull
-    private String paymentType;
+    private PaymentType paymentType;
+
+    @NotNull
+    private ContractType contractType;
+
+    private Instant contractValidUntil;
 
     private Boolean isApproved;
 
@@ -34,11 +43,11 @@ public class ShipperDTO implements Serializable {
 
     private Boolean isProfileComplete;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -82,12 +91,28 @@ public class ShipperDTO implements Serializable {
         this.companySize = companySize;
     }
 
-    public String getPaymentType() {
+    public PaymentType getPaymentType() {
         return paymentType;
     }
 
-    public void setPaymentType(String paymentType) {
+    public void setPaymentType(PaymentType paymentType) {
         this.paymentType = paymentType;
+    }
+
+    public ContractType getContractType() {
+        return contractType;
+    }
+
+    public void setContractType(ContractType contractType) {
+        this.contractType = contractType;
+    }
+
+    public Instant getContractValidUntil() {
+        return contractValidUntil;
+    }
+
+    public void setContractValidUntil(Instant contractValidUntil) {
+        this.contractValidUntil = contractValidUntil;
     }
 
     public Boolean getIsApproved() {
@@ -139,13 +164,15 @@ public class ShipperDTO implements Serializable {
     @Override
     public String toString() {
         return "ShipperDTO{" +
-            "id=" + getId() +
+            "id='" + getId() + "'" +
             ", code='" + getCode() + "'" +
             ", name='" + getName() + "'" +
             ", address='" + getAddress() + "'" +
             ", taxCode='" + getTaxCode() + "'" +
             ", companySize=" + getCompanySize() +
             ", paymentType='" + getPaymentType() + "'" +
+            ", contractType='" + getContractType() + "'" +
+            ", contractValidUntil='" + getContractValidUntil() + "'" +
             ", isApproved='" + getIsApproved() + "'" +
             ", isBillingInformationComplete='" + getIsBillingInformationComplete() + "'" +
             ", isProfileComplete='" + getIsProfileComplete() + "'" +

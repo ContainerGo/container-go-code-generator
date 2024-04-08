@@ -3,6 +3,7 @@ package vn.containergo.service.dto;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * A DTO for the {@link vn.containergo.domain.TruckType} entity.
@@ -10,7 +11,7 @@ import java.util.Objects;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class TruckTypeDTO implements Serializable {
 
-    private Long id;
+    private UUID id;
 
     @NotNull
     private String code;
@@ -32,11 +33,11 @@ public class TruckTypeDTO implements Serializable {
 
     private Integer width;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -137,7 +138,7 @@ public class TruckTypeDTO implements Serializable {
     @Override
     public String toString() {
         return "TruckTypeDTO{" +
-            "id=" + getId() +
+            "id='" + getId() + "'" +
             ", code='" + getCode() + "'" +
             ", name='" + getName() + "'" +
             ", category='" + getCategory() + "'" +

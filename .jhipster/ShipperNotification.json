@@ -1,0 +1,49 @@
+{
+  "annotations": {
+    "changelogDate": "20240408042558"
+  },
+  "applications": ["containerGoServer"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "UUID"
+    },
+    {
+      "fieldName": "code",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "isEmailNotificationEnabled",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "isSmsNotificationEnabled",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "isAppNotificationEnabled",
+      "fieldType": "Boolean"
+    }
+  ],
+  "jpaMetamodelFiltering": false,
+  "name": "ShipperNotification",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "shipperPerson",
+      "otherEntityRelationshipName": "enabledNotifications",
+      "relationshipName": "person",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

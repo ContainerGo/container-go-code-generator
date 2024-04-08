@@ -49,11 +49,11 @@ describe('ShipmentHistory Management Update Component', () => {
 
   describe('ngOnInit', () => {
     it('Should call Container query and add missing value', () => {
-      const shipmentHistory: IShipmentHistory = { id: 456 };
-      const container: IContainer = { id: 20968 };
+      const shipmentHistory: IShipmentHistory = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
+      const container: IContainer = { id: '6043ed39-af21-4f0d-94d5-c72adadd0c85' };
       shipmentHistory.container = container;
 
-      const containerCollection: IContainer[] = [{ id: 24008 }];
+      const containerCollection: IContainer[] = [{ id: '93353c09-f34c-4bfc-838b-17f4398c0151' }];
       jest.spyOn(containerService, 'query').mockReturnValue(of(new HttpResponse({ body: containerCollection })));
       const additionalContainers = [container];
       const expectedCollection: IContainer[] = [...additionalContainers, ...containerCollection];
@@ -71,8 +71,8 @@ describe('ShipmentHistory Management Update Component', () => {
     });
 
     it('Should update editForm', () => {
-      const shipmentHistory: IShipmentHistory = { id: 456 };
-      const container: IContainer = { id: 10649 };
+      const shipmentHistory: IShipmentHistory = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
+      const container: IContainer = { id: '4a795297-6bec-4318-a5b9-1d0961a1bed1' };
       shipmentHistory.container = container;
 
       activatedRoute.data = of({ shipmentHistory });
@@ -87,7 +87,7 @@ describe('ShipmentHistory Management Update Component', () => {
     it('Should call update service on save for existing entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IShipmentHistory>>();
-      const shipmentHistory = { id: 123 };
+      const shipmentHistory = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(shipmentHistoryFormService, 'getShipmentHistory').mockReturnValue(shipmentHistory);
       jest.spyOn(shipmentHistoryService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -110,7 +110,7 @@ describe('ShipmentHistory Management Update Component', () => {
     it('Should call create service on save for new entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IShipmentHistory>>();
-      const shipmentHistory = { id: 123 };
+      const shipmentHistory = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(shipmentHistoryFormService, 'getShipmentHistory').mockReturnValue({ id: null });
       jest.spyOn(shipmentHistoryService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -133,7 +133,7 @@ describe('ShipmentHistory Management Update Component', () => {
     it('Should set isSaving to false on error', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IShipmentHistory>>();
-      const shipmentHistory = { id: 123 };
+      const shipmentHistory = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(shipmentHistoryService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ shipmentHistory });
@@ -154,8 +154,8 @@ describe('ShipmentHistory Management Update Component', () => {
   describe('Compare relationships', () => {
     describe('compareContainer', () => {
       it('Should forward to containerService', () => {
-        const entity = { id: 123 };
-        const entity2 = { id: 456 };
+        const entity = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
+        const entity2 = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
         jest.spyOn(containerService, 'compareContainer');
         comp.compareContainer(entity, entity2);
         expect(containerService.compareContainer).toHaveBeenCalledWith(entity, entity2);

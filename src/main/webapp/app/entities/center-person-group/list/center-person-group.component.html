@@ -49,13 +49,6 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="description">
-              <div class="d-flex">
-                <span jhiTranslate="containerGoServerApp.centerPersonGroup.description">Description</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -66,7 +59,6 @@
                 <a [routerLink]="['/center-person-group', centerPersonGroup.id, 'view']">{{ centerPersonGroup.id }}</a>
               </td>
               <td>{{ centerPersonGroup.name }}</td>
-              <td>{{ centerPersonGroup.description }}</td>
               <td class="text-end">
                 <div class="btn-group">
                   <a

@@ -1,6 +1,7 @@
 package vn.containergo.service.impl;
 
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -67,13 +68,13 @@ public class ShipmentHistoryServiceImpl implements ShipmentHistoryService {
     }
 
     @Override
-    public Optional<ShipmentHistoryDTO> findOne(Long id) {
+    public Optional<ShipmentHistoryDTO> findOne(UUID id) {
         log.debug("Request to get ShipmentHistory : {}", id);
         return shipmentHistoryRepository.findById(id).map(shipmentHistoryMapper::toDto);
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(UUID id) {
         log.debug("Request to delete ShipmentHistory : {}", id);
         shipmentHistoryRepository.deleteById(id);
     }

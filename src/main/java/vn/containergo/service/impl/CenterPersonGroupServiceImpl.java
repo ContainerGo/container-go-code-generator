@@ -1,6 +1,7 @@
 package vn.containergo.service.impl;
 
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -70,13 +71,13 @@ public class CenterPersonGroupServiceImpl implements CenterPersonGroupService {
     }
 
     @Override
-    public Optional<CenterPersonGroupDTO> findOne(Long id) {
+    public Optional<CenterPersonGroupDTO> findOne(UUID id) {
         log.debug("Request to get CenterPersonGroup : {}", id);
         return centerPersonGroupRepository.findById(id).map(centerPersonGroupMapper::toDto);
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(UUID id) {
         log.debug("Request to delete CenterPersonGroup : {}", id);
         centerPersonGroupRepository.deleteById(id);
     }

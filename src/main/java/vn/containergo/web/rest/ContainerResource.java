@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,6 +61,7 @@ public class ContainerResource {
         if (containerDTO.getId() != null) {
             throw new BadRequestAlertException("A new container cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        containerDTO.setId(UUID.randomUUID());
         containerDTO = containerService.save(containerDTO);
         return ResponseEntity.created(new URI("/api/containers/" + containerDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, containerDTO.getId().toString()))
@@ -78,7 +80,7 @@ public class ContainerResource {
      */
     @PutMapping("/{id}")
     public ResponseEntity<ContainerDTO> updateContainer(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @Valid @RequestBody ContainerDTO containerDTO
     ) throws URISyntaxException {
         log.debug("REST request to update Container : {}, {}", id, containerDTO);
@@ -112,7 +114,7 @@ public class ContainerResource {
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<ContainerDTO> partialUpdateContainer(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @NotNull @RequestBody ContainerDTO containerDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update Container partially : {}, {}", id, containerDTO);
@@ -156,7 +158,7 @@ public class ContainerResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the containerDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ContainerDTO> getContainer(@PathVariable("id") Long id) {
+    public ResponseEntity<ContainerDTO> getContainer(@PathVariable("id") UUID id) {
         log.debug("REST request to get Container : {}", id);
         Optional<ContainerDTO> containerDTO = containerService.findOne(id);
         return ResponseUtil.wrapOrNotFound(containerDTO);
@@ -169,7 +171,7 @@ public class ContainerResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteContainer(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteContainer(@PathVariable("id") UUID id) {
         log.debug("REST request to delete Container : {}", id);
         containerService.delete(id);
         return ResponseEntity.noContent()

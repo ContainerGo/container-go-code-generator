@@ -62,6 +62,7 @@ public class CarrierPersonAsserts {
     public static void assertCarrierPersonUpdatableRelationshipsEquals(CarrierPerson expected, CarrierPerson actual) {
         assertThat(expected)
             .as("Verify CarrierPerson relationships")
+            .satisfies(e -> assertThat(e.getGroup()).as("check group").isEqualTo(actual.getGroup()))
             .satisfies(e -> assertThat(e.getCarrier()).as("check carrier").isEqualTo(actual.getCarrier()));
     }
 }

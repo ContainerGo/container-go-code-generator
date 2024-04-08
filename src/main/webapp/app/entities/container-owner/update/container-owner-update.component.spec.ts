@@ -45,7 +45,7 @@ describe('ContainerOwner Management Update Component', () => {
 
   describe('ngOnInit', () => {
     it('Should update editForm', () => {
-      const containerOwner: IContainerOwner = { id: 456 };
+      const containerOwner: IContainerOwner = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
 
       activatedRoute.data = of({ containerOwner });
       comp.ngOnInit();
@@ -58,7 +58,7 @@ describe('ContainerOwner Management Update Component', () => {
     it('Should call update service on save for existing entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IContainerOwner>>();
-      const containerOwner = { id: 123 };
+      const containerOwner = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(containerOwnerFormService, 'getContainerOwner').mockReturnValue(containerOwner);
       jest.spyOn(containerOwnerService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -81,7 +81,7 @@ describe('ContainerOwner Management Update Component', () => {
     it('Should call create service on save for new entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IContainerOwner>>();
-      const containerOwner = { id: 123 };
+      const containerOwner = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(containerOwnerFormService, 'getContainerOwner').mockReturnValue({ id: null });
       jest.spyOn(containerOwnerService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -104,7 +104,7 @@ describe('ContainerOwner Management Update Component', () => {
     it('Should set isSaving to false on error', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IContainerOwner>>();
-      const containerOwner = { id: 123 };
+      const containerOwner = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(containerOwnerService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ containerOwner });

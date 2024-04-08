@@ -10,8 +10,7 @@ import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,17 +37,17 @@ class OfferResourceIT {
     private static final String DEFAULT_MESSAGE = "AAAAAAAAAA";
     private static final String UPDATED_MESSAGE = "BBBBBBBBBB";
 
-    private static final Instant DEFAULT_PICKUP_FROM_DATE = Instant.ofEpochMilli(0L);
-    private static final Instant UPDATED_PICKUP_FROM_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    private static final Instant DEFAULT_ESTIMATED_PICKUP_FROM_DATE = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_ESTIMATED_PICKUP_FROM_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
-    private static final Instant DEFAULT_PICKUP_UNTIL_DATE = Instant.ofEpochMilli(0L);
-    private static final Instant UPDATED_PICKUP_UNTIL_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    private static final Instant DEFAULT_ESTIMATED_PICKUP_UNTIL_DATE = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_ESTIMATED_PICKUP_UNTIL_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
-    private static final Instant DEFAULT_DROPOFF_FROM_DATE = Instant.ofEpochMilli(0L);
-    private static final Instant UPDATED_DROPOFF_FROM_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    private static final Instant DEFAULT_ESTIMATED_DROPOFF_FROM_DATE = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_ESTIMATED_DROPOFF_FROM_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
-    private static final Instant DEFAULT_DROPOFF_UNTIL_DATE = Instant.ofEpochMilli(0L);
-    private static final Instant UPDATED_DROPOFF_UNTIL_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    private static final Instant DEFAULT_ESTIMATED_DROPOFF_UNTIL_DATE = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_ESTIMATED_DROPOFF_UNTIL_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     private static final OfferState DEFAULT_STATE = OfferState.PENDING;
     private static final OfferState UPDATED_STATE = OfferState.ACCEPTED;
@@ -56,20 +55,14 @@ class OfferResourceIT {
     private static final Double DEFAULT_PRICE = 1D;
     private static final Double UPDATED_PRICE = 2D;
 
-    private static final Long DEFAULT_CARRIER_ID = 1L;
-    private static final Long UPDATED_CARRIER_ID = 2L;
+    private static final UUID DEFAULT_CARRIER_ID = UUID.randomUUID();
+    private static final UUID UPDATED_CARRIER_ID = UUID.randomUUID();
 
-    private static final Long DEFAULT_CARRIER_PERSON_ID = 1L;
-    private static final Long UPDATED_CARRIER_PERSON_ID = 2L;
-
-    private static final Long DEFAULT_TRUCK_ID = 1L;
-    private static final Long UPDATED_TRUCK_ID = 2L;
+    private static final UUID DEFAULT_TRUCK_ID = UUID.randomUUID();
+    private static final UUID UPDATED_TRUCK_ID = UUID.randomUUID();
 
     private static final String ENTITY_API_URL = "/api/offers";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
-
-    private static Random random = new Random();
-    private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private ObjectMapper om;
@@ -94,14 +87,13 @@ class OfferResourceIT {
     public static Offer createEntity() {
         Offer offer = new Offer()
             .message(DEFAULT_MESSAGE)
-            .pickupFromDate(DEFAULT_PICKUP_FROM_DATE)
-            .pickupUntilDate(DEFAULT_PICKUP_UNTIL_DATE)
-            .dropoffFromDate(DEFAULT_DROPOFF_FROM_DATE)
-            .dropoffUntilDate(DEFAULT_DROPOFF_UNTIL_DATE)
+            .estimatedPickupFromDate(DEFAULT_ESTIMATED_PICKUP_FROM_DATE)
+            .estimatedPickupUntilDate(DEFAULT_ESTIMATED_PICKUP_UNTIL_DATE)
+            .estimatedDropoffFromDate(DEFAULT_ESTIMATED_DROPOFF_FROM_DATE)
+            .estimatedDropoffUntilDate(DEFAULT_ESTIMATED_DROPOFF_UNTIL_DATE)
             .state(DEFAULT_STATE)
             .price(DEFAULT_PRICE)
             .carrierId(DEFAULT_CARRIER_ID)
-            .carrierPersonId(DEFAULT_CARRIER_PERSON_ID)
             .truckId(DEFAULT_TRUCK_ID);
         // Add required entity
         Container container;
@@ -120,14 +112,13 @@ class OfferResourceIT {
     public static Offer createUpdatedEntity() {
         Offer offer = new Offer()
             .message(UPDATED_MESSAGE)
-            .pickupFromDate(UPDATED_PICKUP_FROM_DATE)
-            .pickupUntilDate(UPDATED_PICKUP_UNTIL_DATE)
-            .dropoffFromDate(UPDATED_DROPOFF_FROM_DATE)
-            .dropoffUntilDate(UPDATED_DROPOFF_UNTIL_DATE)
+            .estimatedPickupFromDate(UPDATED_ESTIMATED_PICKUP_FROM_DATE)
+            .estimatedPickupUntilDate(UPDATED_ESTIMATED_PICKUP_UNTIL_DATE)
+            .estimatedDropoffFromDate(UPDATED_ESTIMATED_DROPOFF_FROM_DATE)
+            .estimatedDropoffUntilDate(UPDATED_ESTIMATED_DROPOFF_UNTIL_DATE)
             .state(UPDATED_STATE)
             .price(UPDATED_PRICE)
             .carrierId(UPDATED_CARRIER_ID)
-            .carrierPersonId(UPDATED_CARRIER_PERSON_ID)
             .truckId(UPDATED_TRUCK_ID);
         // Add required entity
         Container container;
@@ -167,7 +158,7 @@ class OfferResourceIT {
     @Test
     void createOfferWithExistingId() throws Exception {
         // Create the Offer with an existing ID
-        offer.setId(1L);
+        offer.setId(UUID.randomUUID());
         OfferDTO offerDTO = offerMapper.toDto(offer);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
@@ -182,10 +173,10 @@ class OfferResourceIT {
     }
 
     @Test
-    void checkPickupFromDateIsRequired() throws Exception {
+    void checkEstimatedPickupFromDateIsRequired() throws Exception {
         long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
-        offer.setPickupFromDate(null);
+        offer.setEstimatedPickupFromDate(null);
 
         // Create the Offer, which fails.
         OfferDTO offerDTO = offerMapper.toDto(offer);
@@ -198,10 +189,10 @@ class OfferResourceIT {
     }
 
     @Test
-    void checkPickupUntilDateIsRequired() throws Exception {
+    void checkEstimatedPickupUntilDateIsRequired() throws Exception {
         long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
-        offer.setPickupUntilDate(null);
+        offer.setEstimatedPickupUntilDate(null);
 
         // Create the Offer, which fails.
         OfferDTO offerDTO = offerMapper.toDto(offer);
@@ -214,10 +205,10 @@ class OfferResourceIT {
     }
 
     @Test
-    void checkDropoffFromDateIsRequired() throws Exception {
+    void checkEstimatedDropoffFromDateIsRequired() throws Exception {
         long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
-        offer.setDropoffFromDate(null);
+        offer.setEstimatedDropoffFromDate(null);
 
         // Create the Offer, which fails.
         OfferDTO offerDTO = offerMapper.toDto(offer);
@@ -230,10 +221,10 @@ class OfferResourceIT {
     }
 
     @Test
-    void checkDropoffUntilDateIsRequired() throws Exception {
+    void checkEstimatedDropoffUntilDateIsRequired() throws Exception {
         long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
-        offer.setDropoffUntilDate(null);
+        offer.setEstimatedDropoffUntilDate(null);
 
         // Create the Offer, which fails.
         OfferDTO offerDTO = offerMapper.toDto(offer);
@@ -296,6 +287,7 @@ class OfferResourceIT {
     @Test
     void getAllOffers() throws Exception {
         // Initialize the database
+        offer.setId(UUID.randomUUID());
         offerRepository.save(offer);
 
         // Get all the offerList
@@ -303,22 +295,22 @@ class OfferResourceIT {
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(offer.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(offer.getId().toString())))
             .andExpect(jsonPath("$.[*].message").value(hasItem(DEFAULT_MESSAGE)))
-            .andExpect(jsonPath("$.[*].pickupFromDate").value(hasItem(DEFAULT_PICKUP_FROM_DATE.toString())))
-            .andExpect(jsonPath("$.[*].pickupUntilDate").value(hasItem(DEFAULT_PICKUP_UNTIL_DATE.toString())))
-            .andExpect(jsonPath("$.[*].dropoffFromDate").value(hasItem(DEFAULT_DROPOFF_FROM_DATE.toString())))
-            .andExpect(jsonPath("$.[*].dropoffUntilDate").value(hasItem(DEFAULT_DROPOFF_UNTIL_DATE.toString())))
+            .andExpect(jsonPath("$.[*].estimatedPickupFromDate").value(hasItem(DEFAULT_ESTIMATED_PICKUP_FROM_DATE.toString())))
+            .andExpect(jsonPath("$.[*].estimatedPickupUntilDate").value(hasItem(DEFAULT_ESTIMATED_PICKUP_UNTIL_DATE.toString())))
+            .andExpect(jsonPath("$.[*].estimatedDropoffFromDate").value(hasItem(DEFAULT_ESTIMATED_DROPOFF_FROM_DATE.toString())))
+            .andExpect(jsonPath("$.[*].estimatedDropoffUntilDate").value(hasItem(DEFAULT_ESTIMATED_DROPOFF_UNTIL_DATE.toString())))
             .andExpect(jsonPath("$.[*].state").value(hasItem(DEFAULT_STATE.toString())))
             .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.doubleValue())))
-            .andExpect(jsonPath("$.[*].carrierId").value(hasItem(DEFAULT_CARRIER_ID.intValue())))
-            .andExpect(jsonPath("$.[*].carrierPersonId").value(hasItem(DEFAULT_CARRIER_PERSON_ID.intValue())))
-            .andExpect(jsonPath("$.[*].truckId").value(hasItem(DEFAULT_TRUCK_ID.intValue())));
+            .andExpect(jsonPath("$.[*].carrierId").value(hasItem(DEFAULT_CARRIER_ID.toString())))
+            .andExpect(jsonPath("$.[*].truckId").value(hasItem(DEFAULT_TRUCK_ID.toString())));
     }
 
     @Test
     void getOffer() throws Exception {
         // Initialize the database
+        offer.setId(UUID.randomUUID());
         offerRepository.save(offer);
 
         // Get the offer
@@ -326,28 +318,28 @@ class OfferResourceIT {
             .perform(get(ENTITY_API_URL_ID, offer.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(offer.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(offer.getId().toString()))
             .andExpect(jsonPath("$.message").value(DEFAULT_MESSAGE))
-            .andExpect(jsonPath("$.pickupFromDate").value(DEFAULT_PICKUP_FROM_DATE.toString()))
-            .andExpect(jsonPath("$.pickupUntilDate").value(DEFAULT_PICKUP_UNTIL_DATE.toString()))
-            .andExpect(jsonPath("$.dropoffFromDate").value(DEFAULT_DROPOFF_FROM_DATE.toString()))
-            .andExpect(jsonPath("$.dropoffUntilDate").value(DEFAULT_DROPOFF_UNTIL_DATE.toString()))
+            .andExpect(jsonPath("$.estimatedPickupFromDate").value(DEFAULT_ESTIMATED_PICKUP_FROM_DATE.toString()))
+            .andExpect(jsonPath("$.estimatedPickupUntilDate").value(DEFAULT_ESTIMATED_PICKUP_UNTIL_DATE.toString()))
+            .andExpect(jsonPath("$.estimatedDropoffFromDate").value(DEFAULT_ESTIMATED_DROPOFF_FROM_DATE.toString()))
+            .andExpect(jsonPath("$.estimatedDropoffUntilDate").value(DEFAULT_ESTIMATED_DROPOFF_UNTIL_DATE.toString()))
             .andExpect(jsonPath("$.state").value(DEFAULT_STATE.toString()))
             .andExpect(jsonPath("$.price").value(DEFAULT_PRICE.doubleValue()))
-            .andExpect(jsonPath("$.carrierId").value(DEFAULT_CARRIER_ID.intValue()))
-            .andExpect(jsonPath("$.carrierPersonId").value(DEFAULT_CARRIER_PERSON_ID.intValue()))
-            .andExpect(jsonPath("$.truckId").value(DEFAULT_TRUCK_ID.intValue()));
+            .andExpect(jsonPath("$.carrierId").value(DEFAULT_CARRIER_ID.toString()))
+            .andExpect(jsonPath("$.truckId").value(DEFAULT_TRUCK_ID.toString()));
     }
 
     @Test
     void getNonExistingOffer() throws Exception {
         // Get the offer
-        restOfferMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
+        restOfferMockMvc.perform(get(ENTITY_API_URL_ID, UUID.randomUUID().toString())).andExpect(status().isNotFound());
     }
 
     @Test
     void putExistingOffer() throws Exception {
         // Initialize the database
+        offer.setId(UUID.randomUUID());
         offerRepository.save(offer);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -356,14 +348,13 @@ class OfferResourceIT {
         Offer updatedOffer = offerRepository.findById(offer.getId()).orElseThrow();
         updatedOffer
             .message(UPDATED_MESSAGE)
-            .pickupFromDate(UPDATED_PICKUP_FROM_DATE)
-            .pickupUntilDate(UPDATED_PICKUP_UNTIL_DATE)
-            .dropoffFromDate(UPDATED_DROPOFF_FROM_DATE)
-            .dropoffUntilDate(UPDATED_DROPOFF_UNTIL_DATE)
+            .estimatedPickupFromDate(UPDATED_ESTIMATED_PICKUP_FROM_DATE)
+            .estimatedPickupUntilDate(UPDATED_ESTIMATED_PICKUP_UNTIL_DATE)
+            .estimatedDropoffFromDate(UPDATED_ESTIMATED_DROPOFF_FROM_DATE)
+            .estimatedDropoffUntilDate(UPDATED_ESTIMATED_DROPOFF_UNTIL_DATE)
             .state(UPDATED_STATE)
             .price(UPDATED_PRICE)
             .carrierId(UPDATED_CARRIER_ID)
-            .carrierPersonId(UPDATED_CARRIER_PERSON_ID)
             .truckId(UPDATED_TRUCK_ID);
         OfferDTO offerDTO = offerMapper.toDto(updatedOffer);
 
@@ -381,7 +372,7 @@ class OfferResourceIT {
     @Test
     void putNonExistingOffer() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        offer.setId(longCount.incrementAndGet());
+        offer.setId(UUID.randomUUID());
 
         // Create the Offer
         OfferDTO offerDTO = offerMapper.toDto(offer);
@@ -400,7 +391,7 @@ class OfferResourceIT {
     @Test
     void putWithIdMismatchOffer() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        offer.setId(longCount.incrementAndGet());
+        offer.setId(UUID.randomUUID());
 
         // Create the Offer
         OfferDTO offerDTO = offerMapper.toDto(offer);
@@ -408,9 +399,7 @@ class OfferResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restOfferMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(offerDTO))
+                put(ENTITY_API_URL_ID, UUID.randomUUID()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(offerDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -421,7 +410,7 @@ class OfferResourceIT {
     @Test
     void putWithMissingIdPathParamOffer() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        offer.setId(longCount.incrementAndGet());
+        offer.setId(UUID.randomUUID());
 
         // Create the Offer
         OfferDTO offerDTO = offerMapper.toDto(offer);
@@ -438,6 +427,7 @@ class OfferResourceIT {
     @Test
     void partialUpdateOfferWithPatch() throws Exception {
         // Initialize the database
+        offer.setId(UUID.randomUUID());
         offerRepository.save(offer);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -448,11 +438,11 @@ class OfferResourceIT {
 
         partialUpdatedOffer
             .message(UPDATED_MESSAGE)
-            .dropoffFromDate(UPDATED_DROPOFF_FROM_DATE)
-            .dropoffUntilDate(UPDATED_DROPOFF_UNTIL_DATE)
+            .estimatedDropoffFromDate(UPDATED_ESTIMATED_DROPOFF_FROM_DATE)
+            .estimatedDropoffUntilDate(UPDATED_ESTIMATED_DROPOFF_UNTIL_DATE)
             .state(UPDATED_STATE)
             .carrierId(UPDATED_CARRIER_ID)
-            .carrierPersonId(UPDATED_CARRIER_PERSON_ID);
+            .truckId(UPDATED_TRUCK_ID);
 
         restOfferMockMvc
             .perform(
@@ -471,6 +461,7 @@ class OfferResourceIT {
     @Test
     void fullUpdateOfferWithPatch() throws Exception {
         // Initialize the database
+        offer.setId(UUID.randomUUID());
         offerRepository.save(offer);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -481,14 +472,13 @@ class OfferResourceIT {
 
         partialUpdatedOffer
             .message(UPDATED_MESSAGE)
-            .pickupFromDate(UPDATED_PICKUP_FROM_DATE)
-            .pickupUntilDate(UPDATED_PICKUP_UNTIL_DATE)
-            .dropoffFromDate(UPDATED_DROPOFF_FROM_DATE)
-            .dropoffUntilDate(UPDATED_DROPOFF_UNTIL_DATE)
+            .estimatedPickupFromDate(UPDATED_ESTIMATED_PICKUP_FROM_DATE)
+            .estimatedPickupUntilDate(UPDATED_ESTIMATED_PICKUP_UNTIL_DATE)
+            .estimatedDropoffFromDate(UPDATED_ESTIMATED_DROPOFF_FROM_DATE)
+            .estimatedDropoffUntilDate(UPDATED_ESTIMATED_DROPOFF_UNTIL_DATE)
             .state(UPDATED_STATE)
             .price(UPDATED_PRICE)
             .carrierId(UPDATED_CARRIER_ID)
-            .carrierPersonId(UPDATED_CARRIER_PERSON_ID)
             .truckId(UPDATED_TRUCK_ID);
 
         restOfferMockMvc
@@ -508,7 +498,7 @@ class OfferResourceIT {
     @Test
     void patchNonExistingOffer() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        offer.setId(longCount.incrementAndGet());
+        offer.setId(UUID.randomUUID());
 
         // Create the Offer
         OfferDTO offerDTO = offerMapper.toDto(offer);
@@ -529,7 +519,7 @@ class OfferResourceIT {
     @Test
     void patchWithIdMismatchOffer() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        offer.setId(longCount.incrementAndGet());
+        offer.setId(UUID.randomUUID());
 
         // Create the Offer
         OfferDTO offerDTO = offerMapper.toDto(offer);
@@ -537,7 +527,7 @@ class OfferResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restOfferMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                patch(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(offerDTO))
             )
@@ -550,7 +540,7 @@ class OfferResourceIT {
     @Test
     void patchWithMissingIdPathParamOffer() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        offer.setId(longCount.incrementAndGet());
+        offer.setId(UUID.randomUUID());
 
         // Create the Offer
         OfferDTO offerDTO = offerMapper.toDto(offer);
@@ -567,6 +557,7 @@ class OfferResourceIT {
     @Test
     void deleteOffer() throws Exception {
         // Initialize the database
+        offer.setId(UUID.randomUUID());
         offerRepository.save(offer);
 
         long databaseSizeBeforeDelete = getRepositoryCount();

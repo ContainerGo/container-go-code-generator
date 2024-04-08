@@ -53,11 +53,11 @@ describe('Truck Management Update Component', () => {
 
   describe('ngOnInit', () => {
     it('Should call TruckType query and add missing value', () => {
-      const truck: ITruck = { id: 456 };
-      const type: ITruckType = { id: 29657 };
+      const truck: ITruck = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
+      const type: ITruckType = { id: '5d242d53-63a7-4aea-a444-eb4f86158cb4' };
       truck.type = type;
 
-      const truckTypeCollection: ITruckType[] = [{ id: 15517 }];
+      const truckTypeCollection: ITruckType[] = [{ id: '1fbc9c98-fbbc-4d41-ac2d-98107e5b44d9' }];
       jest.spyOn(truckTypeService, 'query').mockReturnValue(of(new HttpResponse({ body: truckTypeCollection })));
       const additionalTruckTypes = [type];
       const expectedCollection: ITruckType[] = [...additionalTruckTypes, ...truckTypeCollection];
@@ -75,11 +75,11 @@ describe('Truck Management Update Component', () => {
     });
 
     it('Should call Carrier query and add missing value', () => {
-      const truck: ITruck = { id: 456 };
-      const carrier: ICarrier = { id: 26779 };
+      const truck: ITruck = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
+      const carrier: ICarrier = { id: '0e8dc1b0-0772-4765-b2ba-a3d65c354a64' };
       truck.carrier = carrier;
 
-      const carrierCollection: ICarrier[] = [{ id: 27780 }];
+      const carrierCollection: ICarrier[] = [{ id: '7ef8c4ed-ef9b-441e-a6ff-b777cb677124' }];
       jest.spyOn(carrierService, 'query').mockReturnValue(of(new HttpResponse({ body: carrierCollection })));
       const additionalCarriers = [carrier];
       const expectedCollection: ICarrier[] = [...additionalCarriers, ...carrierCollection];
@@ -97,10 +97,10 @@ describe('Truck Management Update Component', () => {
     });
 
     it('Should update editForm', () => {
-      const truck: ITruck = { id: 456 };
-      const type: ITruckType = { id: 17526 };
+      const truck: ITruck = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
+      const type: ITruckType = { id: '428d16f8-17b5-4da8-9897-db2e6b0db07d' };
       truck.type = type;
-      const carrier: ICarrier = { id: 17510 };
+      const carrier: ICarrier = { id: 'd804ab59-ba7f-4931-a495-a91fff1d5ba4' };
       truck.carrier = carrier;
 
       activatedRoute.data = of({ truck });
@@ -116,7 +116,7 @@ describe('Truck Management Update Component', () => {
     it('Should call update service on save for existing entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<ITruck>>();
-      const truck = { id: 123 };
+      const truck = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(truckFormService, 'getTruck').mockReturnValue(truck);
       jest.spyOn(truckService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -139,7 +139,7 @@ describe('Truck Management Update Component', () => {
     it('Should call create service on save for new entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<ITruck>>();
-      const truck = { id: 123 };
+      const truck = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(truckFormService, 'getTruck').mockReturnValue({ id: null });
       jest.spyOn(truckService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -162,7 +162,7 @@ describe('Truck Management Update Component', () => {
     it('Should set isSaving to false on error', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<ITruck>>();
-      const truck = { id: 123 };
+      const truck = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(truckService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ truck });
@@ -183,8 +183,8 @@ describe('Truck Management Update Component', () => {
   describe('Compare relationships', () => {
     describe('compareTruckType', () => {
       it('Should forward to truckTypeService', () => {
-        const entity = { id: 123 };
-        const entity2 = { id: 456 };
+        const entity = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
+        const entity2 = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
         jest.spyOn(truckTypeService, 'compareTruckType');
         comp.compareTruckType(entity, entity2);
         expect(truckTypeService.compareTruckType).toHaveBeenCalledWith(entity, entity2);
@@ -193,8 +193,8 @@ describe('Truck Management Update Component', () => {
 
     describe('compareCarrier', () => {
       it('Should forward to carrierService', () => {
-        const entity = { id: 123 };
-        const entity2 = { id: 456 };
+        const entity = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
+        const entity2 = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
         jest.spyOn(carrierService, 'compareCarrier');
         comp.compareCarrier(entity, entity2);
         expect(carrierService.compareCarrier).toHaveBeenCalledWith(entity, entity2);

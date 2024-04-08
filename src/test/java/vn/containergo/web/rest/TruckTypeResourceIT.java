@@ -8,8 +8,7 @@ import static vn.containergo.domain.TruckTypeAsserts.*;
 import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,9 +59,6 @@ class TruckTypeResourceIT {
 
     private static final String ENTITY_API_URL = "/api/truck-types";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
-
-    private static Random random = new Random();
-    private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private ObjectMapper om;
@@ -148,7 +144,7 @@ class TruckTypeResourceIT {
     @Test
     void createTruckTypeWithExistingId() throws Exception {
         // Create the TruckType with an existing ID
-        truckType.setId(1L);
+        truckType.setId(UUID.randomUUID());
         TruckTypeDTO truckTypeDTO = truckTypeMapper.toDto(truckType);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
@@ -197,6 +193,7 @@ class TruckTypeResourceIT {
     @Test
     void getAllTruckTypes() throws Exception {
         // Initialize the database
+        truckType.setId(UUID.randomUUID());
         truckTypeRepository.save(truckType);
 
         // Get all the truckTypeList
@@ -204,7 +201,7 @@ class TruckTypeResourceIT {
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(truckType.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(truckType.getId().toString())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].category").value(hasItem(DEFAULT_CATEGORY)))
@@ -219,6 +216,7 @@ class TruckTypeResourceIT {
     @Test
     void getTruckType() throws Exception {
         // Initialize the database
+        truckType.setId(UUID.randomUUID());
         truckTypeRepository.save(truckType);
 
         // Get the truckType
@@ -226,7 +224,7 @@ class TruckTypeResourceIT {
             .perform(get(ENTITY_API_URL_ID, truckType.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(truckType.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(truckType.getId().toString()))
             .andExpect(jsonPath("$.code").value(DEFAULT_CODE))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.category").value(DEFAULT_CATEGORY))
@@ -241,12 +239,13 @@ class TruckTypeResourceIT {
     @Test
     void getNonExistingTruckType() throws Exception {
         // Get the truckType
-        restTruckTypeMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
+        restTruckTypeMockMvc.perform(get(ENTITY_API_URL_ID, UUID.randomUUID().toString())).andExpect(status().isNotFound());
     }
 
     @Test
     void putExistingTruckType() throws Exception {
         // Initialize the database
+        truckType.setId(UUID.randomUUID());
         truckTypeRepository.save(truckType);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -281,7 +280,7 @@ class TruckTypeResourceIT {
     @Test
     void putNonExistingTruckType() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        truckType.setId(longCount.incrementAndGet());
+        truckType.setId(UUID.randomUUID());
 
         // Create the TruckType
         TruckTypeDTO truckTypeDTO = truckTypeMapper.toDto(truckType);
@@ -302,7 +301,7 @@ class TruckTypeResourceIT {
     @Test
     void putWithIdMismatchTruckType() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        truckType.setId(longCount.incrementAndGet());
+        truckType.setId(UUID.randomUUID());
 
         // Create the TruckType
         TruckTypeDTO truckTypeDTO = truckTypeMapper.toDto(truckType);
@@ -310,7 +309,7 @@ class TruckTypeResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTruckTypeMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                put(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(om.writeValueAsBytes(truckTypeDTO))
             )
@@ -323,7 +322,7 @@ class TruckTypeResourceIT {
     @Test
     void putWithMissingIdPathParamTruckType() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        truckType.setId(longCount.incrementAndGet());
+        truckType.setId(UUID.randomUUID());
 
         // Create the TruckType
         TruckTypeDTO truckTypeDTO = truckTypeMapper.toDto(truckType);
@@ -340,6 +339,7 @@ class TruckTypeResourceIT {
     @Test
     void partialUpdateTruckTypeWithPatch() throws Exception {
         // Initialize the database
+        truckType.setId(UUID.randomUUID());
         truckTypeRepository.save(truckType);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -370,6 +370,7 @@ class TruckTypeResourceIT {
     @Test
     void fullUpdateTruckTypeWithPatch() throws Exception {
         // Initialize the database
+        truckType.setId(UUID.randomUUID());
         truckTypeRepository.save(truckType);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -406,7 +407,7 @@ class TruckTypeResourceIT {
     @Test
     void patchNonExistingTruckType() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        truckType.setId(longCount.incrementAndGet());
+        truckType.setId(UUID.randomUUID());
 
         // Create the TruckType
         TruckTypeDTO truckTypeDTO = truckTypeMapper.toDto(truckType);
@@ -427,7 +428,7 @@ class TruckTypeResourceIT {
     @Test
     void patchWithIdMismatchTruckType() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        truckType.setId(longCount.incrementAndGet());
+        truckType.setId(UUID.randomUUID());
 
         // Create the TruckType
         TruckTypeDTO truckTypeDTO = truckTypeMapper.toDto(truckType);
@@ -435,7 +436,7 @@ class TruckTypeResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTruckTypeMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                patch(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(truckTypeDTO))
             )
@@ -448,7 +449,7 @@ class TruckTypeResourceIT {
     @Test
     void patchWithMissingIdPathParamTruckType() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        truckType.setId(longCount.incrementAndGet());
+        truckType.setId(UUID.randomUUID());
 
         // Create the TruckType
         TruckTypeDTO truckTypeDTO = truckTypeMapper.toDto(truckType);
@@ -465,6 +466,7 @@ class TruckTypeResourceIT {
     @Test
     void deleteTruckType() throws Exception {
         // Initialize the database
+        truckType.setId(UUID.randomUUID());
         truckTypeRepository.save(truckType);
 
         long databaseSizeBeforeDelete = getRepositoryCount();

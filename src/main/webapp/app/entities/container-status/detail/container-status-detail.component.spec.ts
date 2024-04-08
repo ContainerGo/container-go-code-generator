@@ -18,7 +18,7 @@ describe('ContainerStatus Management Detail Component', () => {
             {
               path: '**',
               component: ContainerStatusDetailComponent,
-              resolve: { containerStatus: () => of({ id: 123 }) },
+              resolve: { containerStatus: () => of({ id: '9fec3727-3421-4967-b213-ba36557ca194' }) },
             },
           ],
           withComponentInputBinding(),
@@ -40,7 +40,7 @@ describe('ContainerStatus Management Detail Component', () => {
       const instance = await harness.navigateByUrl('/', ContainerStatusDetailComponent);
 
       // THEN
-      expect(instance.containerStatus).toEqual(expect.objectContaining({ id: 123 }));
+      expect(instance.containerStatus).toEqual(expect.objectContaining({ id: '9fec3727-3421-4967-b213-ba36557ca194' }));
     });
   });
 

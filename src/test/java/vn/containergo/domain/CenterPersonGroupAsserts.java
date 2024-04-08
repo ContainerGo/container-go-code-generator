@@ -47,8 +47,7 @@ public class CenterPersonGroupAsserts {
     public static void assertCenterPersonGroupUpdatableFieldsEquals(CenterPersonGroup expected, CenterPersonGroup actual) {
         assertThat(expected)
             .as("Verify CenterPersonGroup relevant properties")
-            .satisfies(e -> assertThat(e.getName()).as("check name").isEqualTo(actual.getName()))
-            .satisfies(e -> assertThat(e.getDescription()).as("check description").isEqualTo(actual.getDescription()));
+            .satisfies(e -> assertThat(e.getName()).as("check name").isEqualTo(actual.getName()));
     }
 
     /**

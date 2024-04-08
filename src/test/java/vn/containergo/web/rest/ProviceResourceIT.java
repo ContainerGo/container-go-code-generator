@@ -8,8 +8,7 @@ import static vn.containergo.domain.ProviceAsserts.*;
 import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +41,6 @@ class ProviceResourceIT {
 
     private static final String ENTITY_API_URL = "/api/provices";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
-
-    private static Random random = new Random();
-    private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private ObjectMapper om;
@@ -112,7 +108,7 @@ class ProviceResourceIT {
     @Test
     void createProviceWithExistingId() throws Exception {
         // Create the Provice with an existing ID
-        provice.setId(1L);
+        provice.setId(UUID.randomUUID());
         ProviceDTO proviceDTO = proviceMapper.toDto(provice);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
@@ -161,6 +157,7 @@ class ProviceResourceIT {
     @Test
     void getAllProvices() throws Exception {
         // Initialize the database
+        provice.setId(UUID.randomUUID());
         proviceRepository.save(provice);
 
         // Get all the proviceList
@@ -168,7 +165,7 @@ class ProviceResourceIT {
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(provice.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(provice.getId().toString())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
@@ -177,6 +174,7 @@ class ProviceResourceIT {
     @Test
     void getProvice() throws Exception {
         // Initialize the database
+        provice.setId(UUID.randomUUID());
         proviceRepository.save(provice);
 
         // Get the provice
@@ -184,7 +182,7 @@ class ProviceResourceIT {
             .perform(get(ENTITY_API_URL_ID, provice.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(provice.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(provice.getId().toString()))
             .andExpect(jsonPath("$.code").value(DEFAULT_CODE))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION));
@@ -193,12 +191,13 @@ class ProviceResourceIT {
     @Test
     void getNonExistingProvice() throws Exception {
         // Get the provice
-        restProviceMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
+        restProviceMockMvc.perform(get(ENTITY_API_URL_ID, UUID.randomUUID().toString())).andExpect(status().isNotFound());
     }
 
     @Test
     void putExistingProvice() throws Exception {
         // Initialize the database
+        provice.setId(UUID.randomUUID());
         proviceRepository.save(provice);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -222,7 +221,7 @@ class ProviceResourceIT {
     @Test
     void putNonExistingProvice() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        provice.setId(longCount.incrementAndGet());
+        provice.setId(UUID.randomUUID());
 
         // Create the Provice
         ProviceDTO proviceDTO = proviceMapper.toDto(provice);
@@ -241,7 +240,7 @@ class ProviceResourceIT {
     @Test
     void putWithIdMismatchProvice() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        provice.setId(longCount.incrementAndGet());
+        provice.setId(UUID.randomUUID());
 
         // Create the Provice
         ProviceDTO proviceDTO = proviceMapper.toDto(provice);
@@ -249,9 +248,7 @@ class ProviceResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restProviceMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(proviceDTO))
+                put(ENTITY_API_URL_ID, UUID.randomUUID()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(proviceDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -262,7 +259,7 @@ class ProviceResourceIT {
     @Test
     void putWithMissingIdPathParamProvice() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        provice.setId(longCount.incrementAndGet());
+        provice.setId(UUID.randomUUID());
 
         // Create the Provice
         ProviceDTO proviceDTO = proviceMapper.toDto(provice);
@@ -279,6 +276,7 @@ class ProviceResourceIT {
     @Test
     void partialUpdateProviceWithPatch() throws Exception {
         // Initialize the database
+        provice.setId(UUID.randomUUID());
         proviceRepository.save(provice);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -306,6 +304,7 @@ class ProviceResourceIT {
     @Test
     void fullUpdateProviceWithPatch() throws Exception {
         // Initialize the database
+        provice.setId(UUID.randomUUID());
         proviceRepository.save(provice);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -333,7 +332,7 @@ class ProviceResourceIT {
     @Test
     void patchNonExistingProvice() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        provice.setId(longCount.incrementAndGet());
+        provice.setId(UUID.randomUUID());
 
         // Create the Provice
         ProviceDTO proviceDTO = proviceMapper.toDto(provice);
@@ -354,7 +353,7 @@ class ProviceResourceIT {
     @Test
     void patchWithIdMismatchProvice() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        provice.setId(longCount.incrementAndGet());
+        provice.setId(UUID.randomUUID());
 
         // Create the Provice
         ProviceDTO proviceDTO = proviceMapper.toDto(provice);
@@ -362,7 +361,7 @@ class ProviceResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restProviceMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                patch(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(proviceDTO))
             )
@@ -375,7 +374,7 @@ class ProviceResourceIT {
     @Test
     void patchWithMissingIdPathParamProvice() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        provice.setId(longCount.incrementAndGet());
+        provice.setId(UUID.randomUUID());
 
         // Create the Provice
         ProviceDTO proviceDTO = proviceMapper.toDto(provice);
@@ -392,6 +391,7 @@ class ProviceResourceIT {
     @Test
     void deleteProvice() throws Exception {
         // Initialize the database
+        provice.setId(UUID.randomUUID());
         proviceRepository.save(provice);
 
         long databaseSizeBeforeDelete = getRepositoryCount();

@@ -42,6 +42,7 @@
       "totalWeight": "Total Weight",
       "biddingFromDate": "Bidding From Date",
       "biddingUntilDate": "Bidding Until Date",
+      "shipmentPlan": "Shipment Plan",
       "pickupProvice": "Pickup Provice",
       "pickupDistrict": "Pickup District",
       "pickupWard": "Pickup Ward",

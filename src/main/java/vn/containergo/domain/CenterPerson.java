@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -20,7 +21,7 @@ public class CenterPerson implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private Long id;
+    private UUID id;
 
     @NotNull
     @Field("name")
@@ -37,22 +38,27 @@ public class CenterPerson implements Serializable {
     private String address;
 
     @DBRef
+    @Field("group")
+    @JsonIgnoreProperties(value = { "users" }, allowSetters = true)
+    private CenterPersonGroup group;
+
+    @DBRef
     @Field("groups")
     @JsonIgnoreProperties(value = { "users" }, allowSetters = true)
     private Set<CenterPersonGroup> groups = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
-    public Long getId() {
+    public UUID getId() {
         return this.id;
     }
 
-    public CenterPerson id(Long id) {
+    public CenterPerson id(UUID id) {
         this.setId(id);
         return this;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -106,6 +112,19 @@ public class CenterPerson implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public CenterPersonGroup getGroup() {
+        return this.group;
+    }
+
+    public void setGroup(CenterPersonGroup centerPersonGroup) {
+        this.group = centerPersonGroup;
+    }
+
+    public CenterPerson group(CenterPersonGroup centerPersonGroup) {
+        this.setGroup(centerPersonGroup);
+        return this;
     }
 
     public Set<CenterPersonGroup> getGroups() {

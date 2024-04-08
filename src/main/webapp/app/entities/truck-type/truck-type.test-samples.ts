@@ -1,36 +1,37 @@
 import { ITruckType, NewTruckType } from './truck-type.model';
 
 export const sampleWithRequiredData: ITruckType = {
-  id: 29002,
-  code: 'apropos unless justly',
-  name: 'both',
+  id: 'eee236ed-2ffc-451c-8be7-cf4564ee78ef',
+  code: 'behind guideline snail',
+  name: 'optimistic',
 };
 
 export const sampleWithPartialData: ITruckType = {
-  id: 9212,
-  code: 'fingerling about',
-  name: 'dangerous noxious',
-  height: 19458,
-  type: 'underneath ha',
-  width: 20766,
+  id: '999663d0-8eee-421e-a9ba-378dbbe8bf22',
+  code: 'elaborate that',
+  name: 'thoughtful hype uselessly',
+  category: 'since crop of',
+  height: 13162,
+  length: 11685,
+  maxSpeed: 25853.86,
 };
 
 export const sampleWithFullData: ITruckType = {
-  id: 8091,
-  code: 'ripe technician',
-  name: 'fortunately elementary',
-  category: 'whose stranger',
-  height: 30930,
-  length: 6924,
-  maxSpeed: 4214.89,
-  type: 'out ew whoa',
-  weight: 20189,
-  width: 13162,
+  id: '4121ff48-0766-4093-a018-713a08ba5de7',
+  code: 'ugh nucleotide next',
+  name: 'psst excitable tenderly',
+  category: 'quizzically anenst inch',
+  height: 19315,
+  length: 24184,
+  maxSpeed: 2807.51,
+  type: 'above pillow',
+  weight: 8274,
+  width: 29718,
 };
 
 export const sampleWithNewData: NewTruckType = {
-  code: 'yet amuse',
-  name: 'geez uh-huh',
+  code: 'vocalize',
+  name: 'apropos ultimate next',
   id: null,
 };
 

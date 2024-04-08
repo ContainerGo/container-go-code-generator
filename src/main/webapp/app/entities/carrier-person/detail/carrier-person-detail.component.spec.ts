@@ -18,7 +18,7 @@ describe('CarrierPerson Management Detail Component', () => {
             {
               path: '**',
               component: CarrierPersonDetailComponent,
-              resolve: { carrierPerson: () => of({ id: 123 }) },
+              resolve: { carrierPerson: () => of({ id: '9fec3727-3421-4967-b213-ba36557ca194' }) },
             },
           ],
           withComponentInputBinding(),
@@ -40,7 +40,7 @@ describe('CarrierPerson Management Detail Component', () => {
       const instance = await harness.navigateByUrl('/', CarrierPersonDetailComponent);
 
       // THEN
-      expect(instance.carrierPerson).toEqual(expect.objectContaining({ id: 123 }));
+      expect(instance.carrierPerson).toEqual(expect.objectContaining({ id: '9fec3727-3421-4967-b213-ba36557ca194' }));
     });
   });
 

@@ -1,6 +1,7 @@
 package vn.containergo.service;
 
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import vn.containergo.service.dto.CarrierPersonDTO;
@@ -47,12 +48,12 @@ public interface CarrierPersonService {
      * @param id the id of the entity.
      * @return the entity.
      */
-    Optional<CarrierPersonDTO> findOne(Long id);
+    Optional<CarrierPersonDTO> findOne(UUID id);
 
     /**
      * Delete the "id" carrierPerson.
      *
      * @param id the id of the entity.
      */
-    void delete(Long id);
+    void delete(UUID id);
 }

@@ -22,6 +22,7 @@ type CarrierPersonFormGroupContent = {
   phone: FormControl<ICarrierPerson['phone']>;
   email: FormControl<ICarrierPerson['email']>;
   address: FormControl<ICarrierPerson['address']>;
+  group: FormControl<ICarrierPerson['group']>;
   carrier: FormControl<ICarrierPerson['carrier']>;
 };
 
@@ -50,6 +51,9 @@ export class CarrierPersonFormService {
       }),
       email: new FormControl(carrierPersonRawValue.email),
       address: new FormControl(carrierPersonRawValue.address),
+      group: new FormControl(carrierPersonRawValue.group, {
+        validators: [Validators.required],
+      }),
       carrier: new FormControl(carrierPersonRawValue.carrier),
     });
   }

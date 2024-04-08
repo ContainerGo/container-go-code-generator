@@ -1,5 +1,7 @@
 package vn.containergo.service.mapper;
 
+import java.util.Objects;
+import java.util.UUID;
 import org.mapstruct.*;
 import vn.containergo.domain.Shipper;
 import vn.containergo.domain.ShipperAccount;
@@ -18,4 +20,8 @@ public interface ShipperAccountMapper extends EntityMapper<ShipperAccountDTO, Sh
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
     ShipperDTO toDtoShipperId(Shipper shipper);
+
+    default String map(UUID value) {
+        return Objects.toString(value, null);
+    }
 }

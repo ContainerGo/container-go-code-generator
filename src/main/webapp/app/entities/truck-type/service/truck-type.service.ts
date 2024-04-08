@@ -31,7 +31,7 @@ export class TruckTypeService {
     return this.http.patch<ITruckType>(`${this.resourceUrl}/${this.getTruckTypeIdentifier(truckType)}`, truckType, { observe: 'response' });
   }
 
-  find(id: number): Observable<EntityResponseType> {
+  find(id: string): Observable<EntityResponseType> {
     return this.http.get<ITruckType>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
@@ -40,11 +40,11 @@ export class TruckTypeService {
     return this.http.get<ITruckType[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
-  delete(id: number): Observable<HttpResponse<{}>> {
+  delete(id: string): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getTruckTypeIdentifier(truckType: Pick<ITruckType, 'id'>): number {
+  getTruckTypeIdentifier(truckType: Pick<ITruckType, 'id'>): string {
     return truckType.id;
   }
 

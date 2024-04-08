@@ -15,7 +15,7 @@
         @if (editForm.controls.id.value !== null) {
           <div class="mb-3">
             <label class="form-label" jhiTranslate="containerGoServerApp.container.id" for="field_id">Id</label>
-            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+            <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
           </div>
         }
 
@@ -369,25 +369,19 @@
 
         <div class="mb-3">
           <label class="form-label" jhiTranslate="containerGoServerApp.container.shipperId" for="field_shipperId">Shipper Id</label>
-          <input type="number" class="form-control" name="shipperId" id="field_shipperId" data-cy="shipperId" formControlName="shipperId" />
+          <input type="text" class="form-control" name="shipperId" id="field_shipperId" data-cy="shipperId" formControlName="shipperId" />
           @if (editForm.get('shipperId')!.invalid && (editForm.get('shipperId')!.dirty || editForm.get('shipperId')!.touched)) {
             <div>
               @if (editForm.get('shipperId')?.errors?.required) {
                 <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
               }
-              <small
-                class="form-text text-danger"
-                [hidden]="!editForm.get('shipperId')?.errors?.number"
-                jhiTranslate="entity.validation.number"
-                >Trường này phải là một số.</small
-              >
             </div>
           }
         </div>
 
         <div class="mb-3">
           <label class="form-label" jhiTranslate="containerGoServerApp.container.carrierId" for="field_carrierId">Carrier Id</label>
-          <input type="number" class="form-control" name="carrierId" id="field_carrierId" data-cy="carrierId" formControlName="carrierId" />
+          <input type="text" class="form-control" name="carrierId" id="field_carrierId" data-cy="carrierId" formControlName="carrierId" />
         </div>
 
         <div class="mb-3">

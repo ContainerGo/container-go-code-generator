@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * A DTO for the {@link vn.containergo.domain.CenterPerson} entity.
@@ -12,7 +13,7 @@ import java.util.Set;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class CenterPersonDTO implements Serializable {
 
-    private Long id;
+    private UUID id;
 
     @NotNull
     private String name;
@@ -24,13 +25,16 @@ public class CenterPersonDTO implements Serializable {
 
     private String address;
 
+    @NotNull
+    private CenterPersonGroupDTO group;
+
     private Set<CenterPersonGroupDTO> groups = new HashSet<>();
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -66,6 +70,14 @@ public class CenterPersonDTO implements Serializable {
         this.address = address;
     }
 
+    public CenterPersonGroupDTO getGroup() {
+        return group;
+    }
+
+    public void setGroup(CenterPersonGroupDTO group) {
+        this.group = group;
+    }
+
     public Set<CenterPersonGroupDTO> getGroups() {
         return groups;
     }
@@ -99,11 +111,12 @@ public class CenterPersonDTO implements Serializable {
     @Override
     public String toString() {
         return "CenterPersonDTO{" +
-            "id=" + getId() +
+            "id='" + getId() + "'" +
             ", name='" + getName() + "'" +
             ", phone='" + getPhone() + "'" +
             ", email='" + getEmail() + "'" +
             ", address='" + getAddress() + "'" +
+            ", group=" + getGroup() +
             ", groups=" + getGroups() +
             "}";
     }

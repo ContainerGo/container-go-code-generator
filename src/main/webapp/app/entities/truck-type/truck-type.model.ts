@@ -1,5 +1,5 @@
 export interface ITruckType {
-  id: number;
+  id: string;
   code?: string | null;
   name?: string | null;
   category?: string | null;

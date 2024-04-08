@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,6 +62,7 @@ public class ContainerTypeResource {
         if (containerTypeDTO.getId() != null) {
             throw new BadRequestAlertException("A new containerType cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        containerTypeDTO.setId(UUID.randomUUID());
         containerTypeDTO = containerTypeService.save(containerTypeDTO);
         return ResponseEntity.created(new URI("/api/container-types/" + containerTypeDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, containerTypeDTO.getId().toString()))
@@ -79,7 +81,7 @@ public class ContainerTypeResource {
      */
     @PutMapping("/{id}")
     public ResponseEntity<ContainerTypeDTO> updateContainerType(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @Valid @RequestBody ContainerTypeDTO containerTypeDTO
     ) throws URISyntaxException {
         log.debug("REST request to update ContainerType : {}, {}", id, containerTypeDTO);
@@ -113,7 +115,7 @@ public class ContainerTypeResource {
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<ContainerTypeDTO> partialUpdateContainerType(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @NotNull @RequestBody ContainerTypeDTO containerTypeDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update ContainerType partially : {}, {}", id, containerTypeDTO);
@@ -157,7 +159,7 @@ public class ContainerTypeResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the containerTypeDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ContainerTypeDTO> getContainerType(@PathVariable("id") Long id) {
+    public ResponseEntity<ContainerTypeDTO> getContainerType(@PathVariable("id") UUID id) {
         log.debug("REST request to get ContainerType : {}", id);
         Optional<ContainerTypeDTO> containerTypeDTO = containerTypeService.findOne(id);
         return ResponseUtil.wrapOrNotFound(containerTypeDTO);
@@ -170,7 +172,7 @@ public class ContainerTypeResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteContainerType(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteContainerType(@PathVariable("id") UUID id) {
         log.debug("REST request to delete ContainerType : {}", id);
         containerTypeService.delete(id);
         return ResponseEntity.noContent()

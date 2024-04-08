@@ -3,7 +3,7 @@ import { ICarrier } from 'app/entities/carrier/carrier.model';
 import { TruckStatus } from 'app/entities/enumerations/truck-status.model';
 
 export interface ITruck {
-  id: number;
+  id: string;
   code?: string | null;
   name?: string | null;
   model?: string | null;

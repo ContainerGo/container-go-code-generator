@@ -3,17 +3,15 @@ package vn.containergo.domain;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class TruckTypeTestSamples {
 
     private static final Random random = new Random();
-    private static final AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
     private static final AtomicInteger intCount = new AtomicInteger(random.nextInt() + (2 * Short.MAX_VALUE));
 
     public static TruckType getTruckTypeSample1() {
         return new TruckType()
-            .id(1L)
+            .id(UUID.fromString("23d8dc04-a48b-45d9-a01d-4b728f0ad4aa"))
             .code("code1")
             .name("name1")
             .category("category1")
@@ -26,7 +24,7 @@ public class TruckTypeTestSamples {
 
     public static TruckType getTruckTypeSample2() {
         return new TruckType()
-            .id(2L)
+            .id(UUID.fromString("ad79f240-3727-46c3-b89f-2cf6ebd74367"))
             .code("code2")
             .name("name2")
             .category("category2")
@@ -39,7 +37,7 @@ public class TruckTypeTestSamples {
 
     public static TruckType getTruckTypeRandomSampleGenerator() {
         return new TruckType()
-            .id(longCount.incrementAndGet())
+            .id(UUID.randomUUID())
             .code(UUID.randomUUID().toString())
             .name(UUID.randomUUID().toString())
             .category(UUID.randomUUID().toString())

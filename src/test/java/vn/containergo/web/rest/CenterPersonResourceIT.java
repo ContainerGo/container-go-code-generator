@@ -10,8 +10,7 @@ import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,6 +25,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import vn.containergo.IntegrationTest;
 import vn.containergo.domain.CenterPerson;
+import vn.containergo.domain.CenterPersonGroup;
 import vn.containergo.repository.CenterPersonRepository;
 import vn.containergo.service.CenterPersonService;
 import vn.containergo.service.dto.CenterPersonDTO;
@@ -54,9 +54,6 @@ class CenterPersonResourceIT {
 
     private static final String ENTITY_API_URL = "/api/center-people";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
-
-    private static Random random = new Random();
-    private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private ObjectMapper om;
@@ -90,6 +87,11 @@ class CenterPersonResourceIT {
             .phone(DEFAULT_PHONE)
             .email(DEFAULT_EMAIL)
             .address(DEFAULT_ADDRESS);
+        // Add required entity
+        CenterPersonGroup centerPersonGroup;
+        centerPersonGroup = CenterPersonGroupResourceIT.createEntity();
+        centerPersonGroup.setId("fixed-id-for-tests");
+        centerPerson.setGroup(centerPersonGroup);
         return centerPerson;
     }
 
@@ -105,6 +107,11 @@ class CenterPersonResourceIT {
             .phone(UPDATED_PHONE)
             .email(UPDATED_EMAIL)
             .address(UPDATED_ADDRESS);
+        // Add required entity
+        CenterPersonGroup centerPersonGroup;
+        centerPersonGroup = CenterPersonGroupResourceIT.createUpdatedEntity();
+        centerPersonGroup.setId("fixed-id-for-tests");
+        centerPerson.setGroup(centerPersonGroup);
         return centerPerson;
     }
 
@@ -138,7 +145,7 @@ class CenterPersonResourceIT {
     @Test
     void createCenterPersonWithExistingId() throws Exception {
         // Create the CenterPerson with an existing ID
-        centerPerson.setId(1L);
+        centerPerson.setId(UUID.randomUUID());
         CenterPersonDTO centerPersonDTO = centerPersonMapper.toDto(centerPerson);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
@@ -187,6 +194,7 @@ class CenterPersonResourceIT {
     @Test
     void getAllCenterPeople() throws Exception {
         // Initialize the database
+        centerPerson.setId(UUID.randomUUID());
         centerPersonRepository.save(centerPerson);
 
         // Get all the centerPersonList
@@ -194,7 +202,7 @@ class CenterPersonResourceIT {
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(centerPerson.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(centerPerson.getId().toString())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE)))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
@@ -221,6 +229,7 @@ class CenterPersonResourceIT {
     @Test
     void getCenterPerson() throws Exception {
         // Initialize the database
+        centerPerson.setId(UUID.randomUUID());
         centerPersonRepository.save(centerPerson);
 
         // Get the centerPerson
@@ -228,7 +237,7 @@ class CenterPersonResourceIT {
             .perform(get(ENTITY_API_URL_ID, centerPerson.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(centerPerson.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(centerPerson.getId().toString()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.phone").value(DEFAULT_PHONE))
             .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
@@ -238,12 +247,13 @@ class CenterPersonResourceIT {
     @Test
     void getNonExistingCenterPerson() throws Exception {
         // Get the centerPerson
-        restCenterPersonMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
+        restCenterPersonMockMvc.perform(get(ENTITY_API_URL_ID, UUID.randomUUID().toString())).andExpect(status().isNotFound());
     }
 
     @Test
     void putExistingCenterPerson() throws Exception {
         // Initialize the database
+        centerPerson.setId(UUID.randomUUID());
         centerPersonRepository.save(centerPerson);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -269,7 +279,7 @@ class CenterPersonResourceIT {
     @Test
     void putNonExistingCenterPerson() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        centerPerson.setId(longCount.incrementAndGet());
+        centerPerson.setId(UUID.randomUUID());
 
         // Create the CenterPerson
         CenterPersonDTO centerPersonDTO = centerPersonMapper.toDto(centerPerson);
@@ -290,7 +300,7 @@ class CenterPersonResourceIT {
     @Test
     void putWithIdMismatchCenterPerson() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        centerPerson.setId(longCount.incrementAndGet());
+        centerPerson.setId(UUID.randomUUID());
 
         // Create the CenterPerson
         CenterPersonDTO centerPersonDTO = centerPersonMapper.toDto(centerPerson);
@@ -298,7 +308,7 @@ class CenterPersonResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCenterPersonMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                put(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(om.writeValueAsBytes(centerPersonDTO))
             )
@@ -311,7 +321,7 @@ class CenterPersonResourceIT {
     @Test
     void putWithMissingIdPathParamCenterPerson() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        centerPerson.setId(longCount.incrementAndGet());
+        centerPerson.setId(UUID.randomUUID());
 
         // Create the CenterPerson
         CenterPersonDTO centerPersonDTO = centerPersonMapper.toDto(centerPerson);
@@ -328,6 +338,7 @@ class CenterPersonResourceIT {
     @Test
     void partialUpdateCenterPersonWithPatch() throws Exception {
         // Initialize the database
+        centerPerson.setId(UUID.randomUUID());
         centerPersonRepository.save(centerPerson);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -358,6 +369,7 @@ class CenterPersonResourceIT {
     @Test
     void fullUpdateCenterPersonWithPatch() throws Exception {
         // Initialize the database
+        centerPerson.setId(UUID.randomUUID());
         centerPersonRepository.save(centerPerson);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -385,7 +397,7 @@ class CenterPersonResourceIT {
     @Test
     void patchNonExistingCenterPerson() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        centerPerson.setId(longCount.incrementAndGet());
+        centerPerson.setId(UUID.randomUUID());
 
         // Create the CenterPerson
         CenterPersonDTO centerPersonDTO = centerPersonMapper.toDto(centerPerson);
@@ -406,7 +418,7 @@ class CenterPersonResourceIT {
     @Test
     void patchWithIdMismatchCenterPerson() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        centerPerson.setId(longCount.incrementAndGet());
+        centerPerson.setId(UUID.randomUUID());
 
         // Create the CenterPerson
         CenterPersonDTO centerPersonDTO = centerPersonMapper.toDto(centerPerson);
@@ -414,7 +426,7 @@ class CenterPersonResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCenterPersonMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                patch(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(centerPersonDTO))
             )
@@ -427,7 +439,7 @@ class CenterPersonResourceIT {
     @Test
     void patchWithMissingIdPathParamCenterPerson() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        centerPerson.setId(longCount.incrementAndGet());
+        centerPerson.setId(UUID.randomUUID());
 
         // Create the CenterPerson
         CenterPersonDTO centerPersonDTO = centerPersonMapper.toDto(centerPerson);
@@ -444,6 +456,7 @@ class CenterPersonResourceIT {
     @Test
     void deleteCenterPerson() throws Exception {
         // Initialize the database
+        centerPerson.setId(UUID.randomUUID());
         centerPersonRepository.save(centerPerson);
 
         long databaseSizeBeforeDelete = getRepositoryCount();

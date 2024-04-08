@@ -35,7 +35,7 @@ export class CarrierPersonService {
     });
   }
 
-  find(id: number): Observable<EntityResponseType> {
+  find(id: string): Observable<EntityResponseType> {
     return this.http.get<ICarrierPerson>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
@@ -44,11 +44,11 @@ export class CarrierPersonService {
     return this.http.get<ICarrierPerson[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
-  delete(id: number): Observable<HttpResponse<{}>> {
+  delete(id: string): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getCarrierPersonIdentifier(carrierPerson: Pick<ICarrierPerson, 'id'>): number {
+  getCarrierPersonIdentifier(carrierPerson: Pick<ICarrierPerson, 'id'>): string {
     return carrierPerson.id;
   }
 

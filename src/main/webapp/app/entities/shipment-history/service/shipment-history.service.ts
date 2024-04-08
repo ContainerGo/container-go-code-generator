@@ -54,7 +54,7 @@ export class ShipmentHistoryService {
       .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
-  find(id: number): Observable<EntityResponseType> {
+  find(id: string): Observable<EntityResponseType> {
     return this.http
       .get<RestShipmentHistory>(`${this.resourceUrl}/${id}`, { observe: 'response' })
       .pipe(map(res => this.convertResponseFromServer(res)));
@@ -67,11 +67,11 @@ export class ShipmentHistoryService {
       .pipe(map(res => this.convertResponseArrayFromServer(res)));
   }
 
-  delete(id: number): Observable<HttpResponse<{}>> {
+  delete(id: string): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getShipmentHistoryIdentifier(shipmentHistory: Pick<IShipmentHistory, 'id'>): number {
+  getShipmentHistoryIdentifier(shipmentHistory: Pick<IShipmentHistory, 'id'>): string {
     return shipmentHistory.id;
   }
 

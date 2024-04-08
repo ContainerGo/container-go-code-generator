@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,6 +66,7 @@ public class ContainerStatusGroupResource {
         if (containerStatusGroupDTO.getId() != null) {
             throw new BadRequestAlertException("A new containerStatusGroup cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        containerStatusGroupDTO.setId(UUID.randomUUID());
         containerStatusGroupDTO = containerStatusGroupService.save(containerStatusGroupDTO);
         return ResponseEntity.created(new URI("/api/container-status-groups/" + containerStatusGroupDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, containerStatusGroupDTO.getId().toString()))
@@ -83,7 +85,7 @@ public class ContainerStatusGroupResource {
      */
     @PutMapping("/{id}")
     public ResponseEntity<ContainerStatusGroupDTO> updateContainerStatusGroup(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @Valid @RequestBody ContainerStatusGroupDTO containerStatusGroupDTO
     ) throws URISyntaxException {
         log.debug("REST request to update ContainerStatusGroup : {}, {}", id, containerStatusGroupDTO);
@@ -117,7 +119,7 @@ public class ContainerStatusGroupResource {
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<ContainerStatusGroupDTO> partialUpdateContainerStatusGroup(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @NotNull @RequestBody ContainerStatusGroupDTO containerStatusGroupDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update ContainerStatusGroup partially : {}, {}", id, containerStatusGroupDTO);
@@ -163,7 +165,7 @@ public class ContainerStatusGroupResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the containerStatusGroupDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ContainerStatusGroupDTO> getContainerStatusGroup(@PathVariable("id") Long id) {
+    public ResponseEntity<ContainerStatusGroupDTO> getContainerStatusGroup(@PathVariable("id") UUID id) {
         log.debug("REST request to get ContainerStatusGroup : {}", id);
         Optional<ContainerStatusGroupDTO> containerStatusGroupDTO = containerStatusGroupService.findOne(id);
         return ResponseUtil.wrapOrNotFound(containerStatusGroupDTO);
@@ -176,7 +178,7 @@ public class ContainerStatusGroupResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteContainerStatusGroup(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteContainerStatusGroup(@PathVariable("id") UUID id) {
         log.debug("REST request to delete ContainerStatusGroup : {}", id);
         containerStatusGroupService.delete(id);
         return ResponseEntity.noContent()

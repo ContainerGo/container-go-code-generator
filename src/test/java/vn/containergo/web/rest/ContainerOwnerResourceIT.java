@@ -8,8 +8,7 @@ import static vn.containergo.domain.ContainerOwnerAsserts.*;
 import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +44,6 @@ class ContainerOwnerResourceIT {
 
     private static final String ENTITY_API_URL = "/api/container-owners";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
-
-    private static Random random = new Random();
-    private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private ObjectMapper om;
@@ -123,7 +119,7 @@ class ContainerOwnerResourceIT {
     @Test
     void createContainerOwnerWithExistingId() throws Exception {
         // Create the ContainerOwner with an existing ID
-        containerOwner.setId(1L);
+        containerOwner.setId(UUID.randomUUID());
         ContainerOwnerDTO containerOwnerDTO = containerOwnerMapper.toDto(containerOwner);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
@@ -156,6 +152,7 @@ class ContainerOwnerResourceIT {
     @Test
     void getAllContainerOwners() throws Exception {
         // Initialize the database
+        containerOwner.setId(UUID.randomUUID());
         containerOwnerRepository.save(containerOwner);
 
         // Get all the containerOwnerList
@@ -163,7 +160,7 @@ class ContainerOwnerResourceIT {
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(containerOwner.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(containerOwner.getId().toString())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE)))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
@@ -173,6 +170,7 @@ class ContainerOwnerResourceIT {
     @Test
     void getContainerOwner() throws Exception {
         // Initialize the database
+        containerOwner.setId(UUID.randomUUID());
         containerOwnerRepository.save(containerOwner);
 
         // Get the containerOwner
@@ -180,7 +178,7 @@ class ContainerOwnerResourceIT {
             .perform(get(ENTITY_API_URL_ID, containerOwner.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(containerOwner.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(containerOwner.getId().toString()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.phone").value(DEFAULT_PHONE))
             .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
@@ -190,12 +188,13 @@ class ContainerOwnerResourceIT {
     @Test
     void getNonExistingContainerOwner() throws Exception {
         // Get the containerOwner
-        restContainerOwnerMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
+        restContainerOwnerMockMvc.perform(get(ENTITY_API_URL_ID, UUID.randomUUID().toString())).andExpect(status().isNotFound());
     }
 
     @Test
     void putExistingContainerOwner() throws Exception {
         // Initialize the database
+        containerOwner.setId(UUID.randomUUID());
         containerOwnerRepository.save(containerOwner);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -221,7 +220,7 @@ class ContainerOwnerResourceIT {
     @Test
     void putNonExistingContainerOwner() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerOwner.setId(longCount.incrementAndGet());
+        containerOwner.setId(UUID.randomUUID());
 
         // Create the ContainerOwner
         ContainerOwnerDTO containerOwnerDTO = containerOwnerMapper.toDto(containerOwner);
@@ -242,7 +241,7 @@ class ContainerOwnerResourceIT {
     @Test
     void putWithIdMismatchContainerOwner() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerOwner.setId(longCount.incrementAndGet());
+        containerOwner.setId(UUID.randomUUID());
 
         // Create the ContainerOwner
         ContainerOwnerDTO containerOwnerDTO = containerOwnerMapper.toDto(containerOwner);
@@ -250,7 +249,7 @@ class ContainerOwnerResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restContainerOwnerMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                put(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(om.writeValueAsBytes(containerOwnerDTO))
             )
@@ -263,7 +262,7 @@ class ContainerOwnerResourceIT {
     @Test
     void putWithMissingIdPathParamContainerOwner() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerOwner.setId(longCount.incrementAndGet());
+        containerOwner.setId(UUID.randomUUID());
 
         // Create the ContainerOwner
         ContainerOwnerDTO containerOwnerDTO = containerOwnerMapper.toDto(containerOwner);
@@ -280,6 +279,7 @@ class ContainerOwnerResourceIT {
     @Test
     void partialUpdateContainerOwnerWithPatch() throws Exception {
         // Initialize the database
+        containerOwner.setId(UUID.randomUUID());
         containerOwnerRepository.save(containerOwner);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -310,6 +310,7 @@ class ContainerOwnerResourceIT {
     @Test
     void fullUpdateContainerOwnerWithPatch() throws Exception {
         // Initialize the database
+        containerOwner.setId(UUID.randomUUID());
         containerOwnerRepository.save(containerOwner);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -337,7 +338,7 @@ class ContainerOwnerResourceIT {
     @Test
     void patchNonExistingContainerOwner() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerOwner.setId(longCount.incrementAndGet());
+        containerOwner.setId(UUID.randomUUID());
 
         // Create the ContainerOwner
         ContainerOwnerDTO containerOwnerDTO = containerOwnerMapper.toDto(containerOwner);
@@ -358,7 +359,7 @@ class ContainerOwnerResourceIT {
     @Test
     void patchWithIdMismatchContainerOwner() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerOwner.setId(longCount.incrementAndGet());
+        containerOwner.setId(UUID.randomUUID());
 
         // Create the ContainerOwner
         ContainerOwnerDTO containerOwnerDTO = containerOwnerMapper.toDto(containerOwner);
@@ -366,7 +367,7 @@ class ContainerOwnerResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restContainerOwnerMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                patch(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(containerOwnerDTO))
             )
@@ -379,7 +380,7 @@ class ContainerOwnerResourceIT {
     @Test
     void patchWithMissingIdPathParamContainerOwner() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerOwner.setId(longCount.incrementAndGet());
+        containerOwner.setId(UUID.randomUUID());
 
         // Create the ContainerOwner
         ContainerOwnerDTO containerOwnerDTO = containerOwnerMapper.toDto(containerOwner);
@@ -396,6 +397,7 @@ class ContainerOwnerResourceIT {
     @Test
     void deleteContainerOwner() throws Exception {
         // Initialize the database
+        containerOwner.setId(UUID.randomUUID());
         containerOwnerRepository.save(containerOwner);
 
         long databaseSizeBeforeDelete = getRepositoryCount();

@@ -50,7 +50,7 @@ export class CarrierPersonComponent implements OnInit {
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
-  trackId = (_index: number, item: ICarrierPerson): number => this.carrierPersonService.getCarrierPersonIdentifier(item);
+  trackId = (_index: number, item: ICarrierPerson): string => this.carrierPersonService.getCarrierPersonIdentifier(item);
 
   ngOnInit(): void {
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])

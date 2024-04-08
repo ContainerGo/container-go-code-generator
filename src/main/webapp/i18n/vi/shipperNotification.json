@@ -1,0 +1,29 @@
+{
+  "containerGoServerApp": {
+    "shipperNotification": {
+      "home": {
+        "title": "Shipper Notifications",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Shipper Notification",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Shipper Notification",
+        "notFound": "No Shipper Notifications found"
+      },
+      "created": "Một Shipper Notification mới được tạo với định danh {{ param }}",
+      "updated": "Một Shipper Notification cập nhật với định danh {{ param }}",
+      "deleted": "Một Shipper Notification đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Shipper Notification {{ id }}?"
+      },
+      "detail": {
+        "title": "Shipper Notification"
+      },
+      "id": "Id",
+      "code": "Code",
+      "name": "Name",
+      "isEmailNotificationEnabled": "Is Email Notification Enabled",
+      "isSmsNotificationEnabled": "Is Sms Notification Enabled",
+      "isAppNotificationEnabled": "Is App Notification Enabled",
+      "person": "Person"
+    }
+  }
+}

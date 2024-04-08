@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * A DTO for the {@link vn.containergo.domain.Carrier} entity.
@@ -11,7 +12,7 @@ import java.util.Objects;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class CarrierDTO implements Serializable {
 
-    private Long id;
+    private UUID id;
 
     @NotNull
     private String code;
@@ -42,11 +43,11 @@ public class CarrierDTO implements Serializable {
 
     private Instant verifiedSince;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -179,7 +180,7 @@ public class CarrierDTO implements Serializable {
     @Override
     public String toString() {
         return "CarrierDTO{" +
-            "id=" + getId() +
+            "id='" + getId() + "'" +
             ", code='" + getCode() + "'" +
             ", name='" + getName() + "'" +
             ", address='" + getAddress() + "'" +

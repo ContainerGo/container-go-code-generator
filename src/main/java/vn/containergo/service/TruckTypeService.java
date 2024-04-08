@@ -1,6 +1,7 @@
 package vn.containergo.service;
 
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import vn.containergo.service.dto.TruckTypeDTO;
@@ -47,12 +48,12 @@ public interface TruckTypeService {
      * @param id the id of the entity.
      * @return the entity.
      */
-    Optional<TruckTypeDTO> findOne(Long id);
+    Optional<TruckTypeDTO> findOne(UUID id);
 
     /**
      * Delete the "id" truckType.
      *
      * @param id the id of the entity.
      */
-    void delete(Long id);
+    void delete(UUID id);
 }

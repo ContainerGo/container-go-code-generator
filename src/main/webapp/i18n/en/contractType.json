@@ -1,0 +1,9 @@
+{
+  "containerGoServerApp": {
+    "ContractType": {
+      "null": "",
+      "SIGNED_CONTRACT": "SIGNED_CONTRACT",
+      "INDIVIDUAL": "INDIVIDUAL"
+    }
+  }
+}

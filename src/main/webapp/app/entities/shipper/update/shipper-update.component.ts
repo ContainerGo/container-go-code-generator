@@ -7,6 +7,8 @@ import { finalize } from 'rxjs/operators';
 import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { PaymentType } from 'app/entities/enumerations/payment-type.model';
+import { ContractType } from 'app/entities/enumerations/contract-type.model';
 import { IShipper } from '../shipper.model';
 import { ShipperService } from '../service/shipper.service';
 import { ShipperFormService, ShipperFormGroup } from './shipper-form.service';
@@ -20,6 +22,8 @@ import { ShipperFormService, ShipperFormGroup } from './shipper-form.service';
 export class ShipperUpdateComponent implements OnInit {
   isSaving = false;
   shipper: IShipper | null = null;
+  paymentTypeValues = Object.keys(PaymentType);
+  contractTypeValues = Object.keys(ContractType);
 
   protected shipperService = inject(ShipperService);
   protected shipperFormService = inject(ShipperFormService);

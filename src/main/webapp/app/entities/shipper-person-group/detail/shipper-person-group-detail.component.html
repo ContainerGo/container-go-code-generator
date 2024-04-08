@@ -1,0 +1,36 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (shipperPersonGroup) {
+      <div>
+        <h2 data-cy="shipperPersonGroupDetailsHeading">
+          <span jhiTranslate="containerGoServerApp.shipperPersonGroup.detail.title">Shipper Person Group</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="containerGoServerApp.shipperPersonGroup.id">Id</span></dt>
+          <dd>
+            <span>{{ shipperPersonGroup.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.shipperPersonGroup.name">Name</span></dt>
+          <dd>
+            <span>{{ shipperPersonGroup.name }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
+        </button>
+
+        <button type="button" [routerLink]="['/shipper-person-group', shipperPersonGroup.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

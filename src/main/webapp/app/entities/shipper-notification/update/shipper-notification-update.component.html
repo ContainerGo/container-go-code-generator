@@ -1,0 +1,132 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-shipper-notification-heading"
+        data-cy="ShipperNotificationCreateUpdateHeading"
+        jhiTranslate="containerGoServerApp.shipperNotification.home.createOrEditLabel"
+      >
+        Thêm mới hoặc cập nhật Shipper Notification
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" jhiTranslate="containerGoServerApp.shipperNotification.id" for="field_id">Id</label>
+            <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.shipperNotification.code" for="field_code">Code</label>
+          <input type="text" class="form-control" name="code" id="field_code" data-cy="code" formControlName="code" />
+          @if (editForm.get('code')!.invalid && (editForm.get('code')!.dirty || editForm.get('code')!.touched)) {
+            <div>
+              @if (editForm.get('code')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.shipperNotification.name" for="field_name">Name</label>
+          <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+          @if (editForm.get('name')!.invalid && (editForm.get('name')!.dirty || editForm.get('name')!.touched)) {
+            <div>
+              @if (editForm.get('name')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label
+            class="form-label"
+            jhiTranslate="containerGoServerApp.shipperNotification.isEmailNotificationEnabled"
+            for="field_isEmailNotificationEnabled"
+            >Is Email Notification Enabled</label
+          >
+          <input
+            type="checkbox"
+            class="form-check"
+            name="isEmailNotificationEnabled"
+            id="field_isEmailNotificationEnabled"
+            data-cy="isEmailNotificationEnabled"
+            formControlName="isEmailNotificationEnabled"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label
+            class="form-label"
+            jhiTranslate="containerGoServerApp.shipperNotification.isSmsNotificationEnabled"
+            for="field_isSmsNotificationEnabled"
+            >Is Sms Notification Enabled</label
+          >
+          <input
+            type="checkbox"
+            class="form-check"
+            name="isSmsNotificationEnabled"
+            id="field_isSmsNotificationEnabled"
+            data-cy="isSmsNotificationEnabled"
+            formControlName="isSmsNotificationEnabled"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label
+            class="form-label"
+            jhiTranslate="containerGoServerApp.shipperNotification.isAppNotificationEnabled"
+            for="field_isAppNotificationEnabled"
+            >Is App Notification Enabled</label
+          >
+          <input
+            type="checkbox"
+            class="form-check"
+            name="isAppNotificationEnabled"
+            id="field_isAppNotificationEnabled"
+            data-cy="isAppNotificationEnabled"
+            formControlName="isAppNotificationEnabled"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.shipperNotification.person" for="field_person">Person</label>
+          <select
+            class="form-control"
+            id="field_person"
+            data-cy="person"
+            name="person"
+            formControlName="person"
+            [compareWith]="compareShipperPerson"
+          >
+            <option [ngValue]="null"></option>
+            @for (shipperPersonOption of shipperPeopleSharedCollection; track $index) {
+              <option [ngValue]="shipperPersonOption">{{ shipperPersonOption.id }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Hủy</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Lưu</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

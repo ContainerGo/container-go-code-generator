@@ -31,7 +31,7 @@ export class DistrictService {
     return this.http.patch<IDistrict>(`${this.resourceUrl}/${this.getDistrictIdentifier(district)}`, district, { observe: 'response' });
   }
 
-  find(id: number): Observable<EntityResponseType> {
+  find(id: string): Observable<EntityResponseType> {
     return this.http.get<IDistrict>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
@@ -40,11 +40,11 @@ export class DistrictService {
     return this.http.get<IDistrict[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
-  delete(id: number): Observable<HttpResponse<{}>> {
+  delete(id: string): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getDistrictIdentifier(district: Pick<IDistrict, 'id'>): number {
+  getDistrictIdentifier(district: Pick<IDistrict, 'id'>): string {
     return district.id;
   }
 

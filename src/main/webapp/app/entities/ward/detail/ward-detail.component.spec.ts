@@ -18,7 +18,7 @@ describe('Ward Management Detail Component', () => {
             {
               path: '**',
               component: WardDetailComponent,
-              resolve: { ward: () => of({ id: 123 }) },
+              resolve: { ward: () => of({ id: '9fec3727-3421-4967-b213-ba36557ca194' }) },
             },
           ],
           withComponentInputBinding(),
@@ -40,7 +40,7 @@ describe('Ward Management Detail Component', () => {
       const instance = await harness.navigateByUrl('/', WardDetailComponent);
 
       // THEN
-      expect(instance.ward).toEqual(expect.objectContaining({ id: 123 }));
+      expect(instance.ward).toEqual(expect.objectContaining({ id: '9fec3727-3421-4967-b213-ba36557ca194' }));
     });
   });
 

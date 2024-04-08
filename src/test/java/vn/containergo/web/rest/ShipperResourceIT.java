@@ -8,8 +8,9 @@ import static vn.containergo.domain.ShipperAsserts.*;
 import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import vn.containergo.IntegrationTest;
 import vn.containergo.domain.Shipper;
+import vn.containergo.domain.enumeration.ContractType;
+import vn.containergo.domain.enumeration.PaymentType;
 import vn.containergo.repository.ShipperRepository;
 import vn.containergo.service.dto.ShipperDTO;
 import vn.containergo.service.mapper.ShipperMapper;
@@ -46,8 +49,14 @@ class ShipperResourceIT {
     private static final Integer DEFAULT_COMPANY_SIZE = 1;
     private static final Integer UPDATED_COMPANY_SIZE = 2;
 
-    private static final String DEFAULT_PAYMENT_TYPE = "AAAAAAAAAA";
-    private static final String UPDATED_PAYMENT_TYPE = "BBBBBBBBBB";
+    private static final PaymentType DEFAULT_PAYMENT_TYPE = PaymentType.CASH_ON_DELIVERY;
+    private static final PaymentType UPDATED_PAYMENT_TYPE = PaymentType.END_OF_MONTH;
+
+    private static final ContractType DEFAULT_CONTRACT_TYPE = ContractType.SIGNED_CONTRACT;
+    private static final ContractType UPDATED_CONTRACT_TYPE = ContractType.INDIVIDUAL;
+
+    private static final Instant DEFAULT_CONTRACT_VALID_UNTIL = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_CONTRACT_VALID_UNTIL = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     private static final Boolean DEFAULT_IS_APPROVED = false;
     private static final Boolean UPDATED_IS_APPROVED = true;
@@ -60,9 +69,6 @@ class ShipperResourceIT {
 
     private static final String ENTITY_API_URL = "/api/shippers";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
-
-    private static Random random = new Random();
-    private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private ObjectMapper om;
@@ -92,6 +98,8 @@ class ShipperResourceIT {
             .taxCode(DEFAULT_TAX_CODE)
             .companySize(DEFAULT_COMPANY_SIZE)
             .paymentType(DEFAULT_PAYMENT_TYPE)
+            .contractType(DEFAULT_CONTRACT_TYPE)
+            .contractValidUntil(DEFAULT_CONTRACT_VALID_UNTIL)
             .isApproved(DEFAULT_IS_APPROVED)
             .isBillingInformationComplete(DEFAULT_IS_BILLING_INFORMATION_COMPLETE)
             .isProfileComplete(DEFAULT_IS_PROFILE_COMPLETE);
@@ -112,6 +120,8 @@ class ShipperResourceIT {
             .taxCode(UPDATED_TAX_CODE)
             .companySize(UPDATED_COMPANY_SIZE)
             .paymentType(UPDATED_PAYMENT_TYPE)
+            .contractType(UPDATED_CONTRACT_TYPE)
+            .contractValidUntil(UPDATED_CONTRACT_VALID_UNTIL)
             .isApproved(UPDATED_IS_APPROVED)
             .isBillingInformationComplete(UPDATED_IS_BILLING_INFORMATION_COMPLETE)
             .isProfileComplete(UPDATED_IS_PROFILE_COMPLETE);
@@ -148,7 +158,7 @@ class ShipperResourceIT {
     @Test
     void createShipperWithExistingId() throws Exception {
         // Create the Shipper with an existing ID
-        shipper.setId(1L);
+        shipper.setId(UUID.randomUUID());
         ShipperDTO shipperDTO = shipperMapper.toDto(shipper);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
@@ -227,8 +237,25 @@ class ShipperResourceIT {
     }
 
     @Test
+    void checkContractTypeIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        // set the field null
+        shipper.setContractType(null);
+
+        // Create the Shipper, which fails.
+        ShipperDTO shipperDTO = shipperMapper.toDto(shipper);
+
+        restShipperMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(shipperDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
     void getAllShippers() throws Exception {
         // Initialize the database
+        shipper.setId(UUID.randomUUID());
         shipperRepository.save(shipper);
 
         // Get all the shipperList
@@ -236,13 +263,15 @@ class ShipperResourceIT {
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(shipper.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(shipper.getId().toString())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)))
             .andExpect(jsonPath("$.[*].taxCode").value(hasItem(DEFAULT_TAX_CODE)))
             .andExpect(jsonPath("$.[*].companySize").value(hasItem(DEFAULT_COMPANY_SIZE)))
-            .andExpect(jsonPath("$.[*].paymentType").value(hasItem(DEFAULT_PAYMENT_TYPE)))
+            .andExpect(jsonPath("$.[*].paymentType").value(hasItem(DEFAULT_PAYMENT_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].contractType").value(hasItem(DEFAULT_CONTRACT_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].contractValidUntil").value(hasItem(DEFAULT_CONTRACT_VALID_UNTIL.toString())))
             .andExpect(jsonPath("$.[*].isApproved").value(hasItem(DEFAULT_IS_APPROVED.booleanValue())))
             .andExpect(
                 jsonPath("$.[*].isBillingInformationComplete").value(hasItem(DEFAULT_IS_BILLING_INFORMATION_COMPLETE.booleanValue()))
@@ -253,6 +282,7 @@ class ShipperResourceIT {
     @Test
     void getShipper() throws Exception {
         // Initialize the database
+        shipper.setId(UUID.randomUUID());
         shipperRepository.save(shipper);
 
         // Get the shipper
@@ -260,13 +290,15 @@ class ShipperResourceIT {
             .perform(get(ENTITY_API_URL_ID, shipper.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(shipper.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(shipper.getId().toString()))
             .andExpect(jsonPath("$.code").value(DEFAULT_CODE))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.address").value(DEFAULT_ADDRESS))
             .andExpect(jsonPath("$.taxCode").value(DEFAULT_TAX_CODE))
             .andExpect(jsonPath("$.companySize").value(DEFAULT_COMPANY_SIZE))
-            .andExpect(jsonPath("$.paymentType").value(DEFAULT_PAYMENT_TYPE))
+            .andExpect(jsonPath("$.paymentType").value(DEFAULT_PAYMENT_TYPE.toString()))
+            .andExpect(jsonPath("$.contractType").value(DEFAULT_CONTRACT_TYPE.toString()))
+            .andExpect(jsonPath("$.contractValidUntil").value(DEFAULT_CONTRACT_VALID_UNTIL.toString()))
             .andExpect(jsonPath("$.isApproved").value(DEFAULT_IS_APPROVED.booleanValue()))
             .andExpect(jsonPath("$.isBillingInformationComplete").value(DEFAULT_IS_BILLING_INFORMATION_COMPLETE.booleanValue()))
             .andExpect(jsonPath("$.isProfileComplete").value(DEFAULT_IS_PROFILE_COMPLETE.booleanValue()));
@@ -275,12 +307,13 @@ class ShipperResourceIT {
     @Test
     void getNonExistingShipper() throws Exception {
         // Get the shipper
-        restShipperMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
+        restShipperMockMvc.perform(get(ENTITY_API_URL_ID, UUID.randomUUID().toString())).andExpect(status().isNotFound());
     }
 
     @Test
     void putExistingShipper() throws Exception {
         // Initialize the database
+        shipper.setId(UUID.randomUUID());
         shipperRepository.save(shipper);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -294,6 +327,8 @@ class ShipperResourceIT {
             .taxCode(UPDATED_TAX_CODE)
             .companySize(UPDATED_COMPANY_SIZE)
             .paymentType(UPDATED_PAYMENT_TYPE)
+            .contractType(UPDATED_CONTRACT_TYPE)
+            .contractValidUntil(UPDATED_CONTRACT_VALID_UNTIL)
             .isApproved(UPDATED_IS_APPROVED)
             .isBillingInformationComplete(UPDATED_IS_BILLING_INFORMATION_COMPLETE)
             .isProfileComplete(UPDATED_IS_PROFILE_COMPLETE);
@@ -313,7 +348,7 @@ class ShipperResourceIT {
     @Test
     void putNonExistingShipper() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipper.setId(longCount.incrementAndGet());
+        shipper.setId(UUID.randomUUID());
 
         // Create the Shipper
         ShipperDTO shipperDTO = shipperMapper.toDto(shipper);
@@ -332,7 +367,7 @@ class ShipperResourceIT {
     @Test
     void putWithIdMismatchShipper() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipper.setId(longCount.incrementAndGet());
+        shipper.setId(UUID.randomUUID());
 
         // Create the Shipper
         ShipperDTO shipperDTO = shipperMapper.toDto(shipper);
@@ -340,9 +375,7 @@ class ShipperResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restShipperMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(shipperDTO))
+                put(ENTITY_API_URL_ID, UUID.randomUUID()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(shipperDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -353,7 +386,7 @@ class ShipperResourceIT {
     @Test
     void putWithMissingIdPathParamShipper() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipper.setId(longCount.incrementAndGet());
+        shipper.setId(UUID.randomUUID());
 
         // Create the Shipper
         ShipperDTO shipperDTO = shipperMapper.toDto(shipper);
@@ -370,6 +403,7 @@ class ShipperResourceIT {
     @Test
     void partialUpdateShipperWithPatch() throws Exception {
         // Initialize the database
+        shipper.setId(UUID.randomUUID());
         shipperRepository.save(shipper);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -383,8 +417,8 @@ class ShipperResourceIT {
             .address(UPDATED_ADDRESS)
             .taxCode(UPDATED_TAX_CODE)
             .paymentType(UPDATED_PAYMENT_TYPE)
-            .isApproved(UPDATED_IS_APPROVED)
-            .isBillingInformationComplete(UPDATED_IS_BILLING_INFORMATION_COMPLETE);
+            .contractType(UPDATED_CONTRACT_TYPE)
+            .contractValidUntil(UPDATED_CONTRACT_VALID_UNTIL);
 
         restShipperMockMvc
             .perform(
@@ -403,6 +437,7 @@ class ShipperResourceIT {
     @Test
     void fullUpdateShipperWithPatch() throws Exception {
         // Initialize the database
+        shipper.setId(UUID.randomUUID());
         shipperRepository.save(shipper);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -418,6 +453,8 @@ class ShipperResourceIT {
             .taxCode(UPDATED_TAX_CODE)
             .companySize(UPDATED_COMPANY_SIZE)
             .paymentType(UPDATED_PAYMENT_TYPE)
+            .contractType(UPDATED_CONTRACT_TYPE)
+            .contractValidUntil(UPDATED_CONTRACT_VALID_UNTIL)
             .isApproved(UPDATED_IS_APPROVED)
             .isBillingInformationComplete(UPDATED_IS_BILLING_INFORMATION_COMPLETE)
             .isProfileComplete(UPDATED_IS_PROFILE_COMPLETE);
@@ -439,7 +476,7 @@ class ShipperResourceIT {
     @Test
     void patchNonExistingShipper() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipper.setId(longCount.incrementAndGet());
+        shipper.setId(UUID.randomUUID());
 
         // Create the Shipper
         ShipperDTO shipperDTO = shipperMapper.toDto(shipper);
@@ -460,7 +497,7 @@ class ShipperResourceIT {
     @Test
     void patchWithIdMismatchShipper() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipper.setId(longCount.incrementAndGet());
+        shipper.setId(UUID.randomUUID());
 
         // Create the Shipper
         ShipperDTO shipperDTO = shipperMapper.toDto(shipper);
@@ -468,7 +505,7 @@ class ShipperResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restShipperMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                patch(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(shipperDTO))
             )
@@ -481,7 +518,7 @@ class ShipperResourceIT {
     @Test
     void patchWithMissingIdPathParamShipper() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipper.setId(longCount.incrementAndGet());
+        shipper.setId(UUID.randomUUID());
 
         // Create the Shipper
         ShipperDTO shipperDTO = shipperMapper.toDto(shipper);
@@ -498,6 +535,7 @@ class ShipperResourceIT {
     @Test
     void deleteShipper() throws Exception {
         // Initialize the database
+        shipper.setId(UUID.randomUUID());
         shipperRepository.save(shipper);
 
         long databaseSizeBeforeDelete = getRepositoryCount();

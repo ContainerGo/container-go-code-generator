@@ -50,7 +50,7 @@ export class CenterPersonGroupComponent implements OnInit {
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
-  trackId = (_index: number, item: ICenterPersonGroup): number => this.centerPersonGroupService.getCenterPersonGroupIdentifier(item);
+  trackId = (_index: number, item: ICenterPersonGroup): string => this.centerPersonGroupService.getCenterPersonGroupIdentifier(item);
 
   ngOnInit(): void {
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])

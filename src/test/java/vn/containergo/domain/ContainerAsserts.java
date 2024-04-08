@@ -57,6 +57,12 @@ public class ContainerAsserts {
                         .as("check additionalRequirements")
                         .isEqualTo(actual.getAdditionalRequirements())
             )
+            .satisfies(e -> assertThat(e.getPickupContact()).as("check pickupContact").isEqualTo(actual.getPickupContact()))
+            .satisfies(e -> assertThat(e.getPickupContactPhone()).as("check pickupContactPhone").isEqualTo(actual.getPickupContactPhone()))
+            .satisfies(e -> assertThat(e.getPickupAddress()).as("check pickupAddress").isEqualTo(actual.getPickupAddress()))
+            .satisfies(e -> assertThat(e.getPickupLat()).as("check pickupLat").isEqualTo(actual.getPickupLat()))
+            .satisfies(e -> assertThat(e.getPickupLng()).as("check pickupLng").isEqualTo(actual.getPickupLng()))
+            .satisfies(e -> assertThat(e.getPickupFromDate()).as("check pickupFromDate").isEqualTo(actual.getPickupFromDate()))
             .satisfies(e -> assertThat(e.getDropoffContact()).as("check dropoffContact").isEqualTo(actual.getDropoffContact()))
             .satisfies(
                 e -> assertThat(e.getDropoffContactPhone()).as("check dropoffContactPhone").isEqualTo(actual.getDropoffContactPhone())
@@ -64,12 +70,12 @@ public class ContainerAsserts {
             .satisfies(e -> assertThat(e.getDropoffAddress()).as("check dropoffAddress").isEqualTo(actual.getDropoffAddress()))
             .satisfies(e -> assertThat(e.getDropoffLat()).as("check dropoffLat").isEqualTo(actual.getDropoffLat()))
             .satisfies(e -> assertThat(e.getDropoffLng()).as("check dropoffLng").isEqualTo(actual.getDropoffLng()))
+            .satisfies(e -> assertThat(e.getPoints()).as("check points").isEqualTo(actual.getPoints()))
             .satisfies(e -> assertThat(e.getDropoffUntilDate()).as("check dropoffUntilDate").isEqualTo(actual.getDropoffUntilDate()))
             .satisfies(e -> assertThat(e.getState()).as("check state").isEqualTo(actual.getState()))
             .satisfies(e -> assertThat(e.getShipperId()).as("check shipperId").isEqualTo(actual.getShipperId()))
             .satisfies(e -> assertThat(e.getCarrierId()).as("check carrierId").isEqualTo(actual.getCarrierId()))
             .satisfies(e -> assertThat(e.getTotalWeight()).as("check totalWeight").isEqualTo(actual.getTotalWeight()))
-            .satisfies(e -> assertThat(e.getPickupFromDate()).as("check pickupFromDate").isEqualTo(actual.getPickupFromDate()))
             .satisfies(e -> assertThat(e.getBiddingFromDate()).as("check biddingFromDate").isEqualTo(actual.getBiddingFromDate()))
             .satisfies(e -> assertThat(e.getBiddingUntilDate()).as("check biddingUntilDate").isEqualTo(actual.getBiddingUntilDate()));
     }
@@ -83,6 +89,9 @@ public class ContainerAsserts {
     public static void assertContainerUpdatableRelationshipsEquals(Container expected, Container actual) {
         assertThat(expected)
             .as("Verify Container relationships")
+            .satisfies(e -> assertThat(e.getPickupProvice()).as("check pickupProvice").isEqualTo(actual.getPickupProvice()))
+            .satisfies(e -> assertThat(e.getPickupDistrict()).as("check pickupDistrict").isEqualTo(actual.getPickupDistrict()))
+            .satisfies(e -> assertThat(e.getPickupWard()).as("check pickupWard").isEqualTo(actual.getPickupWard()))
             .satisfies(e -> assertThat(e.getDropoffProvice()).as("check dropoffProvice").isEqualTo(actual.getDropoffProvice()))
             .satisfies(e -> assertThat(e.getDropoffDistrict()).as("check dropoffDistrict").isEqualTo(actual.getDropoffDistrict()))
             .satisfies(e -> assertThat(e.getDropoffWard()).as("check dropoffWard").isEqualTo(actual.getDropoffWard()))

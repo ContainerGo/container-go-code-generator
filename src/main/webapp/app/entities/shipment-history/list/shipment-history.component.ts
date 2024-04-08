@@ -50,7 +50,7 @@ export class ShipmentHistoryComponent implements OnInit {
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
-  trackId = (_index: number, item: IShipmentHistory): number => this.shipmentHistoryService.getShipmentHistoryIdentifier(item);
+  trackId = (_index: number, item: IShipmentHistory): string => this.shipmentHistoryService.getShipmentHistoryIdentifier(item);
 
   ngOnInit(): void {
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])

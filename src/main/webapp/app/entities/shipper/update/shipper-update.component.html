@@ -11,7 +11,7 @@
         @if (editForm.controls.id.value !== null) {
           <div class="mb-3">
             <label class="form-label" jhiTranslate="containerGoServerApp.shipper.id" for="field_id">Id</label>
-            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+            <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
           </div>
         }
 
@@ -70,14 +70,12 @@
 
         <div class="mb-3">
           <label class="form-label" jhiTranslate="containerGoServerApp.shipper.paymentType" for="field_paymentType">Payment Type</label>
-          <input
-            type="text"
-            class="form-control"
-            name="paymentType"
-            id="field_paymentType"
-            data-cy="paymentType"
-            formControlName="paymentType"
-          />
+          <select class="form-control" name="paymentType" formControlName="paymentType" id="field_paymentType" data-cy="paymentType">
+            <option [ngValue]="null">{{ 'containerGoServerApp.PaymentType.null' | translate }}</option>
+            @for (paymentType of paymentTypeValues; track $index) {
+              <option [value]="paymentType">{{ 'containerGoServerApp.PaymentType.' + paymentType | translate }}</option>
+            }
+          </select>
           @if (editForm.get('paymentType')!.invalid && (editForm.get('paymentType')!.dirty || editForm.get('paymentType')!.touched)) {
             <div>
               @if (editForm.get('paymentType')?.errors?.required) {
@@ -85,6 +83,40 @@
               }
             </div>
           }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.shipper.contractType" for="field_contractType">Contract Type</label>
+          <select class="form-control" name="contractType" formControlName="contractType" id="field_contractType" data-cy="contractType">
+            <option [ngValue]="null">{{ 'containerGoServerApp.ContractType.null' | translate }}</option>
+            @for (contractType of contractTypeValues; track $index) {
+              <option [value]="contractType">{{ 'containerGoServerApp.ContractType.' + contractType | translate }}</option>
+            }
+          </select>
+          @if (editForm.get('contractType')!.invalid && (editForm.get('contractType')!.dirty || editForm.get('contractType')!.touched)) {
+            <div>
+              @if (editForm.get('contractType')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.shipper.contractValidUntil" for="field_contractValidUntil"
+            >Contract Valid Until</label
+          >
+          <div class="d-flex">
+            <input
+              id="field_contractValidUntil"
+              data-cy="contractValidUntil"
+              type="datetime-local"
+              class="form-control"
+              name="contractValidUntil"
+              formControlName="contractValidUntil"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
         </div>
 
         <div class="mb-3">

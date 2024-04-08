@@ -22,6 +22,8 @@
       "phone": "Phone",
       "email": "Email",
       "address": "Address",
+      "enabledNotifications": "Enabled Notifications",
+      "group": "Group",
       "shipper": "Shipper"
     }
   }

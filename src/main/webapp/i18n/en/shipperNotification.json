@@ -1,0 +1,29 @@
+{
+  "containerGoServerApp": {
+    "shipperNotification": {
+      "home": {
+        "title": "Shipper Notifications",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Shipper Notification",
+        "createOrEditLabel": "Create or edit a Shipper Notification",
+        "notFound": "No Shipper Notifications found"
+      },
+      "created": "A new Shipper Notification is created with identifier {{ param }}",
+      "updated": "A Shipper Notification is updated with identifier {{ param }}",
+      "deleted": "A Shipper Notification is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Shipper Notification {{ id }}?"
+      },
+      "detail": {
+        "title": "Shipper Notification"
+      },
+      "id": "Id",
+      "code": "Code",
+      "name": "Name",
+      "isEmailNotificationEnabled": "Is Email Notification Enabled",
+      "isSmsNotificationEnabled": "Is Sms Notification Enabled",
+      "isAppNotificationEnabled": "Is App Notification Enabled",
+      "person": "Person"
+    }
+  }
+}

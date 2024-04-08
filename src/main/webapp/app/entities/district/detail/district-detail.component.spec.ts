@@ -18,7 +18,7 @@ describe('District Management Detail Component', () => {
             {
               path: '**',
               component: DistrictDetailComponent,
-              resolve: { district: () => of({ id: 123 }) },
+              resolve: { district: () => of({ id: '9fec3727-3421-4967-b213-ba36557ca194' }) },
             },
           ],
           withComponentInputBinding(),
@@ -40,7 +40,7 @@ describe('District Management Detail Component', () => {
       const instance = await harness.navigateByUrl('/', DistrictDetailComponent);
 
       // THEN
-      expect(instance.district).toEqual(expect.objectContaining({ id: 123 }));
+      expect(instance.district).toEqual(expect.objectContaining({ id: '9fec3727-3421-4967-b213-ba36557ca194' }));
     });
   });
 

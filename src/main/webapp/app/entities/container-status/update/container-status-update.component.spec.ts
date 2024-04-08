@@ -49,11 +49,11 @@ describe('ContainerStatus Management Update Component', () => {
 
   describe('ngOnInit', () => {
     it('Should call ContainerStatusGroup query and add missing value', () => {
-      const containerStatus: IContainerStatus = { id: 456 };
-      const group: IContainerStatusGroup = { id: 18290 };
+      const containerStatus: IContainerStatus = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
+      const group: IContainerStatusGroup = { id: '8336ce1d-43c3-458e-ab7d-a47a97cc2bbd' };
       containerStatus.group = group;
 
-      const containerStatusGroupCollection: IContainerStatusGroup[] = [{ id: 7419 }];
+      const containerStatusGroupCollection: IContainerStatusGroup[] = [{ id: '4a0a95a7-4a15-4a14-a2a0-171b086ee853' }];
       jest.spyOn(containerStatusGroupService, 'query').mockReturnValue(of(new HttpResponse({ body: containerStatusGroupCollection })));
       const additionalContainerStatusGroups = [group];
       const expectedCollection: IContainerStatusGroup[] = [...additionalContainerStatusGroups, ...containerStatusGroupCollection];
@@ -71,8 +71,8 @@ describe('ContainerStatus Management Update Component', () => {
     });
 
     it('Should update editForm', () => {
-      const containerStatus: IContainerStatus = { id: 456 };
-      const group: IContainerStatusGroup = { id: 6890 };
+      const containerStatus: IContainerStatus = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
+      const group: IContainerStatusGroup = { id: '906099ab-3246-40b4-8156-a0231054b6c4' };
       containerStatus.group = group;
 
       activatedRoute.data = of({ containerStatus });
@@ -87,7 +87,7 @@ describe('ContainerStatus Management Update Component', () => {
     it('Should call update service on save for existing entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IContainerStatus>>();
-      const containerStatus = { id: 123 };
+      const containerStatus = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(containerStatusFormService, 'getContainerStatus').mockReturnValue(containerStatus);
       jest.spyOn(containerStatusService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -110,7 +110,7 @@ describe('ContainerStatus Management Update Component', () => {
     it('Should call create service on save for new entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IContainerStatus>>();
-      const containerStatus = { id: 123 };
+      const containerStatus = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(containerStatusFormService, 'getContainerStatus').mockReturnValue({ id: null });
       jest.spyOn(containerStatusService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -133,7 +133,7 @@ describe('ContainerStatus Management Update Component', () => {
     it('Should set isSaving to false on error', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IContainerStatus>>();
-      const containerStatus = { id: 123 };
+      const containerStatus = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(containerStatusService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ containerStatus });
@@ -154,8 +154,8 @@ describe('ContainerStatus Management Update Component', () => {
   describe('Compare relationships', () => {
     describe('compareContainerStatusGroup', () => {
       it('Should forward to containerStatusGroupService', () => {
-        const entity = { id: 123 };
-        const entity2 = { id: 456 };
+        const entity = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
+        const entity2 = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
         jest.spyOn(containerStatusGroupService, 'compareContainerStatusGroup');
         comp.compareContainerStatusGroup(entity, entity2);
         expect(containerStatusGroupService.compareContainerStatusGroup).toHaveBeenCalledWith(entity, entity2);

@@ -7,7 +7,7 @@
   "fields": [
     {
       "fieldName": "id",
-      "fieldType": "Long"
+      "fieldType": "UUID"
     },
     {
       "fieldName": "name",
@@ -32,6 +32,20 @@
   "name": "ShipperPerson",
   "pagination": "pagination",
   "relationships": [
+    {
+      "otherEntityName": "shipperNotification",
+      "otherEntityRelationshipName": "person",
+      "relationshipName": "enabledNotifications",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "shipperPersonGroup",
+      "relationshipName": "group",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
     {
       "otherEntityName": "shipper",
       "relationshipName": "shipper",

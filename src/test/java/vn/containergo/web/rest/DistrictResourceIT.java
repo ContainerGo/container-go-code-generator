@@ -8,8 +8,7 @@ import static vn.containergo.domain.DistrictAsserts.*;
 import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +41,6 @@ class DistrictResourceIT {
 
     private static final String ENTITY_API_URL = "/api/districts";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
-
-    private static Random random = new Random();
-    private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private ObjectMapper om;
@@ -112,7 +108,7 @@ class DistrictResourceIT {
     @Test
     void createDistrictWithExistingId() throws Exception {
         // Create the District with an existing ID
-        district.setId(1L);
+        district.setId(UUID.randomUUID());
         DistrictDTO districtDTO = districtMapper.toDto(district);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
@@ -161,6 +157,7 @@ class DistrictResourceIT {
     @Test
     void getAllDistricts() throws Exception {
         // Initialize the database
+        district.setId(UUID.randomUUID());
         districtRepository.save(district);
 
         // Get all the districtList
@@ -168,7 +165,7 @@ class DistrictResourceIT {
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(district.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(district.getId().toString())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
@@ -177,6 +174,7 @@ class DistrictResourceIT {
     @Test
     void getDistrict() throws Exception {
         // Initialize the database
+        district.setId(UUID.randomUUID());
         districtRepository.save(district);
 
         // Get the district
@@ -184,7 +182,7 @@ class DistrictResourceIT {
             .perform(get(ENTITY_API_URL_ID, district.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(district.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(district.getId().toString()))
             .andExpect(jsonPath("$.code").value(DEFAULT_CODE))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION));
@@ -193,12 +191,13 @@ class DistrictResourceIT {
     @Test
     void getNonExistingDistrict() throws Exception {
         // Get the district
-        restDistrictMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
+        restDistrictMockMvc.perform(get(ENTITY_API_URL_ID, UUID.randomUUID().toString())).andExpect(status().isNotFound());
     }
 
     @Test
     void putExistingDistrict() throws Exception {
         // Initialize the database
+        district.setId(UUID.randomUUID());
         districtRepository.save(district);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -224,7 +223,7 @@ class DistrictResourceIT {
     @Test
     void putNonExistingDistrict() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        district.setId(longCount.incrementAndGet());
+        district.setId(UUID.randomUUID());
 
         // Create the District
         DistrictDTO districtDTO = districtMapper.toDto(district);
@@ -245,7 +244,7 @@ class DistrictResourceIT {
     @Test
     void putWithIdMismatchDistrict() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        district.setId(longCount.incrementAndGet());
+        district.setId(UUID.randomUUID());
 
         // Create the District
         DistrictDTO districtDTO = districtMapper.toDto(district);
@@ -253,9 +252,7 @@ class DistrictResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restDistrictMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(districtDTO))
+                put(ENTITY_API_URL_ID, UUID.randomUUID()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(districtDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -266,7 +263,7 @@ class DistrictResourceIT {
     @Test
     void putWithMissingIdPathParamDistrict() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        district.setId(longCount.incrementAndGet());
+        district.setId(UUID.randomUUID());
 
         // Create the District
         DistrictDTO districtDTO = districtMapper.toDto(district);
@@ -283,6 +280,7 @@ class DistrictResourceIT {
     @Test
     void partialUpdateDistrictWithPatch() throws Exception {
         // Initialize the database
+        district.setId(UUID.randomUUID());
         districtRepository.save(district);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -310,6 +308,7 @@ class DistrictResourceIT {
     @Test
     void fullUpdateDistrictWithPatch() throws Exception {
         // Initialize the database
+        district.setId(UUID.randomUUID());
         districtRepository.save(district);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -337,7 +336,7 @@ class DistrictResourceIT {
     @Test
     void patchNonExistingDistrict() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        district.setId(longCount.incrementAndGet());
+        district.setId(UUID.randomUUID());
 
         // Create the District
         DistrictDTO districtDTO = districtMapper.toDto(district);
@@ -358,7 +357,7 @@ class DistrictResourceIT {
     @Test
     void patchWithIdMismatchDistrict() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        district.setId(longCount.incrementAndGet());
+        district.setId(UUID.randomUUID());
 
         // Create the District
         DistrictDTO districtDTO = districtMapper.toDto(district);
@@ -366,7 +365,7 @@ class DistrictResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restDistrictMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                patch(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(districtDTO))
             )
@@ -379,7 +378,7 @@ class DistrictResourceIT {
     @Test
     void patchWithMissingIdPathParamDistrict() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        district.setId(longCount.incrementAndGet());
+        district.setId(UUID.randomUUID());
 
         // Create the District
         DistrictDTO districtDTO = districtMapper.toDto(district);
@@ -396,6 +395,7 @@ class DistrictResourceIT {
     @Test
     void deleteDistrict() throws Exception {
         // Initialize the database
+        district.setId(UUID.randomUUID());
         districtRepository.save(district);
 
         long databaseSizeBeforeDelete = getRepositoryCount();

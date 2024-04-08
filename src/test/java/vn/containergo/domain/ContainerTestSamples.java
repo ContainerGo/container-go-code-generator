@@ -1,17 +1,12 @@
 package vn.containergo.domain;
 
-import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class ContainerTestSamples {
 
-    private static final Random random = new Random();
-    private static final AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
-
     public static Container getContainerSample1() {
         return new Container()
-            .id(1L)
+            .id(UUID.fromString("23d8dc04-a48b-45d9-a01d-4b728f0ad4aa"))
             .contNo("contNo1")
             .additionalRequirements("additionalRequirements1")
             .pickupContact("pickupContact1")
@@ -21,13 +16,13 @@ public class ContainerTestSamples {
             .dropoffContactPhone("dropoffContactPhone1")
             .dropoffAddress("dropoffAddress1")
             .points("points1")
-            .shipperId(1L)
-            .carrierId(1L);
+            .shipperId(UUID.fromString("23d8dc04-a48b-45d9-a01d-4b728f0ad4aa"))
+            .carrierId(UUID.fromString("23d8dc04-a48b-45d9-a01d-4b728f0ad4aa"));
     }
 
     public static Container getContainerSample2() {
         return new Container()
-            .id(2L)
+            .id(UUID.fromString("ad79f240-3727-46c3-b89f-2cf6ebd74367"))
             .contNo("contNo2")
             .additionalRequirements("additionalRequirements2")
             .pickupContact("pickupContact2")
@@ -37,13 +32,13 @@ public class ContainerTestSamples {
             .dropoffContactPhone("dropoffContactPhone2")
             .dropoffAddress("dropoffAddress2")
             .points("points2")
-            .shipperId(2L)
-            .carrierId(2L);
+            .shipperId(UUID.fromString("ad79f240-3727-46c3-b89f-2cf6ebd74367"))
+            .carrierId(UUID.fromString("ad79f240-3727-46c3-b89f-2cf6ebd74367"));
     }
 
     public static Container getContainerRandomSampleGenerator() {
         return new Container()
-            .id(longCount.incrementAndGet())
+            .id(UUID.randomUUID())
             .contNo(UUID.randomUUID().toString())
             .additionalRequirements(UUID.randomUUID().toString())
             .pickupContact(UUID.randomUUID().toString())
@@ -53,7 +48,7 @@ public class ContainerTestSamples {
             .dropoffContactPhone(UUID.randomUUID().toString())
             .dropoffAddress(UUID.randomUUID().toString())
             .points(UUID.randomUUID().toString())
-            .shipperId(longCount.incrementAndGet())
-            .carrierId(longCount.incrementAndGet());
+            .shipperId(UUID.randomUUID())
+            .carrierId(UUID.randomUUID());
     }
 }

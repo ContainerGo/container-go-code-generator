@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -19,7 +20,7 @@ public class ShipmentHistory implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private Long id;
+    private UUID id;
 
     @NotNull
     @Field("event")
@@ -45,23 +46,36 @@ public class ShipmentHistory implements Serializable {
     @DBRef
     @Field("container")
     @JsonIgnoreProperties(
-        value = { "dropoffProvice", "dropoffDistrict", "dropoffWard", "type", "status", "truckType", "truck", "owner" },
+        value = {
+            "shipmentPlans",
+            "pickupProvice",
+            "pickupDistrict",
+            "pickupWard",
+            "dropoffProvice",
+            "dropoffDistrict",
+            "dropoffWard",
+            "type",
+            "status",
+            "truckType",
+            "truck",
+            "owner",
+        },
         allowSetters = true
     )
     private Container container;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
-    public Long getId() {
+    public UUID getId() {
         return this.id;
     }
 
-    public ShipmentHistory id(Long id) {
+    public ShipmentHistory id(UUID id) {
         this.setId(id);
         return this;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

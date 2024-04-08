@@ -50,7 +50,7 @@ export class OfferComponent implements OnInit {
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
-  trackId = (_index: number, item: IOffer): number => this.offerService.getOfferIdentifier(item);
+  trackId = (_index: number, item: IOffer): string => this.offerService.getOfferIdentifier(item);
 
   ngOnInit(): void {
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])

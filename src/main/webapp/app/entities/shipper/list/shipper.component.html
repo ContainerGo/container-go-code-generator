@@ -84,6 +84,20 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="contractType">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.shipper.contractType">Contract Type</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="contractValidUntil">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.shipper.contractValidUntil">Contract Valid Until</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col" jhiSortBy="isApproved">
               <div class="d-flex">
                 <span jhiTranslate="containerGoServerApp.shipper.isApproved">Is Approved</span>
@@ -119,7 +133,9 @@
               <td>{{ shipper.address }}</td>
               <td>{{ shipper.taxCode }}</td>
               <td>{{ shipper.companySize }}</td>
-              <td>{{ shipper.paymentType }}</td>
+              <td jhiTranslate="{{ 'containerGoServerApp.PaymentType.' + shipper.paymentType }}">{{ shipper.paymentType }}</td>
+              <td jhiTranslate="{{ 'containerGoServerApp.ContractType.' + shipper.contractType }}">{{ shipper.contractType }}</td>
+              <td>{{ shipper.contractValidUntil | formatMediumDatetime }}</td>
               <td>{{ shipper.isApproved }}</td>
               <td>{{ shipper.isBillingInformationComplete }}</td>
               <td>{{ shipper.isProfileComplete }}</td>
