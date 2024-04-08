@@ -3,17 +3,16 @@ import { IContainer } from 'app/entities/container/container.model';
 import { OfferState } from 'app/entities/enumerations/offer-state.model';
 
 export interface IOffer {
-  id: number;
+  id: string;
   message?: string | null;
-  pickupFromDate?: dayjs.Dayjs | null;
-  pickupUntilDate?: dayjs.Dayjs | null;
-  dropoffFromDate?: dayjs.Dayjs | null;
-  dropoffUntilDate?: dayjs.Dayjs | null;
+  estimatedPickupFromDate?: dayjs.Dayjs | null;
+  estimatedPickupUntilDate?: dayjs.Dayjs | null;
+  estimatedDropoffFromDate?: dayjs.Dayjs | null;
+  estimatedDropoffUntilDate?: dayjs.Dayjs | null;
   state?: keyof typeof OfferState | null;
   price?: number | null;
-  carrierId?: number | null;
-  carrierPersonId?: number | null;
-  truckId?: number | null;
+  carrierId?: string | null;
+  truckId?: string | null;
   container?: Pick<IContainer, 'id'> | null;
 }
 

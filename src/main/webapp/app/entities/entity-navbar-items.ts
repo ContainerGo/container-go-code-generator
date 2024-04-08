@@ -101,4 +101,24 @@ export const EntityNavbarItems: NavbarItem[] = [
     route: '/shipment-history',
     translationKey: 'global.menu.entities.shipmentHistory',
   },
+  {
+    name: 'ShipperPersonGroup',
+    route: '/shipper-person-group',
+    translationKey: 'global.menu.entities.shipperPersonGroup',
+  },
+  {
+    name: 'ShipperNotification',
+    route: '/shipper-notification',
+    translationKey: 'global.menu.entities.shipperNotification',
+  },
+  {
+    name: 'CarrierPersonGroup',
+    route: '/carrier-person-group',
+    translationKey: 'global.menu.entities.carrierPersonGroup',
+  },
+  {
+    name: 'ShipmentPlan',
+    route: '/shipment-plan',
+    translationKey: 'global.menu.entities.shipmentPlan',
+  },
 ];

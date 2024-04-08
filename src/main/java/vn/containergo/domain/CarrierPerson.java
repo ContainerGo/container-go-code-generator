@@ -3,6 +3,7 @@ package vn.containergo.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
+import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -18,7 +19,7 @@ public class CarrierPerson implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private Long id;
+    private UUID id;
 
     @NotNull
     @Field("name")
@@ -35,22 +36,26 @@ public class CarrierPerson implements Serializable {
     private String address;
 
     @DBRef
+    @Field("group")
+    private CarrierPersonGroup group;
+
+    @DBRef
     @Field("carrier")
     @JsonIgnoreProperties(value = { "trucks", "carrierPeople" }, allowSetters = true)
     private Carrier carrier;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
-    public Long getId() {
+    public UUID getId() {
         return this.id;
     }
 
-    public CarrierPerson id(Long id) {
+    public CarrierPerson id(UUID id) {
         this.setId(id);
         return this;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -104,6 +109,19 @@ public class CarrierPerson implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public CarrierPersonGroup getGroup() {
+        return this.group;
+    }
+
+    public void setGroup(CarrierPersonGroup carrierPersonGroup) {
+        this.group = carrierPersonGroup;
+    }
+
+    public CarrierPerson group(CarrierPersonGroup carrierPersonGroup) {
+        this.setGroup(carrierPersonGroup);
+        return this;
     }
 
     public Carrier getCarrier() {

@@ -39,7 +39,7 @@ export class CenterPersonGroupService {
     );
   }
 
-  find(id: number): Observable<EntityResponseType> {
+  find(id: string): Observable<EntityResponseType> {
     return this.http.get<ICenterPersonGroup>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
@@ -48,11 +48,11 @@ export class CenterPersonGroupService {
     return this.http.get<ICenterPersonGroup[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
-  delete(id: number): Observable<HttpResponse<{}>> {
+  delete(id: string): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getCenterPersonGroupIdentifier(centerPersonGroup: Pick<ICenterPersonGroup, 'id'>): number {
+  getCenterPersonGroupIdentifier(centerPersonGroup: Pick<ICenterPersonGroup, 'id'>): string {
     return centerPersonGroup.id;
   }
 

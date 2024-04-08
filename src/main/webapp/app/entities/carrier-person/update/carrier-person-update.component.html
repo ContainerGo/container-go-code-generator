@@ -15,7 +15,7 @@
         @if (editForm.controls.id.value !== null) {
           <div class="mb-3">
             <label class="form-label" jhiTranslate="containerGoServerApp.carrierPerson.id" for="field_id">Id</label>
-            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+            <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
           </div>
         }
 
@@ -52,6 +52,32 @@
           <label class="form-label" jhiTranslate="containerGoServerApp.carrierPerson.address" for="field_address">Address</label>
           <input type="text" class="form-control" name="address" id="field_address" data-cy="address" formControlName="address" />
         </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.carrierPerson.group" for="field_group">Group</label>
+          <select
+            class="form-control"
+            id="field_group"
+            data-cy="group"
+            name="group"
+            formControlName="group"
+            [compareWith]="compareCarrierPersonGroup"
+          >
+            @if (!editForm.get('group')!.value) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (carrierPersonGroupOption of carrierPersonGroupsSharedCollection; track $index) {
+              <option [ngValue]="carrierPersonGroupOption">{{ carrierPersonGroupOption.id }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['group'])!.invalid && (editForm.get(['group'])!.dirty || editForm.get(['group'])!.touched)) {
+          <div>
+            @if (editForm.get(['group'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+            }
+          </div>
+        }
 
         <div class="mb-3">
           <label class="form-label" jhiTranslate="containerGoServerApp.carrierPerson.carrier" for="field_carrier">Carrier</label>

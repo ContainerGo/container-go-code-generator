@@ -1,28 +1,27 @@
 import { IWard, NewWard } from './ward.model';
 
 export const sampleWithRequiredData: IWard = {
-  id: 31938,
-  code: 'ack meanwhile',
-  name: 'gripping cameo',
+  id: 'f85f26e1-c200-4019-877d-a69eb5f7a05b',
+  code: 'since',
+  name: 'belated er',
 };
 
 export const sampleWithPartialData: IWard = {
-  id: 20728,
-  code: 'bah twine pace',
-  name: 'purl resolve',
-  description: 'nice why',
+  id: 'a8a3a95a-d339-4d6b-853b-f4b9993132ef',
+  code: 'wassail',
+  name: 'pint yet',
 };
 
 export const sampleWithFullData: IWard = {
-  id: 5040,
-  code: 'wassail',
-  name: 'pint yet',
-  description: 'deserve treat ferociously',
+  id: 'fb958c33-6370-4a9e-94ea-a4439c8f8843',
+  code: 'telegraph yum',
+  name: 'infinite',
+  description: 'permit in',
 };
 
 export const sampleWithNewData: NewWard = {
-  code: 'cultivate revitalization',
-  name: 'but overcooked enthusiastically',
+  code: 'yahoo brr',
+  name: 'aha gossip following',
   id: null,
 };
 

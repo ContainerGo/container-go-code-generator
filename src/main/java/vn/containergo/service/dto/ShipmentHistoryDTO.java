@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * A DTO for the {@link vn.containergo.domain.ShipmentHistory} entity.
@@ -11,7 +12,7 @@ import java.util.Objects;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class ShipmentHistoryDTO implements Serializable {
 
-    private Long id;
+    private UUID id;
 
     @NotNull
     private String event;
@@ -31,11 +32,11 @@ public class ShipmentHistoryDTO implements Serializable {
     @NotNull
     private ContainerDTO container;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -120,7 +121,7 @@ public class ShipmentHistoryDTO implements Serializable {
     @Override
     public String toString() {
         return "ShipmentHistoryDTO{" +
-            "id=" + getId() +
+            "id='" + getId() + "'" +
             ", event='" + getEvent() + "'" +
             ", timestamp='" + getTimestamp() + "'" +
             ", executedBy='" + getExecutedBy() + "'" +

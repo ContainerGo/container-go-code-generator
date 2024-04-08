@@ -64,7 +64,7 @@ describe('ContainerOwner Management Component', () => {
       .mockReturnValueOnce(
         of(
           new HttpResponse({
-            body: [{ id: 123 }],
+            body: [{ id: '9fec3727-3421-4967-b213-ba36557ca194' }],
             headers: new HttpHeaders({
               link: '<http://localhost/api/foo?page=1&size=20>; rel="next"',
             }),
@@ -74,7 +74,7 @@ describe('ContainerOwner Management Component', () => {
       .mockReturnValueOnce(
         of(
           new HttpResponse({
-            body: [{ id: 456 }],
+            body: [{ id: '1361f429-3817-4123-8ee3-fdf8943310b2' }],
             headers: new HttpHeaders({
               link: '<http://localhost/api/foo?page=0&size=20>; rel="prev",<http://localhost/api/foo?page=2&size=20>; rel="next"',
             }),
@@ -89,12 +89,12 @@ describe('ContainerOwner Management Component', () => {
 
     // THEN
     expect(service.query).toHaveBeenCalled();
-    expect(comp.containerOwners?.[0]).toEqual(expect.objectContaining({ id: 123 }));
+    expect(comp.containerOwners?.[0]).toEqual(expect.objectContaining({ id: '9fec3727-3421-4967-b213-ba36557ca194' }));
   });
 
   describe('trackId', () => {
     it('Should forward to containerOwnerService', () => {
-      const entity = { id: 123 };
+      const entity = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(service, 'getContainerOwnerIdentifier');
       const id = comp.trackId(0, entity);
       expect(service.getContainerOwnerIdentifier).toHaveBeenCalledWith(entity);

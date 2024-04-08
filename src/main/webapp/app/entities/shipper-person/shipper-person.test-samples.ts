@@ -1,29 +1,28 @@
 import { IShipperPerson, NewShipperPerson } from './shipper-person.model';
 
 export const sampleWithRequiredData: IShipperPerson = {
-  id: 21128,
-  name: 'diligently',
-  phone: '022 9857 9642',
+  id: 'a177f311-243f-4d8c-bfa7-4933ce97c17d',
+  name: 'marionberry redden razz',
+  phone: '025 4224 2113',
 };
 
 export const sampleWithPartialData: IShipperPerson = {
-  id: 7686,
-  name: 'unabashedly who pamper',
-  phone: '027 2550 7262',
-  address: 'crease honest',
+  id: 'c6e6fcba-6459-49e8-bd0d-39702784781f',
+  name: 'quiet remainder gah',
+  phone: '023 9980 5034',
 };
 
 export const sampleWithFullData: IShipperPerson = {
-  id: 30989,
-  name: 'outlying quarrelsomely nor',
-  phone: '0219 9736 7077',
-  email: 'PhuHai_Phung@hotmail.com',
-  address: 'perception big',
+  id: '1a025689-a5d8-4f1f-800b-3990b799a1a6',
+  name: 'woot madly',
+  phone: '023 9920 8996',
+  email: 'BaoBao_7ko26@yahoo.com',
+  address: 'doubtfully toward',
 };
 
 export const sampleWithNewData: NewShipperPerson = {
-  name: 'color uh-huh',
-  phone: '0290 9006 2550',
+  name: 'mesh',
+  phone: '021 0563 6148',
   id: null,
 };
 

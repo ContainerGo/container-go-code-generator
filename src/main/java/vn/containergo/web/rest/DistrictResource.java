@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,6 +61,7 @@ public class DistrictResource {
         if (districtDTO.getId() != null) {
             throw new BadRequestAlertException("A new district cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        districtDTO.setId(UUID.randomUUID());
         districtDTO = districtService.save(districtDTO);
         return ResponseEntity.created(new URI("/api/districts/" + districtDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, districtDTO.getId().toString()))
@@ -78,7 +80,7 @@ public class DistrictResource {
      */
     @PutMapping("/{id}")
     public ResponseEntity<DistrictDTO> updateDistrict(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @Valid @RequestBody DistrictDTO districtDTO
     ) throws URISyntaxException {
         log.debug("REST request to update District : {}, {}", id, districtDTO);
@@ -112,7 +114,7 @@ public class DistrictResource {
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<DistrictDTO> partialUpdateDistrict(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @NotNull @RequestBody DistrictDTO districtDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update District partially : {}, {}", id, districtDTO);
@@ -156,7 +158,7 @@ public class DistrictResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the districtDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<DistrictDTO> getDistrict(@PathVariable("id") Long id) {
+    public ResponseEntity<DistrictDTO> getDistrict(@PathVariable("id") UUID id) {
         log.debug("REST request to get District : {}", id);
         Optional<DistrictDTO> districtDTO = districtService.findOne(id);
         return ResponseUtil.wrapOrNotFound(districtDTO);
@@ -169,7 +171,7 @@ public class DistrictResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDistrict(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteDistrict(@PathVariable("id") UUID id) {
         log.debug("REST request to delete District : {}", id);
         districtService.delete(id);
         return ResponseEntity.noContent()

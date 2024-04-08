@@ -50,7 +50,7 @@ export class ContainerTypeComponent implements OnInit {
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
-  trackId = (_index: number, item: IContainerType): number => this.containerTypeService.getContainerTypeIdentifier(item);
+  trackId = (_index: number, item: IContainerType): string => this.containerTypeService.getContainerTypeIdentifier(item);
 
   ngOnInit(): void {
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])

@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,6 +61,7 @@ public class OfferResource {
         if (offerDTO.getId() != null) {
             throw new BadRequestAlertException("A new offer cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        offerDTO.setId(UUID.randomUUID());
         offerDTO = offerService.save(offerDTO);
         return ResponseEntity.created(new URI("/api/offers/" + offerDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, offerDTO.getId().toString()))
@@ -78,7 +80,7 @@ public class OfferResource {
      */
     @PutMapping("/{id}")
     public ResponseEntity<OfferDTO> updateOffer(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @Valid @RequestBody OfferDTO offerDTO
     ) throws URISyntaxException {
         log.debug("REST request to update Offer : {}, {}", id, offerDTO);
@@ -112,7 +114,7 @@ public class OfferResource {
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<OfferDTO> partialUpdateOffer(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @NotNull @RequestBody OfferDTO offerDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update Offer partially : {}, {}", id, offerDTO);
@@ -156,7 +158,7 @@ public class OfferResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the offerDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<OfferDTO> getOffer(@PathVariable("id") Long id) {
+    public ResponseEntity<OfferDTO> getOffer(@PathVariable("id") UUID id) {
         log.debug("REST request to get Offer : {}", id);
         Optional<OfferDTO> offerDTO = offerService.findOne(id);
         return ResponseUtil.wrapOrNotFound(offerDTO);
@@ -169,7 +171,7 @@ public class OfferResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOffer(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteOffer(@PathVariable("id") UUID id) {
         log.debug("REST request to delete Offer : {}", id);
         offerService.delete(id);
         return ResponseEntity.noContent()

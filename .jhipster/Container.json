@@ -7,7 +7,7 @@
   "fields": [
     {
       "fieldName": "id",
-      "fieldType": "Long"
+      "fieldType": "UUID"
     },
     {
       "fieldName": "contNo",
@@ -100,12 +100,12 @@
     },
     {
       "fieldName": "shipperId",
-      "fieldType": "Long",
+      "fieldType": "UUID",
       "fieldValidateRules": ["required"]
     },
     {
       "fieldName": "carrierId",
-      "fieldType": "Long"
+      "fieldType": "UUID"
     },
     {
       "fieldName": "totalWeight",
@@ -125,6 +125,13 @@
   "name": "Container",
   "pagination": "pagination",
   "relationships": [
+    {
+      "otherEntityName": "shipmentPlan",
+      "otherEntityRelationshipName": "container",
+      "relationshipName": "shipmentPlan",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
     {
       "otherEntityName": "provice",
       "relationshipName": "pickupProvice",

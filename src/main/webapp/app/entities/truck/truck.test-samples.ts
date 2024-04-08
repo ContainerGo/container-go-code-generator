@@ -1,43 +1,44 @@
 import { ITruck, NewTruck } from './truck.model';
 
 export const sampleWithRequiredData: ITruck = {
-  id: 7698,
-  code: 'quirkily accommodation',
-  name: 'sans',
-  status: 'UNDER_MAINTENANCE',
-  numberPlate: 'with',
+  id: '36ebe332-a438-4019-a03d-51be7c8119d1',
+  code: 'until tantalize manacle',
+  name: 'molecule',
+  status: 'IN_TRANSIT',
+  numberPlate: 'likewise uh-huh',
 };
 
 export const sampleWithPartialData: ITruck = {
-  id: 23592,
-  code: 'toil',
-  name: 'prioritize geez',
-  manufacturer: 'downgrade',
-  capacity: 28415.41,
+  id: 'ebac856f-71e5-4cb6-9588-89dadfd769d2',
+  code: 'snip',
+  name: 'yet',
+  model: 'query',
+  capacity: 18972.8,
   status: 'IN_TRANSIT',
-  numberPlate: 'gadzooks mock but',
+  numberPlate: 'payoff',
+  lat: 9839.11,
 };
 
 export const sampleWithFullData: ITruck = {
-  id: 24894,
-  code: 'thin than eventuate',
-  name: 'boohoo cautiously',
-  model: 'absent',
-  manufacturer: 'forceful',
-  year: 8857,
-  capacity: 14715.48,
-  status: 'OUT_OF_SERVICE',
-  mileage: 27659.36,
-  numberPlate: 'given',
-  lat: 626.97,
-  lng: 13064.82,
+  id: '47cd0186-9927-4069-929d-ce8bf2e887f8',
+  code: 'crave comment fuzzy',
+  name: 'fondly regularize',
+  model: 'psst atop woot',
+  manufacturer: 'cascade',
+  year: 31355,
+  capacity: 18523.3,
+  status: 'IN_TRANSIT',
+  mileage: 4999.98,
+  numberPlate: 'like',
+  lat: 14096.35,
+  lng: 12774.3,
 };
 
 export const sampleWithNewData: NewTruck = {
-  code: 'scrawny um',
-  name: 'guitarist geez',
-  status: 'OUT_OF_SERVICE',
-  numberPlate: 'fuzzy',
+  code: 'droopy',
+  name: 'beatboxer paralyse regarding',
+  status: 'IN_TRANSIT',
+  numberPlate: 'woozy',
   id: null,
 };
 

@@ -1,7 +1,7 @@
 import dayjs from 'dayjs/esm';
 
 export interface ICarrier {
-  id: number;
+  id: string;
   code?: string | null;
   name?: string | null;
   address?: string | null;

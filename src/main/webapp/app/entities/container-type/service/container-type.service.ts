@@ -35,7 +35,7 @@ export class ContainerTypeService {
     });
   }
 
-  find(id: number): Observable<EntityResponseType> {
+  find(id: string): Observable<EntityResponseType> {
     return this.http.get<IContainerType>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
@@ -44,11 +44,11 @@ export class ContainerTypeService {
     return this.http.get<IContainerType[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
-  delete(id: number): Observable<HttpResponse<{}>> {
+  delete(id: string): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getContainerTypeIdentifier(containerType: Pick<IContainerType, 'id'>): number {
+  getContainerTypeIdentifier(containerType: Pick<IContainerType, 'id'>): string {
     return containerType.id;
   }
 

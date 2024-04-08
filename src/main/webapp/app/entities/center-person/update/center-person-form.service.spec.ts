@@ -24,6 +24,7 @@ describe('CenterPerson Form Service', () => {
             phone: expect.any(Object),
             email: expect.any(Object),
             address: expect.any(Object),
+            group: expect.any(Object),
             groups: expect.any(Object),
           }),
         );
@@ -39,6 +40,7 @@ describe('CenterPerson Form Service', () => {
             phone: expect.any(Object),
             email: expect.any(Object),
             address: expect.any(Object),
+            group: expect.any(Object),
             groups: expect.any(Object),
           }),
         );

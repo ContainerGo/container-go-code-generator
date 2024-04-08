@@ -3,43 +3,44 @@ import dayjs from 'dayjs/esm';
 import { ICarrier, NewCarrier } from './carrier.model';
 
 export const sampleWithRequiredData: ICarrier = {
-  id: 27880,
-  code: 'affectionate usefully under',
-  name: 'anonymize',
-  address: 'canonise',
+  id: 'dc33eced-0488-4934-8e6c-6c3de2c5ec67',
+  code: 'canonise',
+  name: 'extraneous oddball',
+  address: 'qualified considerate next',
 };
 
 export const sampleWithPartialData: ICarrier = {
-  id: 7242,
-  code: 'oddball prickly',
-  name: 'circulate mountain',
-  address: 'browbeat whose like',
-  taxCode: 'likewise fantastic dust',
-  vehicles: 21767,
-  verifiedSince: dayjs('2024-03-12T14:52'),
+  id: 'c14bb093-f86f-402b-98c1-ef3536d3d57c',
+  code: 'pitch what trait',
+  name: 'daylight next',
+  address: 'bashfully incidentally or',
+  bankAccount: 'innocently admin',
+  companySize: 26963,
+  isApproved: true,
+  vehicles: 23584,
 };
 
 export const sampleWithFullData: ICarrier = {
-  id: 17006,
-  code: 'lyre for medicine',
-  name: 'happy',
-  address: 'though',
-  taxCode: 'defensive',
-  bankAccount: 'elaborate',
-  bankName: 'er',
-  accountName: 'Savings Account',
-  branchName: 'dislocate',
-  companySize: 18311,
-  isApproved: false,
-  vehicles: 29041,
-  shipmentsLeftForDay: 5361,
-  verifiedSince: dayjs('2024-03-13T07:43'),
+  id: '28348ce2-00d2-4df8-814c-ba06fd0b13e3',
+  code: 'concerning how',
+  name: 'boohoo',
+  address: 'needily gosh as',
+  taxCode: 'absentmindedly afore',
+  bankAccount: 'desolate carefully',
+  bankName: 'grubby',
+  accountName: 'Credit Card Account',
+  branchName: 'coolly quickly',
+  companySize: 3685,
+  isApproved: true,
+  vehicles: 15786,
+  shipmentsLeftForDay: 30604,
+  verifiedSince: dayjs('2024-03-12T09:08'),
 };
 
 export const sampleWithNewData: NewCarrier = {
-  code: 'if',
-  name: 'ambassador lament concerning',
-  address: 'boo boohoo immediately',
+  code: 'how aside',
+  name: 'until',
+  address: 'infantile geez quarrelsomely',
   id: null,
 };
 

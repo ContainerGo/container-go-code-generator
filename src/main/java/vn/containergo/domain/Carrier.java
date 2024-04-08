@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -21,7 +22,7 @@ public class Carrier implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private Long id;
+    private UUID id;
 
     @NotNull
     @Field("code")
@@ -72,21 +73,21 @@ public class Carrier implements Serializable {
 
     @DBRef
     @Field("carrierPerson")
-    @JsonIgnoreProperties(value = { "carrier" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "group", "carrier" }, allowSetters = true)
     private Set<CarrierPerson> carrierPeople = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
-    public Long getId() {
+    public UUID getId() {
         return this.id;
     }
 
-    public Carrier id(Long id) {
+    public Carrier id(UUID id) {
         this.setId(id);
         return this;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

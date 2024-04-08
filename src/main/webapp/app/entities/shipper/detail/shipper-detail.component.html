@@ -37,7 +37,15 @@
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipper.paymentType">Payment Type</span></dt>
           <dd>
-            <span>{{ shipper.paymentType }}</span>
+            <span jhiTranslate="{{ 'containerGoServerApp.PaymentType.' + shipper.paymentType }}">{{ shipper.paymentType }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.shipper.contractType">Contract Type</span></dt>
+          <dd>
+            <span jhiTranslate="{{ 'containerGoServerApp.ContractType.' + shipper.contractType }}">{{ shipper.contractType }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.shipper.contractValidUntil">Contract Valid Until</span></dt>
+          <dd>
+            <span>{{ shipper.contractValidUntil | formatMediumDatetime }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipper.isApproved">Is Approved</span></dt>
           <dd>

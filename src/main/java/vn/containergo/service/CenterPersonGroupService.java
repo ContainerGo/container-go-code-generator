@@ -1,6 +1,7 @@
 package vn.containergo.service;
 
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import vn.containergo.service.dto.CenterPersonGroupDTO;
@@ -47,12 +48,12 @@ public interface CenterPersonGroupService {
      * @param id the id of the entity.
      * @return the entity.
      */
-    Optional<CenterPersonGroupDTO> findOne(Long id);
+    Optional<CenterPersonGroupDTO> findOne(UUID id);
 
     /**
      * Delete the "id" centerPersonGroup.
      *
      * @param id the id of the entity.
      */
-    void delete(Long id);
+    void delete(UUID id);
 }

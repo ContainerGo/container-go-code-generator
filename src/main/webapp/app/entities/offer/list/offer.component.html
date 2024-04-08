@@ -49,30 +49,30 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="pickupFromDate">
+            <th scope="col" jhiSortBy="estimatedPickupFromDate">
               <div class="d-flex">
-                <span jhiTranslate="containerGoServerApp.offer.pickupFromDate">Pickup From Date</span>
+                <span jhiTranslate="containerGoServerApp.offer.estimatedPickupFromDate">Estimated Pickup From Date</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="pickupUntilDate">
+            <th scope="col" jhiSortBy="estimatedPickupUntilDate">
               <div class="d-flex">
-                <span jhiTranslate="containerGoServerApp.offer.pickupUntilDate">Pickup Until Date</span>
+                <span jhiTranslate="containerGoServerApp.offer.estimatedPickupUntilDate">Estimated Pickup Until Date</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="dropoffFromDate">
+            <th scope="col" jhiSortBy="estimatedDropoffFromDate">
               <div class="d-flex">
-                <span jhiTranslate="containerGoServerApp.offer.dropoffFromDate">Dropoff From Date</span>
+                <span jhiTranslate="containerGoServerApp.offer.estimatedDropoffFromDate">Estimated Dropoff From Date</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="dropoffUntilDate">
+            <th scope="col" jhiSortBy="estimatedDropoffUntilDate">
               <div class="d-flex">
-                <span jhiTranslate="containerGoServerApp.offer.dropoffUntilDate">Dropoff Until Date</span>
+                <span jhiTranslate="containerGoServerApp.offer.estimatedDropoffUntilDate">Estimated Dropoff Until Date</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
@@ -94,13 +94,6 @@
             <th scope="col" jhiSortBy="carrierId">
               <div class="d-flex">
                 <span jhiTranslate="containerGoServerApp.offer.carrierId">Carrier Id</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="carrierPersonId">
-              <div class="d-flex">
-                <span jhiTranslate="containerGoServerApp.offer.carrierPersonId">Carrier Person Id</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
@@ -128,14 +121,13 @@
                 <a [routerLink]="['/offer', offer.id, 'view']">{{ offer.id }}</a>
               </td>
               <td>{{ offer.message }}</td>
-              <td>{{ offer.pickupFromDate | formatMediumDatetime }}</td>
-              <td>{{ offer.pickupUntilDate | formatMediumDatetime }}</td>
-              <td>{{ offer.dropoffFromDate | formatMediumDatetime }}</td>
-              <td>{{ offer.dropoffUntilDate | formatMediumDatetime }}</td>
+              <td>{{ offer.estimatedPickupFromDate | formatMediumDatetime }}</td>
+              <td>{{ offer.estimatedPickupUntilDate | formatMediumDatetime }}</td>
+              <td>{{ offer.estimatedDropoffFromDate | formatMediumDatetime }}</td>
+              <td>{{ offer.estimatedDropoffUntilDate | formatMediumDatetime }}</td>
               <td jhiTranslate="{{ 'containerGoServerApp.OfferState.' + offer.state }}">{{ offer.state }}</td>
               <td>{{ offer.price }}</td>
               <td>{{ offer.carrierId }}</td>
-              <td>{{ offer.carrierPersonId }}</td>
               <td>{{ offer.truckId }}</td>
               <td>
                 @if (offer.container) {

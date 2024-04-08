@@ -8,10 +8,10 @@ import { OfferService, RestOffer } from './offer.service';
 
 const requireRestSample: RestOffer = {
   ...sampleWithRequiredData,
-  pickupFromDate: sampleWithRequiredData.pickupFromDate?.toJSON(),
-  pickupUntilDate: sampleWithRequiredData.pickupUntilDate?.toJSON(),
-  dropoffFromDate: sampleWithRequiredData.dropoffFromDate?.toJSON(),
-  dropoffUntilDate: sampleWithRequiredData.dropoffUntilDate?.toJSON(),
+  estimatedPickupFromDate: sampleWithRequiredData.estimatedPickupFromDate?.toJSON(),
+  estimatedPickupUntilDate: sampleWithRequiredData.estimatedPickupUntilDate?.toJSON(),
+  estimatedDropoffFromDate: sampleWithRequiredData.estimatedDropoffFromDate?.toJSON(),
+  estimatedDropoffUntilDate: sampleWithRequiredData.estimatedDropoffUntilDate?.toJSON(),
 };
 
 describe('Offer Service', () => {
@@ -33,7 +33,7 @@ describe('Offer Service', () => {
       const returnedFromService = { ...requireRestSample };
       const expected = { ...sampleWithRequiredData };
 
-      service.find(123).subscribe(resp => (expectedResult = resp.body));
+      service.find('9fec3727-3421-4967-b213-ba36557ca194').subscribe(resp => (expectedResult = resp.body));
 
       const req = httpMock.expectOne({ method: 'GET' });
       req.flush(returnedFromService);
@@ -92,7 +92,7 @@ describe('Offer Service', () => {
     it('should delete a Offer', () => {
       const expected = true;
 
-      service.delete(123).subscribe(resp => (expectedResult = resp.ok));
+      service.delete('9fec3727-3421-4967-b213-ba36557ca194').subscribe(resp => (expectedResult = resp.ok));
 
       const req = httpMock.expectOne({ method: 'DELETE' });
       req.flush({ status: 200 });
@@ -168,7 +168,7 @@ describe('Offer Service', () => {
       });
 
       it('Should return false if one entity is null', () => {
-        const entity1 = { id: 123 };
+        const entity1 = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
         const entity2 = null;
 
         const compareResult1 = service.compareOffer(entity1, entity2);
@@ -179,8 +179,8 @@ describe('Offer Service', () => {
       });
 
       it('Should return false if primaryKey differs', () => {
-        const entity1 = { id: 123 };
-        const entity2 = { id: 456 };
+        const entity1 = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
+        const entity2 = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
 
         const compareResult1 = service.compareOffer(entity1, entity2);
         const compareResult2 = service.compareOffer(entity2, entity1);
@@ -190,8 +190,8 @@ describe('Offer Service', () => {
       });
 
       it('Should return false if primaryKey matches', () => {
-        const entity1 = { id: 123 };
-        const entity2 = { id: 123 };
+        const entity1 = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
+        const entity2 = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
 
         const compareResult1 = service.compareOffer(entity1, entity2);
         const compareResult2 = service.compareOffer(entity2, entity1);

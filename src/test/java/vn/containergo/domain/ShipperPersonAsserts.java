@@ -62,6 +62,7 @@ public class ShipperPersonAsserts {
     public static void assertShipperPersonUpdatableRelationshipsEquals(ShipperPerson expected, ShipperPerson actual) {
         assertThat(expected)
             .as("Verify ShipperPerson relationships")
+            .satisfies(e -> assertThat(e.getGroup()).as("check group").isEqualTo(actual.getGroup()))
             .satisfies(e -> assertThat(e.getShipper()).as("check shipper").isEqualTo(actual.getShipper()));
     }
 }

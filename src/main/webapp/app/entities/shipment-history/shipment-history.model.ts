@@ -2,7 +2,7 @@ import dayjs from 'dayjs/esm';
 import { IContainer } from 'app/entities/container/container.model';
 
 export interface IShipmentHistory {
-  id: number;
+  id: string;
   event?: string | null;
   timestamp?: dayjs.Dayjs | null;
   executedBy?: string | null;

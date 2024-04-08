@@ -106,6 +106,26 @@ const routes: Routes = [
     data: { pageTitle: 'containerGoServerApp.shipmentHistory.home.title' },
     loadChildren: () => import('./shipment-history/shipment-history.routes'),
   },
+  {
+    path: 'shipper-person-group',
+    data: { pageTitle: 'containerGoServerApp.shipperPersonGroup.home.title' },
+    loadChildren: () => import('./shipper-person-group/shipper-person-group.routes'),
+  },
+  {
+    path: 'shipper-notification',
+    data: { pageTitle: 'containerGoServerApp.shipperNotification.home.title' },
+    loadChildren: () => import('./shipper-notification/shipper-notification.routes'),
+  },
+  {
+    path: 'carrier-person-group',
+    data: { pageTitle: 'containerGoServerApp.carrierPersonGroup.home.title' },
+    loadChildren: () => import('./carrier-person-group/carrier-person-group.routes'),
+  },
+  {
+    path: 'shipment-plan',
+    data: { pageTitle: 'containerGoServerApp.shipmentPlan.home.title' },
+    loadChildren: () => import('./shipment-plan/shipment-plan.routes'),
+  },
   /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
 ];
 

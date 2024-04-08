@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.UUID;
 import vn.containergo.domain.enumeration.ContainerState;
 
 /**
@@ -12,7 +13,7 @@ import vn.containergo.domain.enumeration.ContainerState;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class ContainerDTO implements Serializable {
 
-    private Long id;
+    private UUID id;
 
     @NotNull
     private String contNo;
@@ -65,9 +66,9 @@ public class ContainerDTO implements Serializable {
     private ContainerState state;
 
     @NotNull
-    private Long shipperId;
+    private UUID shipperId;
 
-    private Long carrierId;
+    private UUID carrierId;
 
     @NotNull
     private Double totalWeight;
@@ -105,11 +106,11 @@ public class ContainerDTO implements Serializable {
 
     private ContainerOwnerDTO owner;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -265,19 +266,19 @@ public class ContainerDTO implements Serializable {
         this.state = state;
     }
 
-    public Long getShipperId() {
+    public UUID getShipperId() {
         return shipperId;
     }
 
-    public void setShipperId(Long shipperId) {
+    public void setShipperId(UUID shipperId) {
         this.shipperId = shipperId;
     }
 
-    public Long getCarrierId() {
+    public UUID getCarrierId() {
         return carrierId;
     }
 
-    public void setCarrierId(Long carrierId) {
+    public void setCarrierId(UUID carrierId) {
         this.carrierId = carrierId;
     }
 
@@ -418,7 +419,7 @@ public class ContainerDTO implements Serializable {
     @Override
     public String toString() {
         return "ContainerDTO{" +
-            "id=" + getId() +
+            "id='" + getId() + "'" +
             ", contNo='" + getContNo() + "'" +
             ", estimatedPrice=" + getEstimatedPrice() +
             ", distance=" + getDistance() +
@@ -438,8 +439,8 @@ public class ContainerDTO implements Serializable {
             ", points='" + getPoints() + "'" +
             ", dropoffUntilDate='" + getDropoffUntilDate() + "'" +
             ", state='" + getState() + "'" +
-            ", shipperId=" + getShipperId() +
-            ", carrierId=" + getCarrierId() +
+            ", shipperId='" + getShipperId() + "'" +
+            ", carrierId='" + getCarrierId() + "'" +
             ", totalWeight=" + getTotalWeight() +
             ", biddingFromDate='" + getBiddingFromDate() + "'" +
             ", biddingUntilDate='" + getBiddingUntilDate() + "'" +

@@ -1,6 +1,7 @@
 package vn.containergo.service.impl;
 
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -67,13 +68,13 @@ public class DistrictServiceImpl implements DistrictService {
     }
 
     @Override
-    public Optional<DistrictDTO> findOne(Long id) {
+    public Optional<DistrictDTO> findOne(UUID id) {
         log.debug("Request to get District : {}", id);
         return districtRepository.findById(id).map(districtMapper::toDto);
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(UUID id) {
         log.debug("Request to delete District : {}", id);
         districtRepository.deleteById(id);
     }

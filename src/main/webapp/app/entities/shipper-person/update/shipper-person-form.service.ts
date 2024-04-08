@@ -22,6 +22,7 @@ type ShipperPersonFormGroupContent = {
   phone: FormControl<IShipperPerson['phone']>;
   email: FormControl<IShipperPerson['email']>;
   address: FormControl<IShipperPerson['address']>;
+  group: FormControl<IShipperPerson['group']>;
   shipper: FormControl<IShipperPerson['shipper']>;
 };
 
@@ -50,6 +51,9 @@ export class ShipperPersonFormService {
       }),
       email: new FormControl(shipperPersonRawValue.email),
       address: new FormControl(shipperPersonRawValue.address),
+      group: new FormControl(shipperPersonRawValue.group, {
+        validators: [Validators.required],
+      }),
       shipper: new FormControl(shipperPersonRawValue.shipper),
     });
   }

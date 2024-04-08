@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,6 +62,7 @@ public class ContainerStatusResource {
         if (containerStatusDTO.getId() != null) {
             throw new BadRequestAlertException("A new containerStatus cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        containerStatusDTO.setId(UUID.randomUUID());
         containerStatusDTO = containerStatusService.save(containerStatusDTO);
         return ResponseEntity.created(new URI("/api/container-statuses/" + containerStatusDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, containerStatusDTO.getId().toString()))
@@ -79,7 +81,7 @@ public class ContainerStatusResource {
      */
     @PutMapping("/{id}")
     public ResponseEntity<ContainerStatusDTO> updateContainerStatus(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @Valid @RequestBody ContainerStatusDTO containerStatusDTO
     ) throws URISyntaxException {
         log.debug("REST request to update ContainerStatus : {}, {}", id, containerStatusDTO);
@@ -113,7 +115,7 @@ public class ContainerStatusResource {
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<ContainerStatusDTO> partialUpdateContainerStatus(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @NotNull @RequestBody ContainerStatusDTO containerStatusDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update ContainerStatus partially : {}, {}", id, containerStatusDTO);
@@ -159,7 +161,7 @@ public class ContainerStatusResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the containerStatusDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ContainerStatusDTO> getContainerStatus(@PathVariable("id") Long id) {
+    public ResponseEntity<ContainerStatusDTO> getContainerStatus(@PathVariable("id") UUID id) {
         log.debug("REST request to get ContainerStatus : {}", id);
         Optional<ContainerStatusDTO> containerStatusDTO = containerStatusService.findOne(id);
         return ResponseUtil.wrapOrNotFound(containerStatusDTO);
@@ -172,7 +174,7 @@ public class ContainerStatusResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteContainerStatus(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteContainerStatus(@PathVariable("id") UUID id) {
         log.debug("REST request to delete ContainerStatus : {}", id);
         containerStatusService.delete(id);
         return ResponseEntity.noContent()

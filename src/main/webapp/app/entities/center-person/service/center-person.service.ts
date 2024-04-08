@@ -35,7 +35,7 @@ export class CenterPersonService {
     });
   }
 
-  find(id: number): Observable<EntityResponseType> {
+  find(id: string): Observable<EntityResponseType> {
     return this.http.get<ICenterPerson>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
@@ -44,11 +44,11 @@ export class CenterPersonService {
     return this.http.get<ICenterPerson[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
-  delete(id: number): Observable<HttpResponse<{}>> {
+  delete(id: string): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getCenterPersonIdentifier(centerPerson: Pick<ICenterPerson, 'id'>): number {
+  getCenterPersonIdentifier(centerPerson: Pick<ICenterPerson, 'id'>): string {
     return centerPerson.id;
   }
 

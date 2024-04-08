@@ -24,6 +24,7 @@ describe('CarrierPerson Form Service', () => {
             phone: expect.any(Object),
             email: expect.any(Object),
             address: expect.any(Object),
+            group: expect.any(Object),
             carrier: expect.any(Object),
           }),
         );
@@ -39,6 +40,7 @@ describe('CarrierPerson Form Service', () => {
             phone: expect.any(Object),
             email: expect.any(Object),
             address: expect.any(Object),
+            group: expect.any(Object),
             carrier: expect.any(Object),
           }),
         );

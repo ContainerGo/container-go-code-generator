@@ -18,7 +18,7 @@ describe('ContainerOwner Management Detail Component', () => {
             {
               path: '**',
               component: ContainerOwnerDetailComponent,
-              resolve: { containerOwner: () => of({ id: 123 }) },
+              resolve: { containerOwner: () => of({ id: '9fec3727-3421-4967-b213-ba36557ca194' }) },
             },
           ],
           withComponentInputBinding(),
@@ -40,7 +40,7 @@ describe('ContainerOwner Management Detail Component', () => {
       const instance = await harness.navigateByUrl('/', ContainerOwnerDetailComponent);
 
       // THEN
-      expect(instance.containerOwner).toEqual(expect.objectContaining({ id: 123 }));
+      expect(instance.containerOwner).toEqual(expect.objectContaining({ id: '9fec3727-3421-4967-b213-ba36557ca194' }));
     });
   });
 

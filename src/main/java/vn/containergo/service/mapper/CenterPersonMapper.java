@@ -1,6 +1,8 @@
 package vn.containergo.service.mapper;
 
+import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.mapstruct.*;
 import vn.containergo.domain.CenterPerson;
@@ -13,6 +15,7 @@ import vn.containergo.service.dto.CenterPersonGroupDTO;
  */
 @Mapper(componentModel = "spring")
 public interface CenterPersonMapper extends EntityMapper<CenterPersonDTO, CenterPerson> {
+    @Mapping(target = "group", source = "group", qualifiedByName = "centerPersonGroupId")
     @Mapping(target = "groups", source = "groups", qualifiedByName = "centerPersonGroupIdSet")
     CenterPersonDTO toDto(CenterPerson s);
 
@@ -27,5 +30,9 @@ public interface CenterPersonMapper extends EntityMapper<CenterPersonDTO, Center
     @Named("centerPersonGroupIdSet")
     default Set<CenterPersonGroupDTO> toDtoCenterPersonGroupIdSet(Set<CenterPersonGroup> centerPersonGroup) {
         return centerPersonGroup.stream().map(this::toDtoCenterPersonGroupId).collect(Collectors.toSet());
+    }
+
+    default String map(UUID value) {
+        return Objects.toString(value, null);
     }
 }

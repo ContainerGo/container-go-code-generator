@@ -6,10 +6,12 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, Subject, from } from 'rxjs';
 
+import { ICarrierPersonGroup } from 'app/entities/carrier-person-group/carrier-person-group.model';
+import { CarrierPersonGroupService } from 'app/entities/carrier-person-group/service/carrier-person-group.service';
 import { ICarrier } from 'app/entities/carrier/carrier.model';
 import { CarrierService } from 'app/entities/carrier/service/carrier.service';
-import { CarrierPersonService } from '../service/carrier-person.service';
 import { ICarrierPerson } from '../carrier-person.model';
+import { CarrierPersonService } from '../service/carrier-person.service';
 import { CarrierPersonFormService } from './carrier-person-form.service';
 
 import { CarrierPersonUpdateComponent } from './carrier-person-update.component';
@@ -20,6 +22,7 @@ describe('CarrierPerson Management Update Component', () => {
   let activatedRoute: ActivatedRoute;
   let carrierPersonFormService: CarrierPersonFormService;
   let carrierPersonService: CarrierPersonService;
+  let carrierPersonGroupService: CarrierPersonGroupService;
   let carrierService: CarrierService;
 
   beforeEach(() => {
@@ -42,18 +45,41 @@ describe('CarrierPerson Management Update Component', () => {
     activatedRoute = TestBed.inject(ActivatedRoute);
     carrierPersonFormService = TestBed.inject(CarrierPersonFormService);
     carrierPersonService = TestBed.inject(CarrierPersonService);
+    carrierPersonGroupService = TestBed.inject(CarrierPersonGroupService);
     carrierService = TestBed.inject(CarrierService);
 
     comp = fixture.componentInstance;
   });
 
   describe('ngOnInit', () => {
+    it('Should call CarrierPersonGroup query and add missing value', () => {
+      const carrierPerson: ICarrierPerson = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
+      const group: ICarrierPersonGroup = { id: 'ccff1006-b9c1-438a-90f1-3f313b57af11' };
+      carrierPerson.group = group;
+
+      const carrierPersonGroupCollection: ICarrierPersonGroup[] = [{ id: '92467459-5179-4e9c-a002-8ce5f052271f' }];
+      jest.spyOn(carrierPersonGroupService, 'query').mockReturnValue(of(new HttpResponse({ body: carrierPersonGroupCollection })));
+      const additionalCarrierPersonGroups = [group];
+      const expectedCollection: ICarrierPersonGroup[] = [...additionalCarrierPersonGroups, ...carrierPersonGroupCollection];
+      jest.spyOn(carrierPersonGroupService, 'addCarrierPersonGroupToCollectionIfMissing').mockReturnValue(expectedCollection);
+
+      activatedRoute.data = of({ carrierPerson });
+      comp.ngOnInit();
+
+      expect(carrierPersonGroupService.query).toHaveBeenCalled();
+      expect(carrierPersonGroupService.addCarrierPersonGroupToCollectionIfMissing).toHaveBeenCalledWith(
+        carrierPersonGroupCollection,
+        ...additionalCarrierPersonGroups.map(expect.objectContaining),
+      );
+      expect(comp.carrierPersonGroupsSharedCollection).toEqual(expectedCollection);
+    });
+
     it('Should call Carrier query and add missing value', () => {
-      const carrierPerson: ICarrierPerson = { id: 456 };
-      const carrier: ICarrier = { id: 32672 };
+      const carrierPerson: ICarrierPerson = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
+      const carrier: ICarrier = { id: '11a8342e-c255-4135-81bf-e9a4b7c30527' };
       carrierPerson.carrier = carrier;
 
-      const carrierCollection: ICarrier[] = [{ id: 4272 }];
+      const carrierCollection: ICarrier[] = [{ id: '00e95841-98cf-4abc-b387-8102b7f40772' }];
       jest.spyOn(carrierService, 'query').mockReturnValue(of(new HttpResponse({ body: carrierCollection })));
       const additionalCarriers = [carrier];
       const expectedCollection: ICarrier[] = [...additionalCarriers, ...carrierCollection];
@@ -71,13 +97,16 @@ describe('CarrierPerson Management Update Component', () => {
     });
 
     it('Should update editForm', () => {
-      const carrierPerson: ICarrierPerson = { id: 456 };
-      const carrier: ICarrier = { id: 21588 };
+      const carrierPerson: ICarrierPerson = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
+      const group: ICarrierPersonGroup = { id: '28525861-8b67-4328-ba9a-8b4f8f4f6149' };
+      carrierPerson.group = group;
+      const carrier: ICarrier = { id: '19b02f92-b673-4451-ba15-6866e2a39f87' };
       carrierPerson.carrier = carrier;
 
       activatedRoute.data = of({ carrierPerson });
       comp.ngOnInit();
 
+      expect(comp.carrierPersonGroupsSharedCollection).toContain(group);
       expect(comp.carriersSharedCollection).toContain(carrier);
       expect(comp.carrierPerson).toEqual(carrierPerson);
     });
@@ -87,7 +116,7 @@ describe('CarrierPerson Management Update Component', () => {
     it('Should call update service on save for existing entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<ICarrierPerson>>();
-      const carrierPerson = { id: 123 };
+      const carrierPerson = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(carrierPersonFormService, 'getCarrierPerson').mockReturnValue(carrierPerson);
       jest.spyOn(carrierPersonService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -110,7 +139,7 @@ describe('CarrierPerson Management Update Component', () => {
     it('Should call create service on save for new entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<ICarrierPerson>>();
-      const carrierPerson = { id: 123 };
+      const carrierPerson = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(carrierPersonFormService, 'getCarrierPerson').mockReturnValue({ id: null });
       jest.spyOn(carrierPersonService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -133,7 +162,7 @@ describe('CarrierPerson Management Update Component', () => {
     it('Should set isSaving to false on error', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<ICarrierPerson>>();
-      const carrierPerson = { id: 123 };
+      const carrierPerson = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(carrierPersonService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ carrierPerson });
@@ -152,10 +181,20 @@ describe('CarrierPerson Management Update Component', () => {
   });
 
   describe('Compare relationships', () => {
+    describe('compareCarrierPersonGroup', () => {
+      it('Should forward to carrierPersonGroupService', () => {
+        const entity = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
+        const entity2 = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
+        jest.spyOn(carrierPersonGroupService, 'compareCarrierPersonGroup');
+        comp.compareCarrierPersonGroup(entity, entity2);
+        expect(carrierPersonGroupService.compareCarrierPersonGroup).toHaveBeenCalledWith(entity, entity2);
+      });
+    });
+
     describe('compareCarrier', () => {
       it('Should forward to carrierService', () => {
-        const entity = { id: 123 };
-        const entity2 = { id: 456 };
+        const entity = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
+        const entity2 = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
         jest.spyOn(carrierService, 'compareCarrier');
         comp.compareCarrier(entity, entity2);
         expect(carrierService.compareCarrier).toHaveBeenCalledWith(entity, entity2);

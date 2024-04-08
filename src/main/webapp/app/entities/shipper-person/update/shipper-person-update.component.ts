@@ -7,10 +7,12 @@ import { finalize, map } from 'rxjs/operators';
 import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { IShipperPersonGroup } from 'app/entities/shipper-person-group/shipper-person-group.model';
+import { ShipperPersonGroupService } from 'app/entities/shipper-person-group/service/shipper-person-group.service';
 import { IShipper } from 'app/entities/shipper/shipper.model';
 import { ShipperService } from 'app/entities/shipper/service/shipper.service';
-import { IShipperPerson } from '../shipper-person.model';
 import { ShipperPersonService } from '../service/shipper-person.service';
+import { IShipperPerson } from '../shipper-person.model';
 import { ShipperPersonFormService, ShipperPersonFormGroup } from './shipper-person-form.service';
 
 @Component({
@@ -23,15 +25,20 @@ export class ShipperPersonUpdateComponent implements OnInit {
   isSaving = false;
   shipperPerson: IShipperPerson | null = null;
 
+  shipperPersonGroupsSharedCollection: IShipperPersonGroup[] = [];
   shippersSharedCollection: IShipper[] = [];
 
   protected shipperPersonService = inject(ShipperPersonService);
   protected shipperPersonFormService = inject(ShipperPersonFormService);
+  protected shipperPersonGroupService = inject(ShipperPersonGroupService);
   protected shipperService = inject(ShipperService);
   protected activatedRoute = inject(ActivatedRoute);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: ShipperPersonFormGroup = this.shipperPersonFormService.createShipperPersonFormGroup();
+
+  compareShipperPersonGroup = (o1: IShipperPersonGroup | null, o2: IShipperPersonGroup | null): boolean =>
+    this.shipperPersonGroupService.compareShipperPersonGroup(o1, o2);
 
   compareShipper = (o1: IShipper | null, o2: IShipper | null): boolean => this.shipperService.compareShipper(o1, o2);
 
@@ -83,6 +90,11 @@ export class ShipperPersonUpdateComponent implements OnInit {
     this.shipperPerson = shipperPerson;
     this.shipperPersonFormService.resetForm(this.editForm, shipperPerson);
 
+    this.shipperPersonGroupsSharedCollection =
+      this.shipperPersonGroupService.addShipperPersonGroupToCollectionIfMissing<IShipperPersonGroup>(
+        this.shipperPersonGroupsSharedCollection,
+        shipperPerson.group,
+      );
     this.shippersSharedCollection = this.shipperService.addShipperToCollectionIfMissing<IShipper>(
       this.shippersSharedCollection,
       shipperPerson.shipper,
@@ -90,6 +102,19 @@ export class ShipperPersonUpdateComponent implements OnInit {
   }
 
   protected loadRelationshipsOptions(): void {
+    this.shipperPersonGroupService
+      .query()
+      .pipe(map((res: HttpResponse<IShipperPersonGroup[]>) => res.body ?? []))
+      .pipe(
+        map((shipperPersonGroups: IShipperPersonGroup[]) =>
+          this.shipperPersonGroupService.addShipperPersonGroupToCollectionIfMissing<IShipperPersonGroup>(
+            shipperPersonGroups,
+            this.shipperPerson?.group,
+          ),
+        ),
+      )
+      .subscribe((shipperPersonGroups: IShipperPersonGroup[]) => (this.shipperPersonGroupsSharedCollection = shipperPersonGroups));
+
     this.shipperService
       .query()
       .pipe(map((res: HttpResponse<IShipper[]>) => res.body ?? []))

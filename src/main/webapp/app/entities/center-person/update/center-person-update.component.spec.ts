@@ -49,13 +49,15 @@ describe('CenterPerson Management Update Component', () => {
 
   describe('ngOnInit', () => {
     it('Should call CenterPersonGroup query and add missing value', () => {
-      const centerPerson: ICenterPerson = { id: 456 };
-      const groups: ICenterPersonGroup[] = [{ id: 32544 }];
+      const centerPerson: ICenterPerson = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
+      const group: ICenterPersonGroup = { id: 'af3ef79c-3c81-4468-bb01-7ab1f510c9c2' };
+      centerPerson.group = group;
+      const groups: ICenterPersonGroup[] = [{ id: 'e17c523c-4fe5-4ced-950d-135b33cb7024' }];
       centerPerson.groups = groups;
 
-      const centerPersonGroupCollection: ICenterPersonGroup[] = [{ id: 7291 }];
+      const centerPersonGroupCollection: ICenterPersonGroup[] = [{ id: '39817a30-d0aa-4c0e-ace3-1c2af5856a06' }];
       jest.spyOn(centerPersonGroupService, 'query').mockReturnValue(of(new HttpResponse({ body: centerPersonGroupCollection })));
-      const additionalCenterPersonGroups = [...groups];
+      const additionalCenterPersonGroups = [group, ...groups];
       const expectedCollection: ICenterPersonGroup[] = [...additionalCenterPersonGroups, ...centerPersonGroupCollection];
       jest.spyOn(centerPersonGroupService, 'addCenterPersonGroupToCollectionIfMissing').mockReturnValue(expectedCollection);
 
@@ -71,13 +73,16 @@ describe('CenterPerson Management Update Component', () => {
     });
 
     it('Should update editForm', () => {
-      const centerPerson: ICenterPerson = { id: 456 };
-      const groups: ICenterPersonGroup = { id: 30199 };
+      const centerPerson: ICenterPerson = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
+      const group: ICenterPersonGroup = { id: '5c94ec8e-0fef-44ac-89c6-658ce6ef6904' };
+      centerPerson.group = group;
+      const groups: ICenterPersonGroup = { id: '9141d01d-bc73-4c33-a70d-c666203bd4aa' };
       centerPerson.groups = [groups];
 
       activatedRoute.data = of({ centerPerson });
       comp.ngOnInit();
 
+      expect(comp.centerPersonGroupsSharedCollection).toContain(group);
       expect(comp.centerPersonGroupsSharedCollection).toContain(groups);
       expect(comp.centerPerson).toEqual(centerPerson);
     });
@@ -87,7 +92,7 @@ describe('CenterPerson Management Update Component', () => {
     it('Should call update service on save for existing entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<ICenterPerson>>();
-      const centerPerson = { id: 123 };
+      const centerPerson = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(centerPersonFormService, 'getCenterPerson').mockReturnValue(centerPerson);
       jest.spyOn(centerPersonService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -110,7 +115,7 @@ describe('CenterPerson Management Update Component', () => {
     it('Should call create service on save for new entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<ICenterPerson>>();
-      const centerPerson = { id: 123 };
+      const centerPerson = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(centerPersonFormService, 'getCenterPerson').mockReturnValue({ id: null });
       jest.spyOn(centerPersonService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -133,7 +138,7 @@ describe('CenterPerson Management Update Component', () => {
     it('Should set isSaving to false on error', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<ICenterPerson>>();
-      const centerPerson = { id: 123 };
+      const centerPerson = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(centerPersonService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ centerPerson });
@@ -154,8 +159,8 @@ describe('CenterPerson Management Update Component', () => {
   describe('Compare relationships', () => {
     describe('compareCenterPersonGroup', () => {
       it('Should forward to centerPersonGroupService', () => {
-        const entity = { id: 123 };
-        const entity2 = { id: 456 };
+        const entity = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
+        const entity2 = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
         jest.spyOn(centerPersonGroupService, 'compareCenterPersonGroup');
         comp.compareCenterPersonGroup(entity, entity2);
         expect(centerPersonGroupService.compareCenterPersonGroup).toHaveBeenCalledWith(entity, entity2);

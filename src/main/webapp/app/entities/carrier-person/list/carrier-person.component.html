@@ -70,6 +70,12 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="group.id">
+              <div class="d-flex">
+                <span jhiTranslate="containerGoServerApp.carrierPerson.group">Group</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col" jhiSortBy="carrier.id">
               <div class="d-flex">
                 <span jhiTranslate="containerGoServerApp.carrierPerson.carrier">Carrier</span>
@@ -89,6 +95,13 @@
               <td>{{ carrierPerson.phone }}</td>
               <td>{{ carrierPerson.email }}</td>
               <td>{{ carrierPerson.address }}</td>
+              <td>
+                @if (carrierPerson.group) {
+                  <div>
+                    <a [routerLink]="['/carrier-person-group', carrierPerson.group.id, 'view']">{{ carrierPerson.group.id }}</a>
+                  </div>
+                }
+              </td>
               <td>
                 @if (carrierPerson.carrier) {
                   <div>

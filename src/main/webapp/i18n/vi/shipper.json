@@ -24,6 +24,8 @@
       "taxCode": "Tax Code",
       "companySize": "Company Size",
       "paymentType": "Payment Type",
+      "contractType": "Contract Type",
+      "contractValidUntil": "Contract Valid Until",
       "isApproved": "Is Approved",
       "isBillingInformationComplete": "Is Billing Information Complete",
       "isProfileComplete": "Is Profile Complete",

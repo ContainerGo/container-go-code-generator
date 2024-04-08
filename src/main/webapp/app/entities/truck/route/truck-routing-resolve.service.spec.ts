@@ -41,7 +41,7 @@ describe('Truck routing resolve service', () => {
     it('should return ITruck returned by find', () => {
       // GIVEN
       service.find = jest.fn(id => of(new HttpResponse({ body: { id } })));
-      mockActivatedRouteSnapshot.params = { id: 123 };
+      mockActivatedRouteSnapshot.params = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
 
       // WHEN
       TestBed.runInInjectionContext(() => {
@@ -53,8 +53,8 @@ describe('Truck routing resolve service', () => {
       });
 
       // THEN
-      expect(service.find).toBeCalledWith(123);
-      expect(resultTruck).toEqual({ id: 123 });
+      expect(service.find).toBeCalledWith('9fec3727-3421-4967-b213-ba36557ca194');
+      expect(resultTruck).toEqual({ id: '9fec3727-3421-4967-b213-ba36557ca194' });
     });
 
     it('should return null if id is not provided', () => {
@@ -79,7 +79,7 @@ describe('Truck routing resolve service', () => {
     it('should route to 404 page if data not found in server', () => {
       // GIVEN
       jest.spyOn(service, 'find').mockReturnValue(of(new HttpResponse<ITruck>({ body: null })));
-      mockActivatedRouteSnapshot.params = { id: 123 };
+      mockActivatedRouteSnapshot.params = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
 
       // WHEN
       TestBed.runInInjectionContext(() => {
@@ -91,7 +91,7 @@ describe('Truck routing resolve service', () => {
       });
 
       // THEN
-      expect(service.find).toBeCalledWith(123);
+      expect(service.find).toBeCalledWith('9fec3727-3421-4967-b213-ba36557ca194');
       expect(resultTruck).toEqual(undefined);
       expect(mockRouter.navigate).toHaveBeenCalledWith(['404']);
     });

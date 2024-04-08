@@ -8,8 +8,7 @@ import static vn.containergo.domain.ShipperPersonAsserts.*;
 import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import vn.containergo.IntegrationTest;
 import vn.containergo.domain.ShipperPerson;
+import vn.containergo.domain.ShipperPersonGroup;
 import vn.containergo.repository.ShipperPersonRepository;
 import vn.containergo.service.dto.ShipperPersonDTO;
 import vn.containergo.service.mapper.ShipperPersonMapper;
@@ -46,9 +46,6 @@ class ShipperPersonResourceIT {
     private static final String ENTITY_API_URL = "/api/shipper-people";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
-    private static Random random = new Random();
-    private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
-
     @Autowired
     private ObjectMapper om;
 
@@ -75,6 +72,11 @@ class ShipperPersonResourceIT {
             .phone(DEFAULT_PHONE)
             .email(DEFAULT_EMAIL)
             .address(DEFAULT_ADDRESS);
+        // Add required entity
+        ShipperPersonGroup shipperPersonGroup;
+        shipperPersonGroup = ShipperPersonGroupResourceIT.createEntity();
+        shipperPersonGroup.setId("fixed-id-for-tests");
+        shipperPerson.setGroup(shipperPersonGroup);
         return shipperPerson;
     }
 
@@ -90,6 +92,11 @@ class ShipperPersonResourceIT {
             .phone(UPDATED_PHONE)
             .email(UPDATED_EMAIL)
             .address(UPDATED_ADDRESS);
+        // Add required entity
+        ShipperPersonGroup shipperPersonGroup;
+        shipperPersonGroup = ShipperPersonGroupResourceIT.createUpdatedEntity();
+        shipperPersonGroup.setId("fixed-id-for-tests");
+        shipperPerson.setGroup(shipperPersonGroup);
         return shipperPerson;
     }
 
@@ -123,7 +130,7 @@ class ShipperPersonResourceIT {
     @Test
     void createShipperPersonWithExistingId() throws Exception {
         // Create the ShipperPerson with an existing ID
-        shipperPerson.setId(1L);
+        shipperPerson.setId(UUID.randomUUID());
         ShipperPersonDTO shipperPersonDTO = shipperPersonMapper.toDto(shipperPerson);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
@@ -172,6 +179,7 @@ class ShipperPersonResourceIT {
     @Test
     void getAllShipperPeople() throws Exception {
         // Initialize the database
+        shipperPerson.setId(UUID.randomUUID());
         shipperPersonRepository.save(shipperPerson);
 
         // Get all the shipperPersonList
@@ -179,7 +187,7 @@ class ShipperPersonResourceIT {
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(shipperPerson.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(shipperPerson.getId().toString())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE)))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
@@ -189,6 +197,7 @@ class ShipperPersonResourceIT {
     @Test
     void getShipperPerson() throws Exception {
         // Initialize the database
+        shipperPerson.setId(UUID.randomUUID());
         shipperPersonRepository.save(shipperPerson);
 
         // Get the shipperPerson
@@ -196,7 +205,7 @@ class ShipperPersonResourceIT {
             .perform(get(ENTITY_API_URL_ID, shipperPerson.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(shipperPerson.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(shipperPerson.getId().toString()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.phone").value(DEFAULT_PHONE))
             .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
@@ -206,12 +215,13 @@ class ShipperPersonResourceIT {
     @Test
     void getNonExistingShipperPerson() throws Exception {
         // Get the shipperPerson
-        restShipperPersonMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
+        restShipperPersonMockMvc.perform(get(ENTITY_API_URL_ID, UUID.randomUUID().toString())).andExpect(status().isNotFound());
     }
 
     @Test
     void putExistingShipperPerson() throws Exception {
         // Initialize the database
+        shipperPerson.setId(UUID.randomUUID());
         shipperPersonRepository.save(shipperPerson);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -237,7 +247,7 @@ class ShipperPersonResourceIT {
     @Test
     void putNonExistingShipperPerson() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipperPerson.setId(longCount.incrementAndGet());
+        shipperPerson.setId(UUID.randomUUID());
 
         // Create the ShipperPerson
         ShipperPersonDTO shipperPersonDTO = shipperPersonMapper.toDto(shipperPerson);
@@ -258,7 +268,7 @@ class ShipperPersonResourceIT {
     @Test
     void putWithIdMismatchShipperPerson() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipperPerson.setId(longCount.incrementAndGet());
+        shipperPerson.setId(UUID.randomUUID());
 
         // Create the ShipperPerson
         ShipperPersonDTO shipperPersonDTO = shipperPersonMapper.toDto(shipperPerson);
@@ -266,7 +276,7 @@ class ShipperPersonResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restShipperPersonMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                put(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(om.writeValueAsBytes(shipperPersonDTO))
             )
@@ -279,7 +289,7 @@ class ShipperPersonResourceIT {
     @Test
     void putWithMissingIdPathParamShipperPerson() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipperPerson.setId(longCount.incrementAndGet());
+        shipperPerson.setId(UUID.randomUUID());
 
         // Create the ShipperPerson
         ShipperPersonDTO shipperPersonDTO = shipperPersonMapper.toDto(shipperPerson);
@@ -296,6 +306,7 @@ class ShipperPersonResourceIT {
     @Test
     void partialUpdateShipperPersonWithPatch() throws Exception {
         // Initialize the database
+        shipperPerson.setId(UUID.randomUUID());
         shipperPersonRepository.save(shipperPerson);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -326,6 +337,7 @@ class ShipperPersonResourceIT {
     @Test
     void fullUpdateShipperPersonWithPatch() throws Exception {
         // Initialize the database
+        shipperPerson.setId(UUID.randomUUID());
         shipperPersonRepository.save(shipperPerson);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -353,7 +365,7 @@ class ShipperPersonResourceIT {
     @Test
     void patchNonExistingShipperPerson() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipperPerson.setId(longCount.incrementAndGet());
+        shipperPerson.setId(UUID.randomUUID());
 
         // Create the ShipperPerson
         ShipperPersonDTO shipperPersonDTO = shipperPersonMapper.toDto(shipperPerson);
@@ -374,7 +386,7 @@ class ShipperPersonResourceIT {
     @Test
     void patchWithIdMismatchShipperPerson() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipperPerson.setId(longCount.incrementAndGet());
+        shipperPerson.setId(UUID.randomUUID());
 
         // Create the ShipperPerson
         ShipperPersonDTO shipperPersonDTO = shipperPersonMapper.toDto(shipperPerson);
@@ -382,7 +394,7 @@ class ShipperPersonResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restShipperPersonMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                patch(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(shipperPersonDTO))
             )
@@ -395,7 +407,7 @@ class ShipperPersonResourceIT {
     @Test
     void patchWithMissingIdPathParamShipperPerson() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipperPerson.setId(longCount.incrementAndGet());
+        shipperPerson.setId(UUID.randomUUID());
 
         // Create the ShipperPerson
         ShipperPersonDTO shipperPersonDTO = shipperPersonMapper.toDto(shipperPerson);
@@ -412,6 +424,7 @@ class ShipperPersonResourceIT {
     @Test
     void deleteShipperPerson() throws Exception {
         // Initialize the database
+        shipperPerson.setId(UUID.randomUUID());
         shipperPersonRepository.save(shipperPerson);
 
         long databaseSizeBeforeDelete = getRepositoryCount();

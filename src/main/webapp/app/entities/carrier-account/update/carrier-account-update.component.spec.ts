@@ -50,10 +50,10 @@ describe('CarrierAccount Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call Carrier query and add missing value', () => {
       const carrierAccount: ICarrierAccount = { id: 456 };
-      const carrier: ICarrier = { id: 16933 };
+      const carrier: ICarrier = { id: '46721277-cbed-4056-ac19-348f4e12e359' };
       carrierAccount.carrier = carrier;
 
-      const carrierCollection: ICarrier[] = [{ id: 1486 }];
+      const carrierCollection: ICarrier[] = [{ id: '8eedc027-5416-4cda-b00c-59306d257608' }];
       jest.spyOn(carrierService, 'query').mockReturnValue(of(new HttpResponse({ body: carrierCollection })));
       const additionalCarriers = [carrier];
       const expectedCollection: ICarrier[] = [...additionalCarriers, ...carrierCollection];
@@ -72,7 +72,7 @@ describe('CarrierAccount Management Update Component', () => {
 
     it('Should update editForm', () => {
       const carrierAccount: ICarrierAccount = { id: 456 };
-      const carrier: ICarrier = { id: 25003 };
+      const carrier: ICarrier = { id: '5010e184-34c5-468f-928d-362b5b11c24c' };
       carrierAccount.carrier = carrier;
 
       activatedRoute.data = of({ carrierAccount });
@@ -154,8 +154,8 @@ describe('CarrierAccount Management Update Component', () => {
   describe('Compare relationships', () => {
     describe('compareCarrier', () => {
       it('Should forward to carrierService', () => {
-        const entity = { id: 123 };
-        const entity2 = { id: 456 };
+        const entity = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
+        const entity2 = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
         jest.spyOn(carrierService, 'compareCarrier');
         comp.compareCarrier(entity, entity2);
         expect(carrierService.compareCarrier).toHaveBeenCalledWith(entity, entity2);

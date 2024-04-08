@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
+import dayjs from 'dayjs/esm';
+import { DATE_TIME_FORMAT } from 'app/config/input.constants';
 import { IShipper, NewShipper } from '../shipper.model';
 
 /**
@@ -14,19 +16,35 @@ type PartialWithRequiredKeyOf<T extends { id: unknown }> = Partial<Omit<T, 'id'>
  */
 type ShipperFormGroupInput = IShipper | PartialWithRequiredKeyOf<NewShipper>;
 
-type ShipperFormDefaults = Pick<NewShipper, 'id' | 'isApproved' | 'isBillingInformationComplete' | 'isProfileComplete'>;
+/**
+ * Type that converts some properties for forms.
+ */
+type FormValueOf<T extends IShipper | NewShipper> = Omit<T, 'contractValidUntil'> & {
+  contractValidUntil?: string | null;
+};
+
+type ShipperFormRawValue = FormValueOf<IShipper>;
+
+type NewShipperFormRawValue = FormValueOf<NewShipper>;
+
+type ShipperFormDefaults = Pick<
+  NewShipper,
+  'id' | 'contractValidUntil' | 'isApproved' | 'isBillingInformationComplete' | 'isProfileComplete'
+>;
 
 type ShipperFormGroupContent = {
-  id: FormControl<IShipper['id'] | NewShipper['id']>;
-  code: FormControl<IShipper['code']>;
-  name: FormControl<IShipper['name']>;
-  address: FormControl<IShipper['address']>;
-  taxCode: FormControl<IShipper['taxCode']>;
-  companySize: FormControl<IShipper['companySize']>;
-  paymentType: FormControl<IShipper['paymentType']>;
-  isApproved: FormControl<IShipper['isApproved']>;
-  isBillingInformationComplete: FormControl<IShipper['isBillingInformationComplete']>;
-  isProfileComplete: FormControl<IShipper['isProfileComplete']>;
+  id: FormControl<ShipperFormRawValue['id'] | NewShipper['id']>;
+  code: FormControl<ShipperFormRawValue['code']>;
+  name: FormControl<ShipperFormRawValue['name']>;
+  address: FormControl<ShipperFormRawValue['address']>;
+  taxCode: FormControl<ShipperFormRawValue['taxCode']>;
+  companySize: FormControl<ShipperFormRawValue['companySize']>;
+  paymentType: FormControl<ShipperFormRawValue['paymentType']>;
+  contractType: FormControl<ShipperFormRawValue['contractType']>;
+  contractValidUntil: FormControl<ShipperFormRawValue['contractValidUntil']>;
+  isApproved: FormControl<ShipperFormRawValue['isApproved']>;
+  isBillingInformationComplete: FormControl<ShipperFormRawValue['isBillingInformationComplete']>;
+  isProfileComplete: FormControl<ShipperFormRawValue['isProfileComplete']>;
 };
 
 export type ShipperFormGroup = FormGroup<ShipperFormGroupContent>;
@@ -34,10 +52,10 @@ export type ShipperFormGroup = FormGroup<ShipperFormGroupContent>;
 @Injectable({ providedIn: 'root' })
 export class ShipperFormService {
   createShipperFormGroup(shipper: ShipperFormGroupInput = { id: null }): ShipperFormGroup {
-    const shipperRawValue = {
+    const shipperRawValue = this.convertShipperToShipperRawValue({
       ...this.getFormDefaults(),
       ...shipper,
-    };
+    });
     return new FormGroup<ShipperFormGroupContent>({
       id: new FormControl(
         { value: shipperRawValue.id, disabled: true },
@@ -60,6 +78,10 @@ export class ShipperFormService {
       paymentType: new FormControl(shipperRawValue.paymentType, {
         validators: [Validators.required],
       }),
+      contractType: new FormControl(shipperRawValue.contractType, {
+        validators: [Validators.required],
+      }),
+      contractValidUntil: new FormControl(shipperRawValue.contractValidUntil),
       isApproved: new FormControl(shipperRawValue.isApproved),
       isBillingInformationComplete: new FormControl(shipperRawValue.isBillingInformationComplete),
       isProfileComplete: new FormControl(shipperRawValue.isProfileComplete),
@@ -67,11 +89,11 @@ export class ShipperFormService {
   }
 
   getShipper(form: ShipperFormGroup): IShipper | NewShipper {
-    return form.getRawValue() as IShipper | NewShipper;
+    return this.convertShipperRawValueToShipper(form.getRawValue() as ShipperFormRawValue | NewShipperFormRawValue);
   }
 
   resetForm(form: ShipperFormGroup, shipper: ShipperFormGroupInput): void {
-    const shipperRawValue = { ...this.getFormDefaults(), ...shipper };
+    const shipperRawValue = this.convertShipperToShipperRawValue({ ...this.getFormDefaults(), ...shipper });
     form.reset(
       {
         ...shipperRawValue,
@@ -81,11 +103,30 @@ export class ShipperFormService {
   }
 
   private getFormDefaults(): ShipperFormDefaults {
+    const currentTime = dayjs();
+
     return {
       id: null,
+      contractValidUntil: currentTime,
       isApproved: false,
       isBillingInformationComplete: false,
       isProfileComplete: false,
+    };
+  }
+
+  private convertShipperRawValueToShipper(rawShipper: ShipperFormRawValue | NewShipperFormRawValue): IShipper | NewShipper {
+    return {
+      ...rawShipper,
+      contractValidUntil: dayjs(rawShipper.contractValidUntil, DATE_TIME_FORMAT),
+    };
+  }
+
+  private convertShipperToShipperRawValue(
+    shipper: IShipper | (Partial<NewShipper> & ShipperFormDefaults),
+  ): ShipperFormRawValue | PartialWithRequiredKeyOf<NewShipperFormRawValue> {
+    return {
+      ...shipper,
+      contractValidUntil: shipper.contractValidUntil ? shipper.contractValidUntil.format(DATE_TIME_FORMAT) : undefined,
     };
   }
 }

@@ -35,7 +35,7 @@ export class ShipperPersonService {
     });
   }
 
-  find(id: number): Observable<EntityResponseType> {
+  find(id: string): Observable<EntityResponseType> {
     return this.http.get<IShipperPerson>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
@@ -44,11 +44,11 @@ export class ShipperPersonService {
     return this.http.get<IShipperPerson[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
-  delete(id: number): Observable<HttpResponse<{}>> {
+  delete(id: string): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getShipperPersonIdentifier(shipperPerson: Pick<IShipperPerson, 'id'>): number {
+  getShipperPersonIdentifier(shipperPerson: Pick<IShipperPerson, 'id'>): string {
     return shipperPerson.id;
   }
 

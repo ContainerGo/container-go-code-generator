@@ -1,5 +1,7 @@
 package vn.containergo.service.mapper;
 
+import java.util.Objects;
+import java.util.UUID;
 import org.mapstruct.*;
 import vn.containergo.domain.Carrier;
 import vn.containergo.domain.CarrierAccount;
@@ -18,4 +20,8 @@ public interface CarrierAccountMapper extends EntityMapper<CarrierAccountDTO, Ca
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
     CarrierDTO toDtoCarrierId(Carrier carrier);
+
+    default String map(UUID value) {
+        return Objects.toString(value, null);
+    }
 }

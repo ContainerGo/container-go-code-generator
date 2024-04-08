@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,6 +61,7 @@ public class CarrierResource {
         if (carrierDTO.getId() != null) {
             throw new BadRequestAlertException("A new carrier cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        carrierDTO.setId(UUID.randomUUID());
         carrierDTO = carrierService.save(carrierDTO);
         return ResponseEntity.created(new URI("/api/carriers/" + carrierDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, carrierDTO.getId().toString()))
@@ -78,7 +80,7 @@ public class CarrierResource {
      */
     @PutMapping("/{id}")
     public ResponseEntity<CarrierDTO> updateCarrier(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @Valid @RequestBody CarrierDTO carrierDTO
     ) throws URISyntaxException {
         log.debug("REST request to update Carrier : {}, {}", id, carrierDTO);
@@ -112,7 +114,7 @@ public class CarrierResource {
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<CarrierDTO> partialUpdateCarrier(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @NotNull @RequestBody CarrierDTO carrierDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update Carrier partially : {}, {}", id, carrierDTO);
@@ -156,7 +158,7 @@ public class CarrierResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the carrierDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<CarrierDTO> getCarrier(@PathVariable("id") Long id) {
+    public ResponseEntity<CarrierDTO> getCarrier(@PathVariable("id") UUID id) {
         log.debug("REST request to get Carrier : {}", id);
         Optional<CarrierDTO> carrierDTO = carrierService.findOne(id);
         return ResponseUtil.wrapOrNotFound(carrierDTO);
@@ -169,7 +171,7 @@ public class CarrierResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCarrier(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteCarrier(@PathVariable("id") UUID id) {
         log.debug("REST request to delete Carrier : {}", id);
         carrierService.delete(id);
         return ResponseEntity.noContent()

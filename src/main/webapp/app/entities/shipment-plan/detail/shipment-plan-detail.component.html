@@ -1,0 +1,64 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (shipmentPlan) {
+      <div>
+        <h2 data-cy="shipmentPlanDetailsHeading">
+          <span jhiTranslate="containerGoServerApp.shipmentPlan.detail.title">Shipment Plan</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="containerGoServerApp.shipmentPlan.id">Id</span></dt>
+          <dd>
+            <span>{{ shipmentPlan.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.shipmentPlan.estimatedPickupFromDate">Estimated Pickup From Date</span></dt>
+          <dd>
+            <span>{{ shipmentPlan.estimatedPickupFromDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.shipmentPlan.estimatedPickupUntilDate">Estimated Pickup Until Date</span></dt>
+          <dd>
+            <span>{{ shipmentPlan.estimatedPickupUntilDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.shipmentPlan.estimatedDropoffFromDate">Estimated Dropoff From Date</span></dt>
+          <dd>
+            <span>{{ shipmentPlan.estimatedDropoffFromDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.shipmentPlan.estimatedDropoffUntilDate">Estimated Dropoff Until Date</span></dt>
+          <dd>
+            <span>{{ shipmentPlan.estimatedDropoffUntilDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.shipmentPlan.driverId">Driver Id</span></dt>
+          <dd>
+            <span>{{ shipmentPlan.driverId }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.shipmentPlan.truckId">Truck Id</span></dt>
+          <dd>
+            <span>{{ shipmentPlan.truckId }}</span>
+          </dd>
+          <dt><span jhiTranslate="containerGoServerApp.shipmentPlan.container">Container</span></dt>
+          <dd>
+            @if (shipmentPlan.container) {
+              <div>
+                <a [routerLink]="['/container', shipmentPlan.container.id, 'view']">{{ shipmentPlan.container.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
+        </button>
+
+        <button type="button" [routerLink]="['/shipment-plan', shipmentPlan.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

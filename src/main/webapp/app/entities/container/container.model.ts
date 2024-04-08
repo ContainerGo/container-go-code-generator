@@ -10,7 +10,7 @@ import { IContainerOwner } from 'app/entities/container-owner/container-owner.mo
 import { ContainerState } from 'app/entities/enumerations/container-state.model';
 
 export interface IContainer {
-  id: number;
+  id: string;
   contNo?: string | null;
   estimatedPrice?: number | null;
   distance?: number | null;
@@ -30,8 +30,8 @@ export interface IContainer {
   points?: string | null;
   dropoffUntilDate?: dayjs.Dayjs | null;
   state?: keyof typeof ContainerState | null;
-  shipperId?: number | null;
-  carrierId?: number | null;
+  shipperId?: string | null;
+  carrierId?: string | null;
   totalWeight?: number | null;
   biddingFromDate?: dayjs.Dayjs | null;
   biddingUntilDate?: dayjs.Dayjs | null;

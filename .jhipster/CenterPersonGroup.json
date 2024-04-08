@@ -7,16 +7,12 @@
   "fields": [
     {
       "fieldName": "id",
-      "fieldType": "Long"
+      "fieldType": "UUID"
     },
     {
       "fieldName": "name",
       "fieldType": "String",
       "fieldValidateRules": ["required"]
-    },
-    {
-      "fieldName": "description",
-      "fieldType": "String"
     }
   ],
   "jpaMetamodelFiltering": false,

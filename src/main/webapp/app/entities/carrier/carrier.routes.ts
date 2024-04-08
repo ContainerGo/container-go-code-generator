@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
-import { ASC } from 'app/config/navigation.constants';
 import { CarrierComponent } from './list/carrier.component';
 import { CarrierDetailComponent } from './detail/carrier-detail.component';
 import { CarrierUpdateComponent } from './update/carrier-update.component';
@@ -11,9 +10,7 @@ const carrierRoute: Routes = [
   {
     path: '',
     component: CarrierComponent,
-    data: {
-      defaultSort: 'id,' + ASC,
-    },
+    data: {},
     canActivate: [UserRouteAccessService],
   },
   {

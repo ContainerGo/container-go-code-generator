@@ -50,10 +50,10 @@ describe('ShipperAccount Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call Shipper query and add missing value', () => {
       const shipperAccount: IShipperAccount = { id: 456 };
-      const shipper: IShipper = { id: 3164 };
+      const shipper: IShipper = { id: '7e3d4a7e-c583-432d-bf44-ed5f03d49989' };
       shipperAccount.shipper = shipper;
 
-      const shipperCollection: IShipper[] = [{ id: 9014 }];
+      const shipperCollection: IShipper[] = [{ id: 'd803220c-378c-4c43-99a5-19acc6a5b9b1' }];
       jest.spyOn(shipperService, 'query').mockReturnValue(of(new HttpResponse({ body: shipperCollection })));
       const additionalShippers = [shipper];
       const expectedCollection: IShipper[] = [...additionalShippers, ...shipperCollection];
@@ -72,7 +72,7 @@ describe('ShipperAccount Management Update Component', () => {
 
     it('Should update editForm', () => {
       const shipperAccount: IShipperAccount = { id: 456 };
-      const shipper: IShipper = { id: 18223 };
+      const shipper: IShipper = { id: '0bb58ee7-453f-46aa-9367-0b03b1070ec0' };
       shipperAccount.shipper = shipper;
 
       activatedRoute.data = of({ shipperAccount });
@@ -154,8 +154,8 @@ describe('ShipperAccount Management Update Component', () => {
   describe('Compare relationships', () => {
     describe('compareShipper', () => {
       it('Should forward to shipperService', () => {
-        const entity = { id: 123 };
-        const entity2 = { id: 456 };
+        const entity = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
+        const entity2 = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
         jest.spyOn(shipperService, 'compareShipper');
         comp.compareShipper(entity, entity2);
         expect(shipperService.compareShipper).toHaveBeenCalledWith(entity, entity2);

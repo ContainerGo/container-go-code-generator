@@ -26,6 +26,18 @@ class CenterPersonTest {
     }
 
     @Test
+    void groupTest() throws Exception {
+        CenterPerson centerPerson = getCenterPersonRandomSampleGenerator();
+        CenterPersonGroup centerPersonGroupBack = getCenterPersonGroupRandomSampleGenerator();
+
+        centerPerson.setGroup(centerPersonGroupBack);
+        assertThat(centerPerson.getGroup()).isEqualTo(centerPersonGroupBack);
+
+        centerPerson.group(null);
+        assertThat(centerPerson.getGroup()).isNull();
+    }
+
+    @Test
     void groupsTest() throws Exception {
         CenterPerson centerPerson = getCenterPersonRandomSampleGenerator();
         CenterPersonGroup centerPersonGroupBack = getCenterPersonGroupRandomSampleGenerator();

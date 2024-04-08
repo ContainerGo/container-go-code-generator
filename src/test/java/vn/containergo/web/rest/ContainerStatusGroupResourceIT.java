@@ -8,8 +8,7 @@ import static vn.containergo.domain.ContainerStatusGroupAsserts.*;
 import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +41,6 @@ class ContainerStatusGroupResourceIT {
 
     private static final String ENTITY_API_URL = "/api/container-status-groups";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
-
-    private static Random random = new Random();
-    private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private ObjectMapper om;
@@ -123,7 +119,7 @@ class ContainerStatusGroupResourceIT {
     @Test
     void createContainerStatusGroupWithExistingId() throws Exception {
         // Create the ContainerStatusGroup with an existing ID
-        containerStatusGroup.setId(1L);
+        containerStatusGroup.setId(UUID.randomUUID());
         ContainerStatusGroupDTO containerStatusGroupDTO = containerStatusGroupMapper.toDto(containerStatusGroup);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
@@ -172,6 +168,7 @@ class ContainerStatusGroupResourceIT {
     @Test
     void getAllContainerStatusGroups() throws Exception {
         // Initialize the database
+        containerStatusGroup.setId(UUID.randomUUID());
         containerStatusGroupRepository.save(containerStatusGroup);
 
         // Get all the containerStatusGroupList
@@ -179,7 +176,7 @@ class ContainerStatusGroupResourceIT {
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(containerStatusGroup.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(containerStatusGroup.getId().toString())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
@@ -188,6 +185,7 @@ class ContainerStatusGroupResourceIT {
     @Test
     void getContainerStatusGroup() throws Exception {
         // Initialize the database
+        containerStatusGroup.setId(UUID.randomUUID());
         containerStatusGroupRepository.save(containerStatusGroup);
 
         // Get the containerStatusGroup
@@ -195,7 +193,7 @@ class ContainerStatusGroupResourceIT {
             .perform(get(ENTITY_API_URL_ID, containerStatusGroup.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(containerStatusGroup.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(containerStatusGroup.getId().toString()))
             .andExpect(jsonPath("$.code").value(DEFAULT_CODE))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION));
@@ -204,12 +202,13 @@ class ContainerStatusGroupResourceIT {
     @Test
     void getNonExistingContainerStatusGroup() throws Exception {
         // Get the containerStatusGroup
-        restContainerStatusGroupMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
+        restContainerStatusGroupMockMvc.perform(get(ENTITY_API_URL_ID, UUID.randomUUID().toString())).andExpect(status().isNotFound());
     }
 
     @Test
     void putExistingContainerStatusGroup() throws Exception {
         // Initialize the database
+        containerStatusGroup.setId(UUID.randomUUID());
         containerStatusGroupRepository.save(containerStatusGroup);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -237,7 +236,7 @@ class ContainerStatusGroupResourceIT {
     @Test
     void putNonExistingContainerStatusGroup() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerStatusGroup.setId(longCount.incrementAndGet());
+        containerStatusGroup.setId(UUID.randomUUID());
 
         // Create the ContainerStatusGroup
         ContainerStatusGroupDTO containerStatusGroupDTO = containerStatusGroupMapper.toDto(containerStatusGroup);
@@ -258,7 +257,7 @@ class ContainerStatusGroupResourceIT {
     @Test
     void putWithIdMismatchContainerStatusGroup() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerStatusGroup.setId(longCount.incrementAndGet());
+        containerStatusGroup.setId(UUID.randomUUID());
 
         // Create the ContainerStatusGroup
         ContainerStatusGroupDTO containerStatusGroupDTO = containerStatusGroupMapper.toDto(containerStatusGroup);
@@ -266,7 +265,7 @@ class ContainerStatusGroupResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restContainerStatusGroupMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                put(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(om.writeValueAsBytes(containerStatusGroupDTO))
             )
@@ -279,7 +278,7 @@ class ContainerStatusGroupResourceIT {
     @Test
     void putWithMissingIdPathParamContainerStatusGroup() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerStatusGroup.setId(longCount.incrementAndGet());
+        containerStatusGroup.setId(UUID.randomUUID());
 
         // Create the ContainerStatusGroup
         ContainerStatusGroupDTO containerStatusGroupDTO = containerStatusGroupMapper.toDto(containerStatusGroup);
@@ -296,6 +295,7 @@ class ContainerStatusGroupResourceIT {
     @Test
     void partialUpdateContainerStatusGroupWithPatch() throws Exception {
         // Initialize the database
+        containerStatusGroup.setId(UUID.randomUUID());
         containerStatusGroupRepository.save(containerStatusGroup);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -324,6 +324,7 @@ class ContainerStatusGroupResourceIT {
     @Test
     void fullUpdateContainerStatusGroupWithPatch() throws Exception {
         // Initialize the database
+        containerStatusGroup.setId(UUID.randomUUID());
         containerStatusGroupRepository.save(containerStatusGroup);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -354,7 +355,7 @@ class ContainerStatusGroupResourceIT {
     @Test
     void patchNonExistingContainerStatusGroup() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerStatusGroup.setId(longCount.incrementAndGet());
+        containerStatusGroup.setId(UUID.randomUUID());
 
         // Create the ContainerStatusGroup
         ContainerStatusGroupDTO containerStatusGroupDTO = containerStatusGroupMapper.toDto(containerStatusGroup);
@@ -375,7 +376,7 @@ class ContainerStatusGroupResourceIT {
     @Test
     void patchWithIdMismatchContainerStatusGroup() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerStatusGroup.setId(longCount.incrementAndGet());
+        containerStatusGroup.setId(UUID.randomUUID());
 
         // Create the ContainerStatusGroup
         ContainerStatusGroupDTO containerStatusGroupDTO = containerStatusGroupMapper.toDto(containerStatusGroup);
@@ -383,7 +384,7 @@ class ContainerStatusGroupResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restContainerStatusGroupMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                patch(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(containerStatusGroupDTO))
             )
@@ -396,7 +397,7 @@ class ContainerStatusGroupResourceIT {
     @Test
     void patchWithMissingIdPathParamContainerStatusGroup() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerStatusGroup.setId(longCount.incrementAndGet());
+        containerStatusGroup.setId(UUID.randomUUID());
 
         // Create the ContainerStatusGroup
         ContainerStatusGroupDTO containerStatusGroupDTO = containerStatusGroupMapper.toDto(containerStatusGroup);
@@ -415,6 +416,7 @@ class ContainerStatusGroupResourceIT {
     @Test
     void deleteContainerStatusGroup() throws Exception {
         // Initialize the database
+        containerStatusGroup.setId(UUID.randomUUID());
         containerStatusGroupRepository.save(containerStatusGroup);
 
         long databaseSizeBeforeDelete = getRepositoryCount();

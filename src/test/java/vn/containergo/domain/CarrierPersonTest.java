@@ -1,6 +1,7 @@
 package vn.containergo.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static vn.containergo.domain.CarrierPersonGroupTestSamples.*;
 import static vn.containergo.domain.CarrierPersonTestSamples.*;
 import static vn.containergo.domain.CarrierTestSamples.*;
 
@@ -21,6 +22,18 @@ class CarrierPersonTest {
 
         carrierPerson2 = getCarrierPersonSample2();
         assertThat(carrierPerson1).isNotEqualTo(carrierPerson2);
+    }
+
+    @Test
+    void groupTest() throws Exception {
+        CarrierPerson carrierPerson = getCarrierPersonRandomSampleGenerator();
+        CarrierPersonGroup carrierPersonGroupBack = getCarrierPersonGroupRandomSampleGenerator();
+
+        carrierPerson.setGroup(carrierPersonGroupBack);
+        assertThat(carrierPerson.getGroup()).isEqualTo(carrierPersonGroupBack);
+
+        carrierPerson.group(null);
+        assertThat(carrierPerson.getGroup()).isNull();
     }
 
     @Test

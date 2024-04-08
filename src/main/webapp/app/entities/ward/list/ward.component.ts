@@ -50,7 +50,7 @@ export class WardComponent implements OnInit {
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
-  trackId = (_index: number, item: IWard): number => this.wardService.getWardIdentifier(item);
+  trackId = (_index: number, item: IWard): string => this.wardService.getWardIdentifier(item);
 
   ngOnInit(): void {
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])

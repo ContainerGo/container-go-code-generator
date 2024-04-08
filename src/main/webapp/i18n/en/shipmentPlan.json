@@ -1,0 +1,30 @@
+{
+  "containerGoServerApp": {
+    "shipmentPlan": {
+      "home": {
+        "title": "Shipment Plans",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Shipment Plan",
+        "createOrEditLabel": "Create or edit a Shipment Plan",
+        "notFound": "No Shipment Plans found"
+      },
+      "created": "A new Shipment Plan is created with identifier {{ param }}",
+      "updated": "A Shipment Plan is updated with identifier {{ param }}",
+      "deleted": "A Shipment Plan is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Shipment Plan {{ id }}?"
+      },
+      "detail": {
+        "title": "Shipment Plan"
+      },
+      "id": "Id",
+      "estimatedPickupFromDate": "Estimated Pickup From Date",
+      "estimatedPickupUntilDate": "Estimated Pickup Until Date",
+      "estimatedDropoffFromDate": "Estimated Dropoff From Date",
+      "estimatedDropoffUntilDate": "Estimated Dropoff Until Date",
+      "driverId": "Driver Id",
+      "truckId": "Truck Id",
+      "container": "Container"
+    }
+  }
+}

@@ -7,10 +7,13 @@ import static vn.containergo.domain.ContainerTestSamples.*;
 import static vn.containergo.domain.ContainerTypeTestSamples.*;
 import static vn.containergo.domain.DistrictTestSamples.*;
 import static vn.containergo.domain.ProviceTestSamples.*;
+import static vn.containergo.domain.ShipmentPlanTestSamples.*;
 import static vn.containergo.domain.TruckTestSamples.*;
 import static vn.containergo.domain.TruckTypeTestSamples.*;
 import static vn.containergo.domain.WardTestSamples.*;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import vn.containergo.web.rest.TestUtil;
 
@@ -28,6 +31,28 @@ class ContainerTest {
 
         container2 = getContainerSample2();
         assertThat(container1).isNotEqualTo(container2);
+    }
+
+    @Test
+    void shipmentPlanTest() throws Exception {
+        Container container = getContainerRandomSampleGenerator();
+        ShipmentPlan shipmentPlanBack = getShipmentPlanRandomSampleGenerator();
+
+        container.addShipmentPlan(shipmentPlanBack);
+        assertThat(container.getShipmentPlans()).containsOnly(shipmentPlanBack);
+        assertThat(shipmentPlanBack.getContainer()).isEqualTo(container);
+
+        container.removeShipmentPlan(shipmentPlanBack);
+        assertThat(container.getShipmentPlans()).doesNotContain(shipmentPlanBack);
+        assertThat(shipmentPlanBack.getContainer()).isNull();
+
+        container.shipmentPlans(new HashSet<>(Set.of(shipmentPlanBack)));
+        assertThat(container.getShipmentPlans()).containsOnly(shipmentPlanBack);
+        assertThat(shipmentPlanBack.getContainer()).isEqualTo(container);
+
+        container.setShipmentPlans(new HashSet<>());
+        assertThat(container.getShipmentPlans()).doesNotContain(shipmentPlanBack);
+        assertThat(shipmentPlanBack.getContainer()).isNull();
     }
 
     @Test

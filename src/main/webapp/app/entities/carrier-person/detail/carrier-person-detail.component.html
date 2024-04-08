@@ -33,6 +33,14 @@
           <dd>
             <span>{{ carrierPerson.address }}</span>
           </dd>
+          <dt><span jhiTranslate="containerGoServerApp.carrierPerson.group">Group</span></dt>
+          <dd>
+            @if (carrierPerson.group) {
+              <div>
+                <a [routerLink]="['/carrier-person-group', carrierPerson.group.id, 'view']">{{ carrierPerson.group.id }}</a>
+              </div>
+            }
+          </dd>
           <dt><span jhiTranslate="containerGoServerApp.carrierPerson.carrier">Carrier</span></dt>
           <dd>
             @if (carrierPerson.carrier) {

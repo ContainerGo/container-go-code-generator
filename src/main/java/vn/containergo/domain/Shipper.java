@@ -3,12 +3,16 @@ package vn.containergo.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import vn.containergo.domain.enumeration.ContractType;
+import vn.containergo.domain.enumeration.PaymentType;
 
 /**
  * A Shipper.
@@ -20,7 +24,7 @@ public class Shipper implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private Long id;
+    private UUID id;
 
     @NotNull
     @Field("code")
@@ -42,7 +46,14 @@ public class Shipper implements Serializable {
 
     @NotNull
     @Field("payment_type")
-    private String paymentType;
+    private PaymentType paymentType;
+
+    @NotNull
+    @Field("contract_type")
+    private ContractType contractType;
+
+    @Field("contract_valid_until")
+    private Instant contractValidUntil;
 
     @Field("is_approved")
     private Boolean isApproved;
@@ -55,21 +66,21 @@ public class Shipper implements Serializable {
 
     @DBRef
     @Field("shipperPerson")
-    @JsonIgnoreProperties(value = { "shipper" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "enabledNotifications", "group", "shipper" }, allowSetters = true)
     private Set<ShipperPerson> shipperPeople = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
-    public Long getId() {
+    public UUID getId() {
         return this.id;
     }
 
-    public Shipper id(Long id) {
+    public Shipper id(UUID id) {
         this.setId(id);
         return this;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -138,17 +149,43 @@ public class Shipper implements Serializable {
         this.companySize = companySize;
     }
 
-    public String getPaymentType() {
+    public PaymentType getPaymentType() {
         return this.paymentType;
     }
 
-    public Shipper paymentType(String paymentType) {
+    public Shipper paymentType(PaymentType paymentType) {
         this.setPaymentType(paymentType);
         return this;
     }
 
-    public void setPaymentType(String paymentType) {
+    public void setPaymentType(PaymentType paymentType) {
         this.paymentType = paymentType;
+    }
+
+    public ContractType getContractType() {
+        return this.contractType;
+    }
+
+    public Shipper contractType(ContractType contractType) {
+        this.setContractType(contractType);
+        return this;
+    }
+
+    public void setContractType(ContractType contractType) {
+        this.contractType = contractType;
+    }
+
+    public Instant getContractValidUntil() {
+        return this.contractValidUntil;
+    }
+
+    public Shipper contractValidUntil(Instant contractValidUntil) {
+        this.setContractValidUntil(contractValidUntil);
+        return this;
+    }
+
+    public void setContractValidUntil(Instant contractValidUntil) {
+        this.contractValidUntil = contractValidUntil;
     }
 
     public Boolean getIsApproved() {
@@ -251,6 +288,8 @@ public class Shipper implements Serializable {
             ", taxCode='" + getTaxCode() + "'" +
             ", companySize=" + getCompanySize() +
             ", paymentType='" + getPaymentType() + "'" +
+            ", contractType='" + getContractType() + "'" +
+            ", contractValidUntil='" + getContractValidUntil() + "'" +
             ", isApproved='" + getIsApproved() + "'" +
             ", isBillingInformationComplete='" + getIsBillingInformationComplete() + "'" +
             ", isProfileComplete='" + getIsProfileComplete() + "'" +

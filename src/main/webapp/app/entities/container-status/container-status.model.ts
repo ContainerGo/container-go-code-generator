@@ -1,7 +1,7 @@
 import { IContainerStatusGroup } from 'app/entities/container-status-group/container-status-group.model';
 
 export interface IContainerStatus {
-  id: number;
+  id: string;
   code?: string | null;
   name?: string | null;
   description?: string | null;

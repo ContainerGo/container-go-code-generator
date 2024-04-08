@@ -19,30 +19,35 @@ type OfferFormGroupInput = IOffer | PartialWithRequiredKeyOf<NewOffer>;
 /**
  * Type that converts some properties for forms.
  */
-type FormValueOf<T extends IOffer | NewOffer> = Omit<T, 'pickupFromDate' | 'pickupUntilDate' | 'dropoffFromDate' | 'dropoffUntilDate'> & {
-  pickupFromDate?: string | null;
-  pickupUntilDate?: string | null;
-  dropoffFromDate?: string | null;
-  dropoffUntilDate?: string | null;
+type FormValueOf<T extends IOffer | NewOffer> = Omit<
+  T,
+  'estimatedPickupFromDate' | 'estimatedPickupUntilDate' | 'estimatedDropoffFromDate' | 'estimatedDropoffUntilDate'
+> & {
+  estimatedPickupFromDate?: string | null;
+  estimatedPickupUntilDate?: string | null;
+  estimatedDropoffFromDate?: string | null;
+  estimatedDropoffUntilDate?: string | null;
 };
 
 type OfferFormRawValue = FormValueOf<IOffer>;
 
 type NewOfferFormRawValue = FormValueOf<NewOffer>;
 
-type OfferFormDefaults = Pick<NewOffer, 'id' | 'pickupFromDate' | 'pickupUntilDate' | 'dropoffFromDate' | 'dropoffUntilDate'>;
+type OfferFormDefaults = Pick<
+  NewOffer,
+  'id' | 'estimatedPickupFromDate' | 'estimatedPickupUntilDate' | 'estimatedDropoffFromDate' | 'estimatedDropoffUntilDate'
+>;
 
 type OfferFormGroupContent = {
   id: FormControl<OfferFormRawValue['id'] | NewOffer['id']>;
   message: FormControl<OfferFormRawValue['message']>;
-  pickupFromDate: FormControl<OfferFormRawValue['pickupFromDate']>;
-  pickupUntilDate: FormControl<OfferFormRawValue['pickupUntilDate']>;
-  dropoffFromDate: FormControl<OfferFormRawValue['dropoffFromDate']>;
-  dropoffUntilDate: FormControl<OfferFormRawValue['dropoffUntilDate']>;
+  estimatedPickupFromDate: FormControl<OfferFormRawValue['estimatedPickupFromDate']>;
+  estimatedPickupUntilDate: FormControl<OfferFormRawValue['estimatedPickupUntilDate']>;
+  estimatedDropoffFromDate: FormControl<OfferFormRawValue['estimatedDropoffFromDate']>;
+  estimatedDropoffUntilDate: FormControl<OfferFormRawValue['estimatedDropoffUntilDate']>;
   state: FormControl<OfferFormRawValue['state']>;
   price: FormControl<OfferFormRawValue['price']>;
   carrierId: FormControl<OfferFormRawValue['carrierId']>;
-  carrierPersonId: FormControl<OfferFormRawValue['carrierPersonId']>;
   truckId: FormControl<OfferFormRawValue['truckId']>;
   container: FormControl<OfferFormRawValue['container']>;
 };
@@ -65,16 +70,16 @@ export class OfferFormService {
         },
       ),
       message: new FormControl(offerRawValue.message),
-      pickupFromDate: new FormControl(offerRawValue.pickupFromDate, {
+      estimatedPickupFromDate: new FormControl(offerRawValue.estimatedPickupFromDate, {
         validators: [Validators.required],
       }),
-      pickupUntilDate: new FormControl(offerRawValue.pickupUntilDate, {
+      estimatedPickupUntilDate: new FormControl(offerRawValue.estimatedPickupUntilDate, {
         validators: [Validators.required],
       }),
-      dropoffFromDate: new FormControl(offerRawValue.dropoffFromDate, {
+      estimatedDropoffFromDate: new FormControl(offerRawValue.estimatedDropoffFromDate, {
         validators: [Validators.required],
       }),
-      dropoffUntilDate: new FormControl(offerRawValue.dropoffUntilDate, {
+      estimatedDropoffUntilDate: new FormControl(offerRawValue.estimatedDropoffUntilDate, {
         validators: [Validators.required],
       }),
       state: new FormControl(offerRawValue.state, {
@@ -86,7 +91,6 @@ export class OfferFormService {
       carrierId: new FormControl(offerRawValue.carrierId, {
         validators: [Validators.required],
       }),
-      carrierPersonId: new FormControl(offerRawValue.carrierPersonId),
       truckId: new FormControl(offerRawValue.truckId),
       container: new FormControl(offerRawValue.container, {
         validators: [Validators.required],
@@ -113,20 +117,20 @@ export class OfferFormService {
 
     return {
       id: null,
-      pickupFromDate: currentTime,
-      pickupUntilDate: currentTime,
-      dropoffFromDate: currentTime,
-      dropoffUntilDate: currentTime,
+      estimatedPickupFromDate: currentTime,
+      estimatedPickupUntilDate: currentTime,
+      estimatedDropoffFromDate: currentTime,
+      estimatedDropoffUntilDate: currentTime,
     };
   }
 
   private convertOfferRawValueToOffer(rawOffer: OfferFormRawValue | NewOfferFormRawValue): IOffer | NewOffer {
     return {
       ...rawOffer,
-      pickupFromDate: dayjs(rawOffer.pickupFromDate, DATE_TIME_FORMAT),
-      pickupUntilDate: dayjs(rawOffer.pickupUntilDate, DATE_TIME_FORMAT),
-      dropoffFromDate: dayjs(rawOffer.dropoffFromDate, DATE_TIME_FORMAT),
-      dropoffUntilDate: dayjs(rawOffer.dropoffUntilDate, DATE_TIME_FORMAT),
+      estimatedPickupFromDate: dayjs(rawOffer.estimatedPickupFromDate, DATE_TIME_FORMAT),
+      estimatedPickupUntilDate: dayjs(rawOffer.estimatedPickupUntilDate, DATE_TIME_FORMAT),
+      estimatedDropoffFromDate: dayjs(rawOffer.estimatedDropoffFromDate, DATE_TIME_FORMAT),
+      estimatedDropoffUntilDate: dayjs(rawOffer.estimatedDropoffUntilDate, DATE_TIME_FORMAT),
     };
   }
 
@@ -135,10 +139,10 @@ export class OfferFormService {
   ): OfferFormRawValue | PartialWithRequiredKeyOf<NewOfferFormRawValue> {
     return {
       ...offer,
-      pickupFromDate: offer.pickupFromDate ? offer.pickupFromDate.format(DATE_TIME_FORMAT) : undefined,
-      pickupUntilDate: offer.pickupUntilDate ? offer.pickupUntilDate.format(DATE_TIME_FORMAT) : undefined,
-      dropoffFromDate: offer.dropoffFromDate ? offer.dropoffFromDate.format(DATE_TIME_FORMAT) : undefined,
-      dropoffUntilDate: offer.dropoffUntilDate ? offer.dropoffUntilDate.format(DATE_TIME_FORMAT) : undefined,
+      estimatedPickupFromDate: offer.estimatedPickupFromDate ? offer.estimatedPickupFromDate.format(DATE_TIME_FORMAT) : undefined,
+      estimatedPickupUntilDate: offer.estimatedPickupUntilDate ? offer.estimatedPickupUntilDate.format(DATE_TIME_FORMAT) : undefined,
+      estimatedDropoffFromDate: offer.estimatedDropoffFromDate ? offer.estimatedDropoffFromDate.format(DATE_TIME_FORMAT) : undefined,
+      estimatedDropoffUntilDate: offer.estimatedDropoffUntilDate ? offer.estimatedDropoffUntilDate.format(DATE_TIME_FORMAT) : undefined,
     };
   }
 }

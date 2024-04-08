@@ -7,7 +7,7 @@
   "fields": [
     {
       "fieldName": "id",
-      "fieldType": "Long"
+      "fieldType": "UUID"
     },
     {
       "fieldName": "code",
@@ -34,8 +34,19 @@
     },
     {
       "fieldName": "paymentType",
-      "fieldType": "String",
-      "fieldValidateRules": ["required"]
+      "fieldType": "PaymentType",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "CASH_ON_DELIVERY,END_OF_MONTH"
+    },
+    {
+      "fieldName": "contractType",
+      "fieldType": "ContractType",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "SIGNED_CONTRACT,INDIVIDUAL"
+    },
+    {
+      "fieldName": "contractValidUntil",
+      "fieldType": "Instant"
     },
     {
       "fieldName": "isApproved",

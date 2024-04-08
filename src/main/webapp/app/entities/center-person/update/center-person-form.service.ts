@@ -22,6 +22,7 @@ type CenterPersonFormGroupContent = {
   phone: FormControl<ICenterPerson['phone']>;
   email: FormControl<ICenterPerson['email']>;
   address: FormControl<ICenterPerson['address']>;
+  group: FormControl<ICenterPerson['group']>;
   groups: FormControl<ICenterPerson['groups']>;
 };
 
@@ -50,6 +51,9 @@ export class CenterPersonFormService {
       }),
       email: new FormControl(centerPersonRawValue.email),
       address: new FormControl(centerPersonRawValue.address),
+      group: new FormControl(centerPersonRawValue.group, {
+        validators: [Validators.required],
+      }),
       groups: new FormControl(centerPersonRawValue.groups ?? []),
     });
   }

@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
-import { ASC } from 'app/config/navigation.constants';
 import { CenterPersonComponent } from './list/center-person.component';
 import { CenterPersonDetailComponent } from './detail/center-person-detail.component';
 import { CenterPersonUpdateComponent } from './update/center-person-update.component';
@@ -11,9 +10,7 @@ const centerPersonRoute: Routes = [
   {
     path: '',
     component: CenterPersonComponent,
-    data: {
-      defaultSort: 'id,' + ASC,
-    },
+    data: {},
     canActivate: [UserRouteAccessService],
   },
   {

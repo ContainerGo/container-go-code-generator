@@ -1,6 +1,7 @@
 package vn.containergo.service.impl;
 
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -67,13 +68,13 @@ public class ShipperPersonServiceImpl implements ShipperPersonService {
     }
 
     @Override
-    public Optional<ShipperPersonDTO> findOne(Long id) {
+    public Optional<ShipperPersonDTO> findOne(UUID id) {
         log.debug("Request to get ShipperPerson : {}", id);
         return shipperPersonRepository.findById(id).map(shipperPersonMapper::toDto);
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(UUID id) {
         log.debug("Request to delete ShipperPerson : {}", id);
         shipperPersonRepository.deleteById(id);
     }

@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
-import { ASC } from 'app/config/navigation.constants';
 import { TruckComponent } from './list/truck.component';
 import { TruckDetailComponent } from './detail/truck-detail.component';
 import { TruckUpdateComponent } from './update/truck-update.component';
@@ -11,9 +10,7 @@ const truckRoute: Routes = [
   {
     path: '',
     component: TruckComponent,
-    data: {
-      defaultSort: 'id,' + ASC,
-    },
+    data: {},
     canActivate: [UserRouteAccessService],
   },
   {

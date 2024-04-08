@@ -1,6 +1,7 @@
 package vn.containergo.service.impl;
 
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -67,13 +68,13 @@ public class WardServiceImpl implements WardService {
     }
 
     @Override
-    public Optional<WardDTO> findOne(Long id) {
+    public Optional<WardDTO> findOne(UUID id) {
         log.debug("Request to get Ward : {}", id);
         return wardRepository.findById(id).map(wardMapper::toDto);
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(UUID id) {
         log.debug("Request to delete Ward : {}", id);
         wardRepository.deleteById(id);
     }

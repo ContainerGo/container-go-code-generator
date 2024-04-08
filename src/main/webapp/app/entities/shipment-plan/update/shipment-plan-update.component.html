@@ -1,0 +1,225 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-shipment-plan-heading"
+        data-cy="ShipmentPlanCreateUpdateHeading"
+        jhiTranslate="containerGoServerApp.shipmentPlan.home.createOrEditLabel"
+      >
+        Thêm mới hoặc cập nhật Shipment Plan
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" jhiTranslate="containerGoServerApp.shipmentPlan.id" for="field_id">Id</label>
+            <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label
+            class="form-label"
+            jhiTranslate="containerGoServerApp.shipmentPlan.estimatedPickupFromDate"
+            for="field_estimatedPickupFromDate"
+            >Estimated Pickup From Date</label
+          >
+          <div class="d-flex">
+            <input
+              id="field_estimatedPickupFromDate"
+              data-cy="estimatedPickupFromDate"
+              type="datetime-local"
+              class="form-control"
+              name="estimatedPickupFromDate"
+              formControlName="estimatedPickupFromDate"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (
+            editForm.get('estimatedPickupFromDate')!.invalid &&
+            (editForm.get('estimatedPickupFromDate')!.dirty || editForm.get('estimatedPickupFromDate')!.touched)
+          ) {
+            <div>
+              @if (editForm.get('estimatedPickupFromDate')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('estimatedPickupFromDate')?.errors?.datetimelocal"
+                jhiTranslate="entity.validation.datetimelocal"
+                >Trường này phải là định dạng thời gian.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label
+            class="form-label"
+            jhiTranslate="containerGoServerApp.shipmentPlan.estimatedPickupUntilDate"
+            for="field_estimatedPickupUntilDate"
+            >Estimated Pickup Until Date</label
+          >
+          <div class="d-flex">
+            <input
+              id="field_estimatedPickupUntilDate"
+              data-cy="estimatedPickupUntilDate"
+              type="datetime-local"
+              class="form-control"
+              name="estimatedPickupUntilDate"
+              formControlName="estimatedPickupUntilDate"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (
+            editForm.get('estimatedPickupUntilDate')!.invalid &&
+            (editForm.get('estimatedPickupUntilDate')!.dirty || editForm.get('estimatedPickupUntilDate')!.touched)
+          ) {
+            <div>
+              @if (editForm.get('estimatedPickupUntilDate')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('estimatedPickupUntilDate')?.errors?.datetimelocal"
+                jhiTranslate="entity.validation.datetimelocal"
+                >Trường này phải là định dạng thời gian.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label
+            class="form-label"
+            jhiTranslate="containerGoServerApp.shipmentPlan.estimatedDropoffFromDate"
+            for="field_estimatedDropoffFromDate"
+            >Estimated Dropoff From Date</label
+          >
+          <div class="d-flex">
+            <input
+              id="field_estimatedDropoffFromDate"
+              data-cy="estimatedDropoffFromDate"
+              type="datetime-local"
+              class="form-control"
+              name="estimatedDropoffFromDate"
+              formControlName="estimatedDropoffFromDate"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (
+            editForm.get('estimatedDropoffFromDate')!.invalid &&
+            (editForm.get('estimatedDropoffFromDate')!.dirty || editForm.get('estimatedDropoffFromDate')!.touched)
+          ) {
+            <div>
+              @if (editForm.get('estimatedDropoffFromDate')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('estimatedDropoffFromDate')?.errors?.datetimelocal"
+                jhiTranslate="entity.validation.datetimelocal"
+                >Trường này phải là định dạng thời gian.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label
+            class="form-label"
+            jhiTranslate="containerGoServerApp.shipmentPlan.estimatedDropoffUntilDate"
+            for="field_estimatedDropoffUntilDate"
+            >Estimated Dropoff Until Date</label
+          >
+          <div class="d-flex">
+            <input
+              id="field_estimatedDropoffUntilDate"
+              data-cy="estimatedDropoffUntilDate"
+              type="datetime-local"
+              class="form-control"
+              name="estimatedDropoffUntilDate"
+              formControlName="estimatedDropoffUntilDate"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (
+            editForm.get('estimatedDropoffUntilDate')!.invalid &&
+            (editForm.get('estimatedDropoffUntilDate')!.dirty || editForm.get('estimatedDropoffUntilDate')!.touched)
+          ) {
+            <div>
+              @if (editForm.get('estimatedDropoffUntilDate')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('estimatedDropoffUntilDate')?.errors?.datetimelocal"
+                jhiTranslate="entity.validation.datetimelocal"
+                >Trường này phải là định dạng thời gian.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.shipmentPlan.driverId" for="field_driverId">Driver Id</label>
+          <input type="text" class="form-control" name="driverId" id="field_driverId" data-cy="driverId" formControlName="driverId" />
+          @if (editForm.get('driverId')!.invalid && (editForm.get('driverId')!.dirty || editForm.get('driverId')!.touched)) {
+            <div>
+              @if (editForm.get('driverId')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.shipmentPlan.truckId" for="field_truckId">Truck Id</label>
+          <input type="text" class="form-control" name="truckId" id="field_truckId" data-cy="truckId" formControlName="truckId" />
+          @if (editForm.get('truckId')!.invalid && (editForm.get('truckId')!.dirty || editForm.get('truckId')!.touched)) {
+            <div>
+              @if (editForm.get('truckId')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="containerGoServerApp.shipmentPlan.container" for="field_container">Container</label>
+          <select
+            class="form-control"
+            id="field_container"
+            data-cy="container"
+            name="container"
+            formControlName="container"
+            [compareWith]="compareContainer"
+          >
+            <option [ngValue]="null"></option>
+            @for (containerOption of containersSharedCollection; track $index) {
+              <option [ngValue]="containerOption">{{ containerOption.id }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Hủy</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Lưu</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

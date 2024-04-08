@@ -35,7 +35,7 @@ export class ContainerOwnerService {
     });
   }
 
-  find(id: number): Observable<EntityResponseType> {
+  find(id: string): Observable<EntityResponseType> {
     return this.http.get<IContainerOwner>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
@@ -44,11 +44,11 @@ export class ContainerOwnerService {
     return this.http.get<IContainerOwner[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
-  delete(id: number): Observable<HttpResponse<{}>> {
+  delete(id: string): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getContainerOwnerIdentifier(containerOwner: Pick<IContainerOwner, 'id'>): number {
+  getContainerOwnerIdentifier(containerOwner: Pick<IContainerOwner, 'id'>): string {
     return containerOwner.id;
   }
 

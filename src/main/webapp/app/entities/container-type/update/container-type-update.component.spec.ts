@@ -45,7 +45,7 @@ describe('ContainerType Management Update Component', () => {
 
   describe('ngOnInit', () => {
     it('Should update editForm', () => {
-      const containerType: IContainerType = { id: 456 };
+      const containerType: IContainerType = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
 
       activatedRoute.data = of({ containerType });
       comp.ngOnInit();
@@ -58,7 +58,7 @@ describe('ContainerType Management Update Component', () => {
     it('Should call update service on save for existing entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IContainerType>>();
-      const containerType = { id: 123 };
+      const containerType = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(containerTypeFormService, 'getContainerType').mockReturnValue(containerType);
       jest.spyOn(containerTypeService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -81,7 +81,7 @@ describe('ContainerType Management Update Component', () => {
     it('Should call create service on save for new entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IContainerType>>();
-      const containerType = { id: 123 };
+      const containerType = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(containerTypeFormService, 'getContainerType').mockReturnValue({ id: null });
       jest.spyOn(containerTypeService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -104,7 +104,7 @@ describe('ContainerType Management Update Component', () => {
     it('Should set isSaving to false on error', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IContainerType>>();
-      const containerType = { id: 123 };
+      const containerType = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(containerTypeService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ containerType });

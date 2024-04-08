@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -20,7 +23,7 @@ public class Container implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private Long id;
+    private UUID id;
 
     @NotNull
     @Field("cont_no")
@@ -93,10 +96,10 @@ public class Container implements Serializable {
 
     @NotNull
     @Field("shipper_id")
-    private Long shipperId;
+    private UUID shipperId;
 
     @Field("carrier_id")
-    private Long carrierId;
+    private UUID carrierId;
 
     @NotNull
     @Field("total_weight")
@@ -107,6 +110,11 @@ public class Container implements Serializable {
 
     @Field("bidding_until_date")
     private Instant biddingUntilDate;
+
+    @DBRef
+    @Field("shipmentPlan")
+    @JsonIgnoreProperties(value = { "container" }, allowSetters = true)
+    private Set<ShipmentPlan> shipmentPlans = new HashSet<>();
 
     @DBRef
     @Field("pickupProvice")
@@ -156,16 +164,16 @@ public class Container implements Serializable {
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
-    public Long getId() {
+    public UUID getId() {
         return this.id;
     }
 
-    public Container id(Long id) {
+    public Container id(UUID id) {
         this.setId(id);
         return this;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -416,29 +424,29 @@ public class Container implements Serializable {
         this.state = state;
     }
 
-    public Long getShipperId() {
+    public UUID getShipperId() {
         return this.shipperId;
     }
 
-    public Container shipperId(Long shipperId) {
+    public Container shipperId(UUID shipperId) {
         this.setShipperId(shipperId);
         return this;
     }
 
-    public void setShipperId(Long shipperId) {
+    public void setShipperId(UUID shipperId) {
         this.shipperId = shipperId;
     }
 
-    public Long getCarrierId() {
+    public UUID getCarrierId() {
         return this.carrierId;
     }
 
-    public Container carrierId(Long carrierId) {
+    public Container carrierId(UUID carrierId) {
         this.setCarrierId(carrierId);
         return this;
     }
 
-    public void setCarrierId(Long carrierId) {
+    public void setCarrierId(UUID carrierId) {
         this.carrierId = carrierId;
     }
 
@@ -479,6 +487,37 @@ public class Container implements Serializable {
 
     public void setBiddingUntilDate(Instant biddingUntilDate) {
         this.biddingUntilDate = biddingUntilDate;
+    }
+
+    public Set<ShipmentPlan> getShipmentPlans() {
+        return this.shipmentPlans;
+    }
+
+    public void setShipmentPlans(Set<ShipmentPlan> shipmentPlans) {
+        if (this.shipmentPlans != null) {
+            this.shipmentPlans.forEach(i -> i.setContainer(null));
+        }
+        if (shipmentPlans != null) {
+            shipmentPlans.forEach(i -> i.setContainer(this));
+        }
+        this.shipmentPlans = shipmentPlans;
+    }
+
+    public Container shipmentPlans(Set<ShipmentPlan> shipmentPlans) {
+        this.setShipmentPlans(shipmentPlans);
+        return this;
+    }
+
+    public Container addShipmentPlan(ShipmentPlan shipmentPlan) {
+        this.shipmentPlans.add(shipmentPlan);
+        shipmentPlan.setContainer(this);
+        return this;
+    }
+
+    public Container removeShipmentPlan(ShipmentPlan shipmentPlan) {
+        this.shipmentPlans.remove(shipmentPlan);
+        shipmentPlan.setContainer(null);
+        return this;
     }
 
     public Provice getPickupProvice() {
@@ -667,8 +706,8 @@ public class Container implements Serializable {
             ", points='" + getPoints() + "'" +
             ", dropoffUntilDate='" + getDropoffUntilDate() + "'" +
             ", state='" + getState() + "'" +
-            ", shipperId=" + getShipperId() +
-            ", carrierId=" + getCarrierId() +
+            ", shipperId='" + getShipperId() + "'" +
+            ", carrierId='" + getCarrierId() + "'" +
             ", totalWeight=" + getTotalWeight() +
             ", biddingFromDate='" + getBiddingFromDate() + "'" +
             ", biddingUntilDate='" + getBiddingUntilDate() + "'" +

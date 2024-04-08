@@ -1,5 +1,5 @@
 export interface IWard {
-  id: number;
+  id: string;
   code?: string | null;
   name?: string | null;
   description?: string | null;

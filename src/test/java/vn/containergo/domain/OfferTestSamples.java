@@ -1,28 +1,30 @@
 package vn.containergo.domain;
 
-import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class OfferTestSamples {
 
-    private static final Random random = new Random();
-    private static final AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
-
     public static Offer getOfferSample1() {
-        return new Offer().id(1L).message("message1").carrierId(1L).carrierPersonId(1L).truckId(1L);
+        return new Offer()
+            .id(UUID.fromString("23d8dc04-a48b-45d9-a01d-4b728f0ad4aa"))
+            .message("message1")
+            .carrierId(UUID.fromString("23d8dc04-a48b-45d9-a01d-4b728f0ad4aa"))
+            .truckId(UUID.fromString("23d8dc04-a48b-45d9-a01d-4b728f0ad4aa"));
     }
 
     public static Offer getOfferSample2() {
-        return new Offer().id(2L).message("message2").carrierId(2L).carrierPersonId(2L).truckId(2L);
+        return new Offer()
+            .id(UUID.fromString("ad79f240-3727-46c3-b89f-2cf6ebd74367"))
+            .message("message2")
+            .carrierId(UUID.fromString("ad79f240-3727-46c3-b89f-2cf6ebd74367"))
+            .truckId(UUID.fromString("ad79f240-3727-46c3-b89f-2cf6ebd74367"));
     }
 
     public static Offer getOfferRandomSampleGenerator() {
         return new Offer()
-            .id(longCount.incrementAndGet())
+            .id(UUID.randomUUID())
             .message(UUID.randomUUID().toString())
-            .carrierId(longCount.incrementAndGet())
-            .carrierPersonId(longCount.incrementAndGet())
-            .truckId(longCount.incrementAndGet());
+            .carrierId(UUID.randomUUID())
+            .truckId(UUID.randomUUID());
     }
 }

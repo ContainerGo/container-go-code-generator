@@ -10,8 +10,7 @@ import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,9 +53,6 @@ class ShipmentHistoryResourceIT {
 
     private static final String ENTITY_API_URL = "/api/shipment-histories";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
-
-    private static Random random = new Random();
-    private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private ObjectMapper om;
@@ -146,7 +142,7 @@ class ShipmentHistoryResourceIT {
     @Test
     void createShipmentHistoryWithExistingId() throws Exception {
         // Create the ShipmentHistory with an existing ID
-        shipmentHistory.setId(1L);
+        shipmentHistory.setId(UUID.randomUUID());
         ShipmentHistoryDTO shipmentHistoryDTO = shipmentHistoryMapper.toDto(shipmentHistory);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
@@ -211,6 +207,7 @@ class ShipmentHistoryResourceIT {
     @Test
     void getAllShipmentHistories() throws Exception {
         // Initialize the database
+        shipmentHistory.setId(UUID.randomUUID());
         shipmentHistoryRepository.save(shipmentHistory);
 
         // Get all the shipmentHistoryList
@@ -218,7 +215,7 @@ class ShipmentHistoryResourceIT {
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(shipmentHistory.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(shipmentHistory.getId().toString())))
             .andExpect(jsonPath("$.[*].event").value(hasItem(DEFAULT_EVENT)))
             .andExpect(jsonPath("$.[*].timestamp").value(hasItem(DEFAULT_TIMESTAMP.toString())))
             .andExpect(jsonPath("$.[*].executedBy").value(hasItem(DEFAULT_EXECUTED_BY)))
@@ -230,6 +227,7 @@ class ShipmentHistoryResourceIT {
     @Test
     void getShipmentHistory() throws Exception {
         // Initialize the database
+        shipmentHistory.setId(UUID.randomUUID());
         shipmentHistoryRepository.save(shipmentHistory);
 
         // Get the shipmentHistory
@@ -237,7 +235,7 @@ class ShipmentHistoryResourceIT {
             .perform(get(ENTITY_API_URL_ID, shipmentHistory.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(shipmentHistory.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(shipmentHistory.getId().toString()))
             .andExpect(jsonPath("$.event").value(DEFAULT_EVENT))
             .andExpect(jsonPath("$.timestamp").value(DEFAULT_TIMESTAMP.toString()))
             .andExpect(jsonPath("$.executedBy").value(DEFAULT_EXECUTED_BY))
@@ -249,12 +247,13 @@ class ShipmentHistoryResourceIT {
     @Test
     void getNonExistingShipmentHistory() throws Exception {
         // Get the shipmentHistory
-        restShipmentHistoryMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
+        restShipmentHistoryMockMvc.perform(get(ENTITY_API_URL_ID, UUID.randomUUID().toString())).andExpect(status().isNotFound());
     }
 
     @Test
     void putExistingShipmentHistory() throws Exception {
         // Initialize the database
+        shipmentHistory.setId(UUID.randomUUID());
         shipmentHistoryRepository.save(shipmentHistory);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -286,7 +285,7 @@ class ShipmentHistoryResourceIT {
     @Test
     void putNonExistingShipmentHistory() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipmentHistory.setId(longCount.incrementAndGet());
+        shipmentHistory.setId(UUID.randomUUID());
 
         // Create the ShipmentHistory
         ShipmentHistoryDTO shipmentHistoryDTO = shipmentHistoryMapper.toDto(shipmentHistory);
@@ -307,7 +306,7 @@ class ShipmentHistoryResourceIT {
     @Test
     void putWithIdMismatchShipmentHistory() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipmentHistory.setId(longCount.incrementAndGet());
+        shipmentHistory.setId(UUID.randomUUID());
 
         // Create the ShipmentHistory
         ShipmentHistoryDTO shipmentHistoryDTO = shipmentHistoryMapper.toDto(shipmentHistory);
@@ -315,7 +314,7 @@ class ShipmentHistoryResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restShipmentHistoryMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                put(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(om.writeValueAsBytes(shipmentHistoryDTO))
             )
@@ -328,7 +327,7 @@ class ShipmentHistoryResourceIT {
     @Test
     void putWithMissingIdPathParamShipmentHistory() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipmentHistory.setId(longCount.incrementAndGet());
+        shipmentHistory.setId(UUID.randomUUID());
 
         // Create the ShipmentHistory
         ShipmentHistoryDTO shipmentHistoryDTO = shipmentHistoryMapper.toDto(shipmentHistory);
@@ -345,6 +344,7 @@ class ShipmentHistoryResourceIT {
     @Test
     void partialUpdateShipmentHistoryWithPatch() throws Exception {
         // Initialize the database
+        shipmentHistory.setId(UUID.randomUUID());
         shipmentHistoryRepository.save(shipmentHistory);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -375,6 +375,7 @@ class ShipmentHistoryResourceIT {
     @Test
     void fullUpdateShipmentHistoryWithPatch() throws Exception {
         // Initialize the database
+        shipmentHistory.setId(UUID.randomUUID());
         shipmentHistoryRepository.save(shipmentHistory);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -411,7 +412,7 @@ class ShipmentHistoryResourceIT {
     @Test
     void patchNonExistingShipmentHistory() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipmentHistory.setId(longCount.incrementAndGet());
+        shipmentHistory.setId(UUID.randomUUID());
 
         // Create the ShipmentHistory
         ShipmentHistoryDTO shipmentHistoryDTO = shipmentHistoryMapper.toDto(shipmentHistory);
@@ -432,7 +433,7 @@ class ShipmentHistoryResourceIT {
     @Test
     void patchWithIdMismatchShipmentHistory() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipmentHistory.setId(longCount.incrementAndGet());
+        shipmentHistory.setId(UUID.randomUUID());
 
         // Create the ShipmentHistory
         ShipmentHistoryDTO shipmentHistoryDTO = shipmentHistoryMapper.toDto(shipmentHistory);
@@ -440,7 +441,7 @@ class ShipmentHistoryResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restShipmentHistoryMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                patch(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(shipmentHistoryDTO))
             )
@@ -453,7 +454,7 @@ class ShipmentHistoryResourceIT {
     @Test
     void patchWithMissingIdPathParamShipmentHistory() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipmentHistory.setId(longCount.incrementAndGet());
+        shipmentHistory.setId(UUID.randomUUID());
 
         // Create the ShipmentHistory
         ShipmentHistoryDTO shipmentHistoryDTO = shipmentHistoryMapper.toDto(shipmentHistory);
@@ -470,6 +471,7 @@ class ShipmentHistoryResourceIT {
     @Test
     void deleteShipmentHistory() throws Exception {
         // Initialize the database
+        shipmentHistory.setId(UUID.randomUUID());
         shipmentHistoryRepository.save(shipmentHistory);
 
         long databaseSizeBeforeDelete = getRepositoryCount();

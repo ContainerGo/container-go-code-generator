@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
-import { ASC } from 'app/config/navigation.constants';
 import { ShipmentHistoryComponent } from './list/shipment-history.component';
 import { ShipmentHistoryDetailComponent } from './detail/shipment-history-detail.component';
 import { ShipmentHistoryUpdateComponent } from './update/shipment-history-update.component';
@@ -11,9 +10,7 @@ const shipmentHistoryRoute: Routes = [
   {
     path: '',
     component: ShipmentHistoryComponent,
-    data: {
-      defaultSort: 'id,' + ASC,
-    },
+    data: {},
     canActivate: [UserRouteAccessService],
   },
   {

@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
-import { ASC } from 'app/config/navigation.constants';
 import { DistrictComponent } from './list/district.component';
 import { DistrictDetailComponent } from './detail/district-detail.component';
 import { DistrictUpdateComponent } from './update/district-update.component';
@@ -11,9 +10,7 @@ const districtRoute: Routes = [
   {
     path: '',
     component: DistrictComponent,
-    data: {
-      defaultSort: 'id,' + ASC,
-    },
+    data: {},
     canActivate: [UserRouteAccessService],
   },
   {

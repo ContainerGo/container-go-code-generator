@@ -62,6 +62,7 @@ public class CenterPersonAsserts {
     public static void assertCenterPersonUpdatableRelationshipsEquals(CenterPerson expected, CenterPerson actual) {
         assertThat(expected)
             .as("Verify CenterPerson relationships")
+            .satisfies(e -> assertThat(e.getGroup()).as("check group").isEqualTo(actual.getGroup()))
             .satisfies(e -> assertThat(e.getGroups()).as("check groups").isEqualTo(actual.getGroups()));
     }
 }

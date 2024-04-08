@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,6 +62,7 @@ public class ContainerOwnerResource {
         if (containerOwnerDTO.getId() != null) {
             throw new BadRequestAlertException("A new containerOwner cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        containerOwnerDTO.setId(UUID.randomUUID());
         containerOwnerDTO = containerOwnerService.save(containerOwnerDTO);
         return ResponseEntity.created(new URI("/api/container-owners/" + containerOwnerDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, containerOwnerDTO.getId().toString()))
@@ -79,7 +81,7 @@ public class ContainerOwnerResource {
      */
     @PutMapping("/{id}")
     public ResponseEntity<ContainerOwnerDTO> updateContainerOwner(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @Valid @RequestBody ContainerOwnerDTO containerOwnerDTO
     ) throws URISyntaxException {
         log.debug("REST request to update ContainerOwner : {}, {}", id, containerOwnerDTO);
@@ -113,7 +115,7 @@ public class ContainerOwnerResource {
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<ContainerOwnerDTO> partialUpdateContainerOwner(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @NotNull @RequestBody ContainerOwnerDTO containerOwnerDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update ContainerOwner partially : {}, {}", id, containerOwnerDTO);
@@ -159,7 +161,7 @@ public class ContainerOwnerResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the containerOwnerDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ContainerOwnerDTO> getContainerOwner(@PathVariable("id") Long id) {
+    public ResponseEntity<ContainerOwnerDTO> getContainerOwner(@PathVariable("id") UUID id) {
         log.debug("REST request to get ContainerOwner : {}", id);
         Optional<ContainerOwnerDTO> containerOwnerDTO = containerOwnerService.findOne(id);
         return ResponseUtil.wrapOrNotFound(containerOwnerDTO);
@@ -172,7 +174,7 @@ public class ContainerOwnerResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteContainerOwner(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteContainerOwner(@PathVariable("id") UUID id) {
         log.debug("REST request to delete ContainerOwner : {}", id);
         containerOwnerService.delete(id);
         return ResponseEntity.noContent()

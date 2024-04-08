@@ -1,5 +1,7 @@
 package vn.containergo.service.mapper;
 
+import java.util.Objects;
+import java.util.UUID;
 import org.mapstruct.*;
 import vn.containergo.domain.Container;
 import vn.containergo.domain.ContainerOwner;
@@ -77,4 +79,8 @@ public interface ContainerMapper extends EntityMapper<ContainerDTO, Container> {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
     ContainerOwnerDTO toDtoContainerOwnerId(ContainerOwner containerOwner);
+
+    default String map(UUID value) {
+        return Objects.toString(value, null);
+    }
 }

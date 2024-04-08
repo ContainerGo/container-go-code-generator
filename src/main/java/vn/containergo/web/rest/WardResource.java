@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,6 +61,7 @@ public class WardResource {
         if (wardDTO.getId() != null) {
             throw new BadRequestAlertException("A new ward cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        wardDTO.setId(UUID.randomUUID());
         wardDTO = wardService.save(wardDTO);
         return ResponseEntity.created(new URI("/api/wards/" + wardDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, wardDTO.getId().toString()))
@@ -78,7 +80,7 @@ public class WardResource {
      */
     @PutMapping("/{id}")
     public ResponseEntity<WardDTO> updateWard(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @Valid @RequestBody WardDTO wardDTO
     ) throws URISyntaxException {
         log.debug("REST request to update Ward : {}, {}", id, wardDTO);
@@ -112,7 +114,7 @@ public class WardResource {
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<WardDTO> partialUpdateWard(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @NotNull @RequestBody WardDTO wardDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update Ward partially : {}, {}", id, wardDTO);
@@ -156,7 +158,7 @@ public class WardResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the wardDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<WardDTO> getWard(@PathVariable("id") Long id) {
+    public ResponseEntity<WardDTO> getWard(@PathVariable("id") UUID id) {
         log.debug("REST request to get Ward : {}", id);
         Optional<WardDTO> wardDTO = wardService.findOne(id);
         return ResponseUtil.wrapOrNotFound(wardDTO);
@@ -169,7 +171,7 @@ public class WardResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteWard(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteWard(@PathVariable("id") UUID id) {
         log.debug("REST request to delete Ward : {}", id);
         wardService.delete(id);
         return ResponseEntity.noContent()

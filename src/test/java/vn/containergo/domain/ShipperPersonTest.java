@@ -1,9 +1,13 @@
 package vn.containergo.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static vn.containergo.domain.ShipperNotificationTestSamples.*;
+import static vn.containergo.domain.ShipperPersonGroupTestSamples.*;
 import static vn.containergo.domain.ShipperPersonTestSamples.*;
 import static vn.containergo.domain.ShipperTestSamples.*;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import vn.containergo.web.rest.TestUtil;
 
@@ -21,6 +25,40 @@ class ShipperPersonTest {
 
         shipperPerson2 = getShipperPersonSample2();
         assertThat(shipperPerson1).isNotEqualTo(shipperPerson2);
+    }
+
+    @Test
+    void enabledNotificationsTest() throws Exception {
+        ShipperPerson shipperPerson = getShipperPersonRandomSampleGenerator();
+        ShipperNotification shipperNotificationBack = getShipperNotificationRandomSampleGenerator();
+
+        shipperPerson.addEnabledNotifications(shipperNotificationBack);
+        assertThat(shipperPerson.getEnabledNotifications()).containsOnly(shipperNotificationBack);
+        assertThat(shipperNotificationBack.getPerson()).isEqualTo(shipperPerson);
+
+        shipperPerson.removeEnabledNotifications(shipperNotificationBack);
+        assertThat(shipperPerson.getEnabledNotifications()).doesNotContain(shipperNotificationBack);
+        assertThat(shipperNotificationBack.getPerson()).isNull();
+
+        shipperPerson.enabledNotifications(new HashSet<>(Set.of(shipperNotificationBack)));
+        assertThat(shipperPerson.getEnabledNotifications()).containsOnly(shipperNotificationBack);
+        assertThat(shipperNotificationBack.getPerson()).isEqualTo(shipperPerson);
+
+        shipperPerson.setEnabledNotifications(new HashSet<>());
+        assertThat(shipperPerson.getEnabledNotifications()).doesNotContain(shipperNotificationBack);
+        assertThat(shipperNotificationBack.getPerson()).isNull();
+    }
+
+    @Test
+    void groupTest() throws Exception {
+        ShipperPerson shipperPerson = getShipperPersonRandomSampleGenerator();
+        ShipperPersonGroup shipperPersonGroupBack = getShipperPersonGroupRandomSampleGenerator();
+
+        shipperPerson.setGroup(shipperPersonGroupBack);
+        assertThat(shipperPerson.getGroup()).isEqualTo(shipperPersonGroupBack);
+
+        shipperPerson.group(null);
+        assertThat(shipperPerson.getGroup()).isNull();
     }
 
     @Test

@@ -8,8 +8,7 @@ import static vn.containergo.domain.CenterPersonGroupAsserts.*;
 import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +33,8 @@ class CenterPersonGroupResourceIT {
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
-    private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
-    private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
-
     private static final String ENTITY_API_URL = "/api/center-person-groups";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
-
-    private static Random random = new Random();
-    private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private ObjectMapper om;
@@ -64,7 +57,7 @@ class CenterPersonGroupResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static CenterPersonGroup createEntity() {
-        CenterPersonGroup centerPersonGroup = new CenterPersonGroup().name(DEFAULT_NAME).description(DEFAULT_DESCRIPTION);
+        CenterPersonGroup centerPersonGroup = new CenterPersonGroup().name(DEFAULT_NAME);
         return centerPersonGroup;
     }
 
@@ -75,7 +68,7 @@ class CenterPersonGroupResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static CenterPersonGroup createUpdatedEntity() {
-        CenterPersonGroup centerPersonGroup = new CenterPersonGroup().name(UPDATED_NAME).description(UPDATED_DESCRIPTION);
+        CenterPersonGroup centerPersonGroup = new CenterPersonGroup().name(UPDATED_NAME);
         return centerPersonGroup;
     }
 
@@ -109,7 +102,7 @@ class CenterPersonGroupResourceIT {
     @Test
     void createCenterPersonGroupWithExistingId() throws Exception {
         // Create the CenterPersonGroup with an existing ID
-        centerPersonGroup.setId(1L);
+        centerPersonGroup.setId(UUID.randomUUID());
         CenterPersonGroupDTO centerPersonGroupDTO = centerPersonGroupMapper.toDto(centerPersonGroup);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
@@ -142,6 +135,7 @@ class CenterPersonGroupResourceIT {
     @Test
     void getAllCenterPersonGroups() throws Exception {
         // Initialize the database
+        centerPersonGroup.setId(UUID.randomUUID());
         centerPersonGroupRepository.save(centerPersonGroup);
 
         // Get all the centerPersonGroupList
@@ -149,14 +143,14 @@ class CenterPersonGroupResourceIT {
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(centerPersonGroup.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
+            .andExpect(jsonPath("$.[*].id").value(hasItem(centerPersonGroup.getId().toString())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)));
     }
 
     @Test
     void getCenterPersonGroup() throws Exception {
         // Initialize the database
+        centerPersonGroup.setId(UUID.randomUUID());
         centerPersonGroupRepository.save(centerPersonGroup);
 
         // Get the centerPersonGroup
@@ -164,27 +158,27 @@ class CenterPersonGroupResourceIT {
             .perform(get(ENTITY_API_URL_ID, centerPersonGroup.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(centerPersonGroup.getId().intValue()))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION));
+            .andExpect(jsonPath("$.id").value(centerPersonGroup.getId().toString()))
+            .andExpect(jsonPath("$.name").value(DEFAULT_NAME));
     }
 
     @Test
     void getNonExistingCenterPersonGroup() throws Exception {
         // Get the centerPersonGroup
-        restCenterPersonGroupMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
+        restCenterPersonGroupMockMvc.perform(get(ENTITY_API_URL_ID, UUID.randomUUID().toString())).andExpect(status().isNotFound());
     }
 
     @Test
     void putExistingCenterPersonGroup() throws Exception {
         // Initialize the database
+        centerPersonGroup.setId(UUID.randomUUID());
         centerPersonGroupRepository.save(centerPersonGroup);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the centerPersonGroup
         CenterPersonGroup updatedCenterPersonGroup = centerPersonGroupRepository.findById(centerPersonGroup.getId()).orElseThrow();
-        updatedCenterPersonGroup.name(UPDATED_NAME).description(UPDATED_DESCRIPTION);
+        updatedCenterPersonGroup.name(UPDATED_NAME);
         CenterPersonGroupDTO centerPersonGroupDTO = centerPersonGroupMapper.toDto(updatedCenterPersonGroup);
 
         restCenterPersonGroupMockMvc
@@ -203,7 +197,7 @@ class CenterPersonGroupResourceIT {
     @Test
     void putNonExistingCenterPersonGroup() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        centerPersonGroup.setId(longCount.incrementAndGet());
+        centerPersonGroup.setId(UUID.randomUUID());
 
         // Create the CenterPersonGroup
         CenterPersonGroupDTO centerPersonGroupDTO = centerPersonGroupMapper.toDto(centerPersonGroup);
@@ -224,7 +218,7 @@ class CenterPersonGroupResourceIT {
     @Test
     void putWithIdMismatchCenterPersonGroup() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        centerPersonGroup.setId(longCount.incrementAndGet());
+        centerPersonGroup.setId(UUID.randomUUID());
 
         // Create the CenterPersonGroup
         CenterPersonGroupDTO centerPersonGroupDTO = centerPersonGroupMapper.toDto(centerPersonGroup);
@@ -232,7 +226,7 @@ class CenterPersonGroupResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCenterPersonGroupMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                put(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(om.writeValueAsBytes(centerPersonGroupDTO))
             )
@@ -245,7 +239,7 @@ class CenterPersonGroupResourceIT {
     @Test
     void putWithMissingIdPathParamCenterPersonGroup() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        centerPersonGroup.setId(longCount.incrementAndGet());
+        centerPersonGroup.setId(UUID.randomUUID());
 
         // Create the CenterPersonGroup
         CenterPersonGroupDTO centerPersonGroupDTO = centerPersonGroupMapper.toDto(centerPersonGroup);
@@ -262,6 +256,7 @@ class CenterPersonGroupResourceIT {
     @Test
     void partialUpdateCenterPersonGroupWithPatch() throws Exception {
         // Initialize the database
+        centerPersonGroup.setId(UUID.randomUUID());
         centerPersonGroupRepository.save(centerPersonGroup);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -290,6 +285,7 @@ class CenterPersonGroupResourceIT {
     @Test
     void fullUpdateCenterPersonGroupWithPatch() throws Exception {
         // Initialize the database
+        centerPersonGroup.setId(UUID.randomUUID());
         centerPersonGroupRepository.save(centerPersonGroup);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -298,7 +294,7 @@ class CenterPersonGroupResourceIT {
         CenterPersonGroup partialUpdatedCenterPersonGroup = new CenterPersonGroup();
         partialUpdatedCenterPersonGroup.setId(centerPersonGroup.getId());
 
-        partialUpdatedCenterPersonGroup.name(UPDATED_NAME).description(UPDATED_DESCRIPTION);
+        partialUpdatedCenterPersonGroup.name(UPDATED_NAME);
 
         restCenterPersonGroupMockMvc
             .perform(
@@ -320,7 +316,7 @@ class CenterPersonGroupResourceIT {
     @Test
     void patchNonExistingCenterPersonGroup() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        centerPersonGroup.setId(longCount.incrementAndGet());
+        centerPersonGroup.setId(UUID.randomUUID());
 
         // Create the CenterPersonGroup
         CenterPersonGroupDTO centerPersonGroupDTO = centerPersonGroupMapper.toDto(centerPersonGroup);
@@ -341,7 +337,7 @@ class CenterPersonGroupResourceIT {
     @Test
     void patchWithIdMismatchCenterPersonGroup() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        centerPersonGroup.setId(longCount.incrementAndGet());
+        centerPersonGroup.setId(UUID.randomUUID());
 
         // Create the CenterPersonGroup
         CenterPersonGroupDTO centerPersonGroupDTO = centerPersonGroupMapper.toDto(centerPersonGroup);
@@ -349,7 +345,7 @@ class CenterPersonGroupResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restCenterPersonGroupMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                patch(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(centerPersonGroupDTO))
             )
@@ -362,7 +358,7 @@ class CenterPersonGroupResourceIT {
     @Test
     void patchWithMissingIdPathParamCenterPersonGroup() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        centerPersonGroup.setId(longCount.incrementAndGet());
+        centerPersonGroup.setId(UUID.randomUUID());
 
         // Create the CenterPersonGroup
         CenterPersonGroupDTO centerPersonGroupDTO = centerPersonGroupMapper.toDto(centerPersonGroup);
@@ -379,6 +375,7 @@ class CenterPersonGroupResourceIT {
     @Test
     void deleteCenterPersonGroup() throws Exception {
         // Initialize the database
+        centerPersonGroup.setId(UUID.randomUUID());
         centerPersonGroupRepository.save(centerPersonGroup);
 
         long databaseSizeBeforeDelete = getRepositoryCount();

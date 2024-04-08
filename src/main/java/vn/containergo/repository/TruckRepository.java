@@ -1,5 +1,6 @@
 package vn.containergo.repository;
 
+import java.util.UUID;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 import vn.containergo.domain.Truck;
@@ -9,4 +10,4 @@ import vn.containergo.domain.Truck;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface TruckRepository extends MongoRepository<Truck, Long> {}
+public interface TruckRepository extends MongoRepository<Truck, UUID> {}

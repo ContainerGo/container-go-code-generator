@@ -7,7 +7,7 @@
   "fields": [
     {
       "fieldName": "id",
-      "fieldType": "Long"
+      "fieldType": "UUID"
     },
     {
       "fieldName": "event",

@@ -1,6 +1,7 @@
 package vn.containergo.service;
 
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import vn.containergo.service.dto.WardDTO;
@@ -47,12 +48,12 @@ public interface WardService {
      * @param id the id of the entity.
      * @return the entity.
      */
-    Optional<WardDTO> findOne(Long id);
+    Optional<WardDTO> findOne(UUID id);
 
     /**
      * Delete the "id" ward.
      *
      * @param id the id of the entity.
      */
-    void delete(Long id);
+    void delete(UUID id);
 }

@@ -8,8 +8,7 @@ import static vn.containergo.domain.ContainerStatusAsserts.*;
 import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +41,6 @@ class ContainerStatusResourceIT {
 
     private static final String ENTITY_API_URL = "/api/container-statuses";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
-
-    private static Random random = new Random();
-    private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private ObjectMapper om;
@@ -112,7 +108,7 @@ class ContainerStatusResourceIT {
     @Test
     void createContainerStatusWithExistingId() throws Exception {
         // Create the ContainerStatus with an existing ID
-        containerStatus.setId(1L);
+        containerStatus.setId(UUID.randomUUID());
         ContainerStatusDTO containerStatusDTO = containerStatusMapper.toDto(containerStatus);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
@@ -161,6 +157,7 @@ class ContainerStatusResourceIT {
     @Test
     void getAllContainerStatuses() throws Exception {
         // Initialize the database
+        containerStatus.setId(UUID.randomUUID());
         containerStatusRepository.save(containerStatus);
 
         // Get all the containerStatusList
@@ -168,7 +165,7 @@ class ContainerStatusResourceIT {
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(containerStatus.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(containerStatus.getId().toString())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
@@ -177,6 +174,7 @@ class ContainerStatusResourceIT {
     @Test
     void getContainerStatus() throws Exception {
         // Initialize the database
+        containerStatus.setId(UUID.randomUUID());
         containerStatusRepository.save(containerStatus);
 
         // Get the containerStatus
@@ -184,7 +182,7 @@ class ContainerStatusResourceIT {
             .perform(get(ENTITY_API_URL_ID, containerStatus.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(containerStatus.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(containerStatus.getId().toString()))
             .andExpect(jsonPath("$.code").value(DEFAULT_CODE))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION));
@@ -193,12 +191,13 @@ class ContainerStatusResourceIT {
     @Test
     void getNonExistingContainerStatus() throws Exception {
         // Get the containerStatus
-        restContainerStatusMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
+        restContainerStatusMockMvc.perform(get(ENTITY_API_URL_ID, UUID.randomUUID().toString())).andExpect(status().isNotFound());
     }
 
     @Test
     void putExistingContainerStatus() throws Exception {
         // Initialize the database
+        containerStatus.setId(UUID.randomUUID());
         containerStatusRepository.save(containerStatus);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -224,7 +223,7 @@ class ContainerStatusResourceIT {
     @Test
     void putNonExistingContainerStatus() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerStatus.setId(longCount.incrementAndGet());
+        containerStatus.setId(UUID.randomUUID());
 
         // Create the ContainerStatus
         ContainerStatusDTO containerStatusDTO = containerStatusMapper.toDto(containerStatus);
@@ -245,7 +244,7 @@ class ContainerStatusResourceIT {
     @Test
     void putWithIdMismatchContainerStatus() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerStatus.setId(longCount.incrementAndGet());
+        containerStatus.setId(UUID.randomUUID());
 
         // Create the ContainerStatus
         ContainerStatusDTO containerStatusDTO = containerStatusMapper.toDto(containerStatus);
@@ -253,7 +252,7 @@ class ContainerStatusResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restContainerStatusMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                put(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(om.writeValueAsBytes(containerStatusDTO))
             )
@@ -266,7 +265,7 @@ class ContainerStatusResourceIT {
     @Test
     void putWithMissingIdPathParamContainerStatus() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerStatus.setId(longCount.incrementAndGet());
+        containerStatus.setId(UUID.randomUUID());
 
         // Create the ContainerStatus
         ContainerStatusDTO containerStatusDTO = containerStatusMapper.toDto(containerStatus);
@@ -283,6 +282,7 @@ class ContainerStatusResourceIT {
     @Test
     void partialUpdateContainerStatusWithPatch() throws Exception {
         // Initialize the database
+        containerStatus.setId(UUID.randomUUID());
         containerStatusRepository.save(containerStatus);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -313,6 +313,7 @@ class ContainerStatusResourceIT {
     @Test
     void fullUpdateContainerStatusWithPatch() throws Exception {
         // Initialize the database
+        containerStatus.setId(UUID.randomUUID());
         containerStatusRepository.save(containerStatus);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -343,7 +344,7 @@ class ContainerStatusResourceIT {
     @Test
     void patchNonExistingContainerStatus() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerStatus.setId(longCount.incrementAndGet());
+        containerStatus.setId(UUID.randomUUID());
 
         // Create the ContainerStatus
         ContainerStatusDTO containerStatusDTO = containerStatusMapper.toDto(containerStatus);
@@ -364,7 +365,7 @@ class ContainerStatusResourceIT {
     @Test
     void patchWithIdMismatchContainerStatus() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerStatus.setId(longCount.incrementAndGet());
+        containerStatus.setId(UUID.randomUUID());
 
         // Create the ContainerStatus
         ContainerStatusDTO containerStatusDTO = containerStatusMapper.toDto(containerStatus);
@@ -372,7 +373,7 @@ class ContainerStatusResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restContainerStatusMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                patch(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(containerStatusDTO))
             )
@@ -385,7 +386,7 @@ class ContainerStatusResourceIT {
     @Test
     void patchWithMissingIdPathParamContainerStatus() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerStatus.setId(longCount.incrementAndGet());
+        containerStatus.setId(UUID.randomUUID());
 
         // Create the ContainerStatus
         ContainerStatusDTO containerStatusDTO = containerStatusMapper.toDto(containerStatus);
@@ -402,6 +403,7 @@ class ContainerStatusResourceIT {
     @Test
     void deleteContainerStatus() throws Exception {
         // Initialize the database
+        containerStatus.setId(UUID.randomUUID());
         containerStatusRepository.save(containerStatus);
 
         long databaseSizeBeforeDelete = getRepositoryCount();

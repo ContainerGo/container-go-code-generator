@@ -48,14 +48,33 @@ public class OfferAsserts {
         assertThat(expected)
             .as("Verify Offer relevant properties")
             .satisfies(e -> assertThat(e.getMessage()).as("check message").isEqualTo(actual.getMessage()))
-            .satisfies(e -> assertThat(e.getPickupFromDate()).as("check pickupFromDate").isEqualTo(actual.getPickupFromDate()))
-            .satisfies(e -> assertThat(e.getPickupUntilDate()).as("check pickupUntilDate").isEqualTo(actual.getPickupUntilDate()))
-            .satisfies(e -> assertThat(e.getDropoffFromDate()).as("check dropoffFromDate").isEqualTo(actual.getDropoffFromDate()))
-            .satisfies(e -> assertThat(e.getDropoffUntilDate()).as("check dropoffUntilDate").isEqualTo(actual.getDropoffUntilDate()))
+            .satisfies(
+                e ->
+                    assertThat(e.getEstimatedPickupFromDate())
+                        .as("check estimatedPickupFromDate")
+                        .isEqualTo(actual.getEstimatedPickupFromDate())
+            )
+            .satisfies(
+                e ->
+                    assertThat(e.getEstimatedPickupUntilDate())
+                        .as("check estimatedPickupUntilDate")
+                        .isEqualTo(actual.getEstimatedPickupUntilDate())
+            )
+            .satisfies(
+                e ->
+                    assertThat(e.getEstimatedDropoffFromDate())
+                        .as("check estimatedDropoffFromDate")
+                        .isEqualTo(actual.getEstimatedDropoffFromDate())
+            )
+            .satisfies(
+                e ->
+                    assertThat(e.getEstimatedDropoffUntilDate())
+                        .as("check estimatedDropoffUntilDate")
+                        .isEqualTo(actual.getEstimatedDropoffUntilDate())
+            )
             .satisfies(e -> assertThat(e.getState()).as("check state").isEqualTo(actual.getState()))
             .satisfies(e -> assertThat(e.getPrice()).as("check price").isEqualTo(actual.getPrice()))
             .satisfies(e -> assertThat(e.getCarrierId()).as("check carrierId").isEqualTo(actual.getCarrierId()))
-            .satisfies(e -> assertThat(e.getCarrierPersonId()).as("check carrierPersonId").isEqualTo(actual.getCarrierPersonId()))
             .satisfies(e -> assertThat(e.getTruckId()).as("check truckId").isEqualTo(actual.getTruckId()));
     }
 

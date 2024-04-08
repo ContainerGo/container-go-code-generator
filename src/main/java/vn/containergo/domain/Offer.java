@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -20,26 +21,26 @@ public class Offer implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private Long id;
+    private UUID id;
 
     @Field("message")
     private String message;
 
     @NotNull
-    @Field("pickup_from_date")
-    private Instant pickupFromDate;
+    @Field("estimated_pickup_from_date")
+    private Instant estimatedPickupFromDate;
 
     @NotNull
-    @Field("pickup_until_date")
-    private Instant pickupUntilDate;
+    @Field("estimated_pickup_until_date")
+    private Instant estimatedPickupUntilDate;
 
     @NotNull
-    @Field("dropoff_from_date")
-    private Instant dropoffFromDate;
+    @Field("estimated_dropoff_from_date")
+    private Instant estimatedDropoffFromDate;
 
     @NotNull
-    @Field("dropoff_until_date")
-    private Instant dropoffUntilDate;
+    @Field("estimated_dropoff_until_date")
+    private Instant estimatedDropoffUntilDate;
 
     @NotNull
     @Field("state")
@@ -51,34 +52,44 @@ public class Offer implements Serializable {
 
     @NotNull
     @Field("carrier_id")
-    private Long carrierId;
-
-    @Field("carrier_person_id")
-    private Long carrierPersonId;
+    private UUID carrierId;
 
     @Field("truck_id")
-    private Long truckId;
+    private UUID truckId;
 
     @DBRef
     @Field("container")
     @JsonIgnoreProperties(
-        value = { "dropoffProvice", "dropoffDistrict", "dropoffWard", "type", "status", "truckType", "truck", "owner" },
+        value = {
+            "shipmentPlans",
+            "pickupProvice",
+            "pickupDistrict",
+            "pickupWard",
+            "dropoffProvice",
+            "dropoffDistrict",
+            "dropoffWard",
+            "type",
+            "status",
+            "truckType",
+            "truck",
+            "owner",
+        },
         allowSetters = true
     )
     private Container container;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
-    public Long getId() {
+    public UUID getId() {
         return this.id;
     }
 
-    public Offer id(Long id) {
+    public Offer id(UUID id) {
         this.setId(id);
         return this;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -95,56 +106,56 @@ public class Offer implements Serializable {
         this.message = message;
     }
 
-    public Instant getPickupFromDate() {
-        return this.pickupFromDate;
+    public Instant getEstimatedPickupFromDate() {
+        return this.estimatedPickupFromDate;
     }
 
-    public Offer pickupFromDate(Instant pickupFromDate) {
-        this.setPickupFromDate(pickupFromDate);
+    public Offer estimatedPickupFromDate(Instant estimatedPickupFromDate) {
+        this.setEstimatedPickupFromDate(estimatedPickupFromDate);
         return this;
     }
 
-    public void setPickupFromDate(Instant pickupFromDate) {
-        this.pickupFromDate = pickupFromDate;
+    public void setEstimatedPickupFromDate(Instant estimatedPickupFromDate) {
+        this.estimatedPickupFromDate = estimatedPickupFromDate;
     }
 
-    public Instant getPickupUntilDate() {
-        return this.pickupUntilDate;
+    public Instant getEstimatedPickupUntilDate() {
+        return this.estimatedPickupUntilDate;
     }
 
-    public Offer pickupUntilDate(Instant pickupUntilDate) {
-        this.setPickupUntilDate(pickupUntilDate);
+    public Offer estimatedPickupUntilDate(Instant estimatedPickupUntilDate) {
+        this.setEstimatedPickupUntilDate(estimatedPickupUntilDate);
         return this;
     }
 
-    public void setPickupUntilDate(Instant pickupUntilDate) {
-        this.pickupUntilDate = pickupUntilDate;
+    public void setEstimatedPickupUntilDate(Instant estimatedPickupUntilDate) {
+        this.estimatedPickupUntilDate = estimatedPickupUntilDate;
     }
 
-    public Instant getDropoffFromDate() {
-        return this.dropoffFromDate;
+    public Instant getEstimatedDropoffFromDate() {
+        return this.estimatedDropoffFromDate;
     }
 
-    public Offer dropoffFromDate(Instant dropoffFromDate) {
-        this.setDropoffFromDate(dropoffFromDate);
+    public Offer estimatedDropoffFromDate(Instant estimatedDropoffFromDate) {
+        this.setEstimatedDropoffFromDate(estimatedDropoffFromDate);
         return this;
     }
 
-    public void setDropoffFromDate(Instant dropoffFromDate) {
-        this.dropoffFromDate = dropoffFromDate;
+    public void setEstimatedDropoffFromDate(Instant estimatedDropoffFromDate) {
+        this.estimatedDropoffFromDate = estimatedDropoffFromDate;
     }
 
-    public Instant getDropoffUntilDate() {
-        return this.dropoffUntilDate;
+    public Instant getEstimatedDropoffUntilDate() {
+        return this.estimatedDropoffUntilDate;
     }
 
-    public Offer dropoffUntilDate(Instant dropoffUntilDate) {
-        this.setDropoffUntilDate(dropoffUntilDate);
+    public Offer estimatedDropoffUntilDate(Instant estimatedDropoffUntilDate) {
+        this.setEstimatedDropoffUntilDate(estimatedDropoffUntilDate);
         return this;
     }
 
-    public void setDropoffUntilDate(Instant dropoffUntilDate) {
-        this.dropoffUntilDate = dropoffUntilDate;
+    public void setEstimatedDropoffUntilDate(Instant estimatedDropoffUntilDate) {
+        this.estimatedDropoffUntilDate = estimatedDropoffUntilDate;
     }
 
     public OfferState getState() {
@@ -173,42 +184,29 @@ public class Offer implements Serializable {
         this.price = price;
     }
 
-    public Long getCarrierId() {
+    public UUID getCarrierId() {
         return this.carrierId;
     }
 
-    public Offer carrierId(Long carrierId) {
+    public Offer carrierId(UUID carrierId) {
         this.setCarrierId(carrierId);
         return this;
     }
 
-    public void setCarrierId(Long carrierId) {
+    public void setCarrierId(UUID carrierId) {
         this.carrierId = carrierId;
     }
 
-    public Long getCarrierPersonId() {
-        return this.carrierPersonId;
-    }
-
-    public Offer carrierPersonId(Long carrierPersonId) {
-        this.setCarrierPersonId(carrierPersonId);
-        return this;
-    }
-
-    public void setCarrierPersonId(Long carrierPersonId) {
-        this.carrierPersonId = carrierPersonId;
-    }
-
-    public Long getTruckId() {
+    public UUID getTruckId() {
         return this.truckId;
     }
 
-    public Offer truckId(Long truckId) {
+    public Offer truckId(UUID truckId) {
         this.setTruckId(truckId);
         return this;
     }
 
-    public void setTruckId(Long truckId) {
+    public void setTruckId(UUID truckId) {
         this.truckId = truckId;
     }
 
@@ -250,15 +248,14 @@ public class Offer implements Serializable {
         return "Offer{" +
             "id=" + getId() +
             ", message='" + getMessage() + "'" +
-            ", pickupFromDate='" + getPickupFromDate() + "'" +
-            ", pickupUntilDate='" + getPickupUntilDate() + "'" +
-            ", dropoffFromDate='" + getDropoffFromDate() + "'" +
-            ", dropoffUntilDate='" + getDropoffUntilDate() + "'" +
+            ", estimatedPickupFromDate='" + getEstimatedPickupFromDate() + "'" +
+            ", estimatedPickupUntilDate='" + getEstimatedPickupUntilDate() + "'" +
+            ", estimatedDropoffFromDate='" + getEstimatedDropoffFromDate() + "'" +
+            ", estimatedDropoffUntilDate='" + getEstimatedDropoffUntilDate() + "'" +
             ", state='" + getState() + "'" +
             ", price=" + getPrice() +
-            ", carrierId=" + getCarrierId() +
-            ", carrierPersonId=" + getCarrierPersonId() +
-            ", truckId=" + getTruckId() +
+            ", carrierId='" + getCarrierId() + "'" +
+            ", truckId='" + getTruckId() + "'" +
             "}";
     }
 }

@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
-import { ASC } from 'app/config/navigation.constants';
 import { ContainerTypeComponent } from './list/container-type.component';
 import { ContainerTypeDetailComponent } from './detail/container-type-detail.component';
 import { ContainerTypeUpdateComponent } from './update/container-type-update.component';
@@ -11,9 +10,7 @@ const containerTypeRoute: Routes = [
   {
     path: '',
     component: ContainerTypeComponent,
-    data: {
-      defaultSort: 'id,' + ASC,
-    },
+    data: {},
     canActivate: [UserRouteAccessService],
   },
   {

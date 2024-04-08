@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
-import { ASC } from 'app/config/navigation.constants';
 import { WardComponent } from './list/ward.component';
 import { WardDetailComponent } from './detail/ward-detail.component';
 import { WardUpdateComponent } from './update/ward-update.component';
@@ -11,9 +10,7 @@ const wardRoute: Routes = [
   {
     path: '',
     component: WardComponent,
-    data: {
-      defaultSort: 'id,' + ASC,
-    },
+    data: {},
     canActivate: [UserRouteAccessService],
   },
   {

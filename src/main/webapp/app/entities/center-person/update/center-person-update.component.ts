@@ -86,6 +86,7 @@ export class CenterPersonUpdateComponent implements OnInit {
 
     this.centerPersonGroupsSharedCollection = this.centerPersonGroupService.addCenterPersonGroupToCollectionIfMissing<ICenterPersonGroup>(
       this.centerPersonGroupsSharedCollection,
+      centerPerson.group,
       ...(centerPerson.groups ?? []),
     );
   }
@@ -98,6 +99,7 @@ export class CenterPersonUpdateComponent implements OnInit {
         map((centerPersonGroups: ICenterPersonGroup[]) =>
           this.centerPersonGroupService.addCenterPersonGroupToCollectionIfMissing<ICenterPersonGroup>(
             centerPersonGroups,
+            this.centerPerson?.group,
             ...(this.centerPerson?.groups ?? []),
           ),
         ),

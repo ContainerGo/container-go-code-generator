@@ -1,28 +1,27 @@
 import { IProvice, NewProvice } from './provice.model';
 
 export const sampleWithRequiredData: IProvice = {
-  id: 15272,
-  code: 'diffract boo pitcher',
-  name: 'afore who pirouette',
+  id: '7d421dc7-33c4-41cc-8152-389aaee2dadc',
+  code: 'yippee despite loyally',
+  name: 'gah grouchy until',
 };
 
 export const sampleWithPartialData: IProvice = {
-  id: 27588,
-  code: 'duck punctually meet',
-  name: 'doctorate iconify brightly',
-  description: 'strawberry delightfully teeter',
+  id: '495a6266-68b2-4d51-ac32-a7e6dda22c72',
+  code: 'disguised unto convulse',
+  name: 'through election punctually',
 };
 
 export const sampleWithFullData: IProvice = {
-  id: 29129,
-  code: 'unto',
-  name: 'pop through',
-  description: 'honestly er yahoo',
+  id: 'efe84315-262c-4cf4-bf82-c1565c9b586a',
+  code: 'once provided through',
+  name: 'opposite modulo era',
+  description: 'across instead',
 };
 
 export const sampleWithNewData: NewProvice = {
-  code: 'wetly',
-  name: 'where trusting',
+  code: 'along anenst',
+  name: 'sans font',
   id: null,
 };
 

@@ -50,7 +50,7 @@ export class ContainerOwnerComponent implements OnInit {
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
-  trackId = (_index: number, item: IContainerOwner): number => this.containerOwnerService.getContainerOwnerIdentifier(item);
+  trackId = (_index: number, item: IContainerOwner): string => this.containerOwnerService.getContainerOwnerIdentifier(item);
 
   ngOnInit(): void {
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])

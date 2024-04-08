@@ -1,6 +1,7 @@
 package vn.containergo.service.impl;
 
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -70,13 +71,13 @@ public class ContainerStatusGroupServiceImpl implements ContainerStatusGroupServ
     }
 
     @Override
-    public Optional<ContainerStatusGroupDTO> findOne(Long id) {
+    public Optional<ContainerStatusGroupDTO> findOne(UUID id) {
         log.debug("Request to get ContainerStatusGroup : {}", id);
         return containerStatusGroupRepository.findById(id).map(containerStatusGroupMapper::toDto);
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(UUID id) {
         log.debug("Request to delete ContainerStatusGroup : {}", id);
         containerStatusGroupRepository.deleteById(id);
     }

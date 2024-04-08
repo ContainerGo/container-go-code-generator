@@ -50,7 +50,7 @@ export class ContainerStatusGroupComponent implements OnInit {
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
-  trackId = (_index: number, item: IContainerStatusGroup): number =>
+  trackId = (_index: number, item: IContainerStatusGroup): string =>
     this.containerStatusGroupService.getContainerStatusGroupIdentifier(item);
 
   ngOnInit(): void {

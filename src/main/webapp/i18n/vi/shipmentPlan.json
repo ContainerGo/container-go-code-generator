@@ -1,0 +1,30 @@
+{
+  "containerGoServerApp": {
+    "shipmentPlan": {
+      "home": {
+        "title": "Shipment Plans",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Shipment Plan",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Shipment Plan",
+        "notFound": "No Shipment Plans found"
+      },
+      "created": "Một Shipment Plan mới được tạo với định danh {{ param }}",
+      "updated": "Một Shipment Plan cập nhật với định danh {{ param }}",
+      "deleted": "Một Shipment Plan đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Shipment Plan {{ id }}?"
+      },
+      "detail": {
+        "title": "Shipment Plan"
+      },
+      "id": "Id",
+      "estimatedPickupFromDate": "Estimated Pickup From Date",
+      "estimatedPickupUntilDate": "Estimated Pickup Until Date",
+      "estimatedDropoffFromDate": "Estimated Dropoff From Date",
+      "estimatedDropoffUntilDate": "Estimated Dropoff Until Date",
+      "driverId": "Driver Id",
+      "truckId": "Truck Id",
+      "container": "Container"
+    }
+  }
+}

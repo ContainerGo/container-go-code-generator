@@ -11,7 +11,7 @@
         @if (editForm.controls.id.value !== null) {
           <div class="mb-3">
             <label class="form-label" jhiTranslate="containerGoServerApp.offer.id" for="field_id">Id</label>
-            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+            <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
           </div>
         }
 
@@ -21,30 +21,31 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.offer.pickupFromDate" for="field_pickupFromDate"
-            >Pickup From Date</label
+          <label class="form-label" jhiTranslate="containerGoServerApp.offer.estimatedPickupFromDate" for="field_estimatedPickupFromDate"
+            >Estimated Pickup From Date</label
           >
           <div class="d-flex">
             <input
-              id="field_pickupFromDate"
-              data-cy="pickupFromDate"
+              id="field_estimatedPickupFromDate"
+              data-cy="estimatedPickupFromDate"
               type="datetime-local"
               class="form-control"
-              name="pickupFromDate"
-              formControlName="pickupFromDate"
+              name="estimatedPickupFromDate"
+              formControlName="estimatedPickupFromDate"
               placeholder="YYYY-MM-DD HH:mm"
             />
           </div>
           @if (
-            editForm.get('pickupFromDate')!.invalid && (editForm.get('pickupFromDate')!.dirty || editForm.get('pickupFromDate')!.touched)
+            editForm.get('estimatedPickupFromDate')!.invalid &&
+            (editForm.get('estimatedPickupFromDate')!.dirty || editForm.get('estimatedPickupFromDate')!.touched)
           ) {
             <div>
-              @if (editForm.get('pickupFromDate')?.errors?.required) {
+              @if (editForm.get('estimatedPickupFromDate')?.errors?.required) {
                 <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
               }
               <small
                 class="form-text text-danger"
-                [hidden]="!editForm.get('pickupFromDate')?.errors?.datetimelocal"
+                [hidden]="!editForm.get('estimatedPickupFromDate')?.errors?.datetimelocal"
                 jhiTranslate="entity.validation.datetimelocal"
                 >Trường này phải là định dạng thời gian.</small
               >
@@ -53,30 +54,31 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.offer.pickupUntilDate" for="field_pickupUntilDate"
-            >Pickup Until Date</label
+          <label class="form-label" jhiTranslate="containerGoServerApp.offer.estimatedPickupUntilDate" for="field_estimatedPickupUntilDate"
+            >Estimated Pickup Until Date</label
           >
           <div class="d-flex">
             <input
-              id="field_pickupUntilDate"
-              data-cy="pickupUntilDate"
+              id="field_estimatedPickupUntilDate"
+              data-cy="estimatedPickupUntilDate"
               type="datetime-local"
               class="form-control"
-              name="pickupUntilDate"
-              formControlName="pickupUntilDate"
+              name="estimatedPickupUntilDate"
+              formControlName="estimatedPickupUntilDate"
               placeholder="YYYY-MM-DD HH:mm"
             />
           </div>
           @if (
-            editForm.get('pickupUntilDate')!.invalid && (editForm.get('pickupUntilDate')!.dirty || editForm.get('pickupUntilDate')!.touched)
+            editForm.get('estimatedPickupUntilDate')!.invalid &&
+            (editForm.get('estimatedPickupUntilDate')!.dirty || editForm.get('estimatedPickupUntilDate')!.touched)
           ) {
             <div>
-              @if (editForm.get('pickupUntilDate')?.errors?.required) {
+              @if (editForm.get('estimatedPickupUntilDate')?.errors?.required) {
                 <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
               }
               <small
                 class="form-text text-danger"
-                [hidden]="!editForm.get('pickupUntilDate')?.errors?.datetimelocal"
+                [hidden]="!editForm.get('estimatedPickupUntilDate')?.errors?.datetimelocal"
                 jhiTranslate="entity.validation.datetimelocal"
                 >Trường này phải là định dạng thời gian.</small
               >
@@ -85,30 +87,31 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.offer.dropoffFromDate" for="field_dropoffFromDate"
-            >Dropoff From Date</label
+          <label class="form-label" jhiTranslate="containerGoServerApp.offer.estimatedDropoffFromDate" for="field_estimatedDropoffFromDate"
+            >Estimated Dropoff From Date</label
           >
           <div class="d-flex">
             <input
-              id="field_dropoffFromDate"
-              data-cy="dropoffFromDate"
+              id="field_estimatedDropoffFromDate"
+              data-cy="estimatedDropoffFromDate"
               type="datetime-local"
               class="form-control"
-              name="dropoffFromDate"
-              formControlName="dropoffFromDate"
+              name="estimatedDropoffFromDate"
+              formControlName="estimatedDropoffFromDate"
               placeholder="YYYY-MM-DD HH:mm"
             />
           </div>
           @if (
-            editForm.get('dropoffFromDate')!.invalid && (editForm.get('dropoffFromDate')!.dirty || editForm.get('dropoffFromDate')!.touched)
+            editForm.get('estimatedDropoffFromDate')!.invalid &&
+            (editForm.get('estimatedDropoffFromDate')!.dirty || editForm.get('estimatedDropoffFromDate')!.touched)
           ) {
             <div>
-              @if (editForm.get('dropoffFromDate')?.errors?.required) {
+              @if (editForm.get('estimatedDropoffFromDate')?.errors?.required) {
                 <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
               }
               <small
                 class="form-text text-danger"
-                [hidden]="!editForm.get('dropoffFromDate')?.errors?.datetimelocal"
+                [hidden]="!editForm.get('estimatedDropoffFromDate')?.errors?.datetimelocal"
                 jhiTranslate="entity.validation.datetimelocal"
                 >Trường này phải là định dạng thời gian.</small
               >
@@ -117,31 +120,34 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.offer.dropoffUntilDate" for="field_dropoffUntilDate"
-            >Dropoff Until Date</label
+          <label
+            class="form-label"
+            jhiTranslate="containerGoServerApp.offer.estimatedDropoffUntilDate"
+            for="field_estimatedDropoffUntilDate"
+            >Estimated Dropoff Until Date</label
           >
           <div class="d-flex">
             <input
-              id="field_dropoffUntilDate"
-              data-cy="dropoffUntilDate"
+              id="field_estimatedDropoffUntilDate"
+              data-cy="estimatedDropoffUntilDate"
               type="datetime-local"
               class="form-control"
-              name="dropoffUntilDate"
-              formControlName="dropoffUntilDate"
+              name="estimatedDropoffUntilDate"
+              formControlName="estimatedDropoffUntilDate"
               placeholder="YYYY-MM-DD HH:mm"
             />
           </div>
           @if (
-            editForm.get('dropoffUntilDate')!.invalid &&
-            (editForm.get('dropoffUntilDate')!.dirty || editForm.get('dropoffUntilDate')!.touched)
+            editForm.get('estimatedDropoffUntilDate')!.invalid &&
+            (editForm.get('estimatedDropoffUntilDate')!.dirty || editForm.get('estimatedDropoffUntilDate')!.touched)
           ) {
             <div>
-              @if (editForm.get('dropoffUntilDate')?.errors?.required) {
+              @if (editForm.get('estimatedDropoffUntilDate')?.errors?.required) {
                 <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
               }
               <small
                 class="form-text text-danger"
-                [hidden]="!editForm.get('dropoffUntilDate')?.errors?.datetimelocal"
+                [hidden]="!editForm.get('estimatedDropoffUntilDate')?.errors?.datetimelocal"
                 jhiTranslate="entity.validation.datetimelocal"
                 >Trường này phải là định dạng thời gian.</small
               >
@@ -183,39 +189,19 @@
 
         <div class="mb-3">
           <label class="form-label" jhiTranslate="containerGoServerApp.offer.carrierId" for="field_carrierId">Carrier Id</label>
-          <input type="number" class="form-control" name="carrierId" id="field_carrierId" data-cy="carrierId" formControlName="carrierId" />
+          <input type="text" class="form-control" name="carrierId" id="field_carrierId" data-cy="carrierId" formControlName="carrierId" />
           @if (editForm.get('carrierId')!.invalid && (editForm.get('carrierId')!.dirty || editForm.get('carrierId')!.touched)) {
             <div>
               @if (editForm.get('carrierId')?.errors?.required) {
                 <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
               }
-              <small
-                class="form-text text-danger"
-                [hidden]="!editForm.get('carrierId')?.errors?.number"
-                jhiTranslate="entity.validation.number"
-                >Trường này phải là một số.</small
-              >
             </div>
           }
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.offer.carrierPersonId" for="field_carrierPersonId"
-            >Carrier Person Id</label
-          >
-          <input
-            type="number"
-            class="form-control"
-            name="carrierPersonId"
-            id="field_carrierPersonId"
-            data-cy="carrierPersonId"
-            formControlName="carrierPersonId"
-          />
-        </div>
-
-        <div class="mb-3">
           <label class="form-label" jhiTranslate="containerGoServerApp.offer.truckId" for="field_truckId">Truck Id</label>
-          <input type="number" class="form-control" name="truckId" id="field_truckId" data-cy="truckId" formControlName="truckId" />
+          <input type="text" class="form-control" name="truckId" id="field_truckId" data-cy="truckId" formControlName="truckId" />
         </div>
 
         <div class="mb-3">

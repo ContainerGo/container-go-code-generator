@@ -8,8 +8,7 @@ import static vn.containergo.domain.ContainerTypeAsserts.*;
 import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +41,6 @@ class ContainerTypeResourceIT {
 
     private static final String ENTITY_API_URL = "/api/container-types";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
-
-    private static Random random = new Random();
-    private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private ObjectMapper om;
@@ -112,7 +108,7 @@ class ContainerTypeResourceIT {
     @Test
     void createContainerTypeWithExistingId() throws Exception {
         // Create the ContainerType with an existing ID
-        containerType.setId(1L);
+        containerType.setId(UUID.randomUUID());
         ContainerTypeDTO containerTypeDTO = containerTypeMapper.toDto(containerType);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
@@ -161,6 +157,7 @@ class ContainerTypeResourceIT {
     @Test
     void getAllContainerTypes() throws Exception {
         // Initialize the database
+        containerType.setId(UUID.randomUUID());
         containerTypeRepository.save(containerType);
 
         // Get all the containerTypeList
@@ -168,7 +165,7 @@ class ContainerTypeResourceIT {
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(containerType.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(containerType.getId().toString())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
@@ -177,6 +174,7 @@ class ContainerTypeResourceIT {
     @Test
     void getContainerType() throws Exception {
         // Initialize the database
+        containerType.setId(UUID.randomUUID());
         containerTypeRepository.save(containerType);
 
         // Get the containerType
@@ -184,7 +182,7 @@ class ContainerTypeResourceIT {
             .perform(get(ENTITY_API_URL_ID, containerType.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(containerType.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(containerType.getId().toString()))
             .andExpect(jsonPath("$.code").value(DEFAULT_CODE))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION));
@@ -193,12 +191,13 @@ class ContainerTypeResourceIT {
     @Test
     void getNonExistingContainerType() throws Exception {
         // Get the containerType
-        restContainerTypeMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
+        restContainerTypeMockMvc.perform(get(ENTITY_API_URL_ID, UUID.randomUUID().toString())).andExpect(status().isNotFound());
     }
 
     @Test
     void putExistingContainerType() throws Exception {
         // Initialize the database
+        containerType.setId(UUID.randomUUID());
         containerTypeRepository.save(containerType);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -224,7 +223,7 @@ class ContainerTypeResourceIT {
     @Test
     void putNonExistingContainerType() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerType.setId(longCount.incrementAndGet());
+        containerType.setId(UUID.randomUUID());
 
         // Create the ContainerType
         ContainerTypeDTO containerTypeDTO = containerTypeMapper.toDto(containerType);
@@ -245,7 +244,7 @@ class ContainerTypeResourceIT {
     @Test
     void putWithIdMismatchContainerType() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerType.setId(longCount.incrementAndGet());
+        containerType.setId(UUID.randomUUID());
 
         // Create the ContainerType
         ContainerTypeDTO containerTypeDTO = containerTypeMapper.toDto(containerType);
@@ -253,7 +252,7 @@ class ContainerTypeResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restContainerTypeMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                put(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(om.writeValueAsBytes(containerTypeDTO))
             )
@@ -266,7 +265,7 @@ class ContainerTypeResourceIT {
     @Test
     void putWithMissingIdPathParamContainerType() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerType.setId(longCount.incrementAndGet());
+        containerType.setId(UUID.randomUUID());
 
         // Create the ContainerType
         ContainerTypeDTO containerTypeDTO = containerTypeMapper.toDto(containerType);
@@ -283,6 +282,7 @@ class ContainerTypeResourceIT {
     @Test
     void partialUpdateContainerTypeWithPatch() throws Exception {
         // Initialize the database
+        containerType.setId(UUID.randomUUID());
         containerTypeRepository.save(containerType);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -311,6 +311,7 @@ class ContainerTypeResourceIT {
     @Test
     void fullUpdateContainerTypeWithPatch() throws Exception {
         // Initialize the database
+        containerType.setId(UUID.randomUUID());
         containerTypeRepository.save(containerType);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -338,7 +339,7 @@ class ContainerTypeResourceIT {
     @Test
     void patchNonExistingContainerType() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerType.setId(longCount.incrementAndGet());
+        containerType.setId(UUID.randomUUID());
 
         // Create the ContainerType
         ContainerTypeDTO containerTypeDTO = containerTypeMapper.toDto(containerType);
@@ -359,7 +360,7 @@ class ContainerTypeResourceIT {
     @Test
     void patchWithIdMismatchContainerType() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerType.setId(longCount.incrementAndGet());
+        containerType.setId(UUID.randomUUID());
 
         // Create the ContainerType
         ContainerTypeDTO containerTypeDTO = containerTypeMapper.toDto(containerType);
@@ -367,7 +368,7 @@ class ContainerTypeResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restContainerTypeMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                patch(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(containerTypeDTO))
             )
@@ -380,7 +381,7 @@ class ContainerTypeResourceIT {
     @Test
     void patchWithMissingIdPathParamContainerType() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        containerType.setId(longCount.incrementAndGet());
+        containerType.setId(UUID.randomUUID());
 
         // Create the ContainerType
         ContainerTypeDTO containerTypeDTO = containerTypeMapper.toDto(containerType);
@@ -397,6 +398,7 @@ class ContainerTypeResourceIT {
     @Test
     void deleteContainerType() throws Exception {
         // Initialize the database
+        containerType.setId(UUID.randomUUID());
         containerTypeRepository.save(containerType);
 
         long databaseSizeBeforeDelete = getRepositoryCount();

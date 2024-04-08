@@ -3,6 +3,7 @@ package vn.containergo.service.dto;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * A DTO for the {@link vn.containergo.domain.ContainerOwner} entity.
@@ -10,7 +11,7 @@ import java.util.Objects;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class ContainerOwnerDTO implements Serializable {
 
-    private Long id;
+    private UUID id;
 
     @NotNull
     private String name;
@@ -21,11 +22,11 @@ public class ContainerOwnerDTO implements Serializable {
 
     private String address;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -86,7 +87,7 @@ public class ContainerOwnerDTO implements Serializable {
     @Override
     public String toString() {
         return "ContainerOwnerDTO{" +
-            "id=" + getId() +
+            "id='" + getId() + "'" +
             ", name='" + getName() + "'" +
             ", phone='" + getPhone() + "'" +
             ", email='" + getEmail() + "'" +

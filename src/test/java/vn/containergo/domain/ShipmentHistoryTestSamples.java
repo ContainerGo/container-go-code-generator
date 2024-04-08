@@ -1,25 +1,28 @@
 package vn.containergo.domain;
 
-import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class ShipmentHistoryTestSamples {
 
-    private static final Random random = new Random();
-    private static final AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
-
     public static ShipmentHistory getShipmentHistorySample1() {
-        return new ShipmentHistory().id(1L).event("event1").executedBy("executedBy1").location("location1");
+        return new ShipmentHistory()
+            .id(UUID.fromString("23d8dc04-a48b-45d9-a01d-4b728f0ad4aa"))
+            .event("event1")
+            .executedBy("executedBy1")
+            .location("location1");
     }
 
     public static ShipmentHistory getShipmentHistorySample2() {
-        return new ShipmentHistory().id(2L).event("event2").executedBy("executedBy2").location("location2");
+        return new ShipmentHistory()
+            .id(UUID.fromString("ad79f240-3727-46c3-b89f-2cf6ebd74367"))
+            .event("event2")
+            .executedBy("executedBy2")
+            .location("location2");
     }
 
     public static ShipmentHistory getShipmentHistoryRandomSampleGenerator() {
         return new ShipmentHistory()
-            .id(longCount.incrementAndGet())
+            .id(UUID.randomUUID())
             .event(UUID.randomUUID().toString())
             .executedBy(UUID.randomUUID().toString())
             .location(UUID.randomUUID().toString());

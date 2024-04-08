@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,6 +62,7 @@ public class CenterPersonResource {
         if (centerPersonDTO.getId() != null) {
             throw new BadRequestAlertException("A new centerPerson cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        centerPersonDTO.setId(UUID.randomUUID());
         centerPersonDTO = centerPersonService.save(centerPersonDTO);
         return ResponseEntity.created(new URI("/api/center-people/" + centerPersonDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, centerPersonDTO.getId().toString()))
@@ -79,7 +81,7 @@ public class CenterPersonResource {
      */
     @PutMapping("/{id}")
     public ResponseEntity<CenterPersonDTO> updateCenterPerson(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @Valid @RequestBody CenterPersonDTO centerPersonDTO
     ) throws URISyntaxException {
         log.debug("REST request to update CenterPerson : {}, {}", id, centerPersonDTO);
@@ -113,7 +115,7 @@ public class CenterPersonResource {
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<CenterPersonDTO> partialUpdateCenterPerson(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @NotNull @RequestBody CenterPersonDTO centerPersonDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update CenterPerson partially : {}, {}", id, centerPersonDTO);
@@ -166,7 +168,7 @@ public class CenterPersonResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the centerPersonDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<CenterPersonDTO> getCenterPerson(@PathVariable("id") Long id) {
+    public ResponseEntity<CenterPersonDTO> getCenterPerson(@PathVariable("id") UUID id) {
         log.debug("REST request to get CenterPerson : {}", id);
         Optional<CenterPersonDTO> centerPersonDTO = centerPersonService.findOne(id);
         return ResponseUtil.wrapOrNotFound(centerPersonDTO);
@@ -179,7 +181,7 @@ public class CenterPersonResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCenterPerson(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteCenterPerson(@PathVariable("id") UUID id) {
         log.debug("REST request to delete CenterPerson : {}", id);
         centerPersonService.delete(id);
         return ResponseEntity.noContent()

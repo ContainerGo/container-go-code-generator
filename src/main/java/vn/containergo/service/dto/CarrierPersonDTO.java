@@ -3,6 +3,7 @@ package vn.containergo.service.dto;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * A DTO for the {@link vn.containergo.domain.CarrierPerson} entity.
@@ -10,7 +11,7 @@ import java.util.Objects;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class CarrierPersonDTO implements Serializable {
 
-    private Long id;
+    private UUID id;
 
     @NotNull
     private String name;
@@ -22,13 +23,16 @@ public class CarrierPersonDTO implements Serializable {
 
     private String address;
 
+    @NotNull
+    private CarrierPersonGroupDTO group;
+
     private CarrierDTO carrier;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -64,6 +68,14 @@ public class CarrierPersonDTO implements Serializable {
         this.address = address;
     }
 
+    public CarrierPersonGroupDTO getGroup() {
+        return group;
+    }
+
+    public void setGroup(CarrierPersonGroupDTO group) {
+        this.group = group;
+    }
+
     public CarrierDTO getCarrier() {
         return carrier;
     }
@@ -97,11 +109,12 @@ public class CarrierPersonDTO implements Serializable {
     @Override
     public String toString() {
         return "CarrierPersonDTO{" +
-            "id=" + getId() +
+            "id='" + getId() + "'" +
             ", name='" + getName() + "'" +
             ", phone='" + getPhone() + "'" +
             ", email='" + getEmail() + "'" +
             ", address='" + getAddress() + "'" +
+            ", group=" + getGroup() +
             ", carrier=" + getCarrier() +
             "}";
     }
