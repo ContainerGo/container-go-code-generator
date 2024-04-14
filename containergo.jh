@@ -68,6 +68,16 @@ entity ShipperPersonGroup {
     name String required
 }
 
+enum ShipperAccountType {
+	DEPOSIT
+}
+
+entity ShipperAccount {
+	id UUID,
+    balance Double required,
+    accountType ShipperAccountType required
+}
+
 entity ShipperPerson {
 	id UUID,
     name String required,
@@ -167,14 +177,29 @@ entity CenterPersonGroup {
 // Container
 enum ContainerState {
     NEW,
-	BIDDING,
-    WAITING_FOR_OFFERS,
+  	BIDDING,
+  	RECEIVED_OFFERS,
+  	CONTAINER_CANCEL,
+  	BIDDING_TIMEUP_WITH_NO_OFFER,
+  	BIDDING_PENDING,
     OFFER_CHOSEN,
     SHIPMENT_PLAN_SENT,
+    OFFER_CANCEL_BY_SHIPPER,
     SHIPMENT_IN_PROGRESS,
-    SHIPMENT_SUCCESS,
-    SHIPMENT_FAIL,
-    SHIPMENT_POD_APPROVED
+    PICKUP_SUCCESS,
+    PICKUP_FAILED,
+    PICKUP_CANCEL,
+    DELIVERY_SUCCESS,
+    POD_SUCCESS,
+    POD_APPROVED,
+    DELIVERY_FAILED,
+    WAIT_FOR_CENTER_HANDLE_CONTAINER,
+    REDELIVERY,
+    RETURNING,
+  	RETURN_SUCCESS,
+  	RETURN_FAIL,
+  	BIDDING_TIMEUP_WITH_OFFER,
+  	SHIPMENT_SUCCESS
 }
 
 enum ShipmentStatus {
@@ -297,7 +322,8 @@ relationship ManyToOne {
     Truck{type required} to TruckType,
     ShipperPerson{group required} to ShipperPersonGroup,
     CarrierPerson{group required} to CarrierPersonGroup,
-    CenterPerson{group required} to CenterPersonGroup
+    CenterPerson{group required} to CenterPersonGroup,
+    ShipperAccount{shipper required} to ShipperAccount
 }
 
 relationship OneToMany {
