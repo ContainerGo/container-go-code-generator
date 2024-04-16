@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    @if (containerOwner) {
+    @if (containerOwner()) {
       <div>
         <h2 data-cy="containerOwnerDetailsHeading">
           <span jhiTranslate="containerGoServerApp.containerOwner.detail.title">Container Owner</span>
@@ -15,23 +15,23 @@
         <dl class="row-md jh-entity-details">
           <dt><span jhiTranslate="containerGoServerApp.containerOwner.id">Id</span></dt>
           <dd>
-            <span>{{ containerOwner.id }}</span>
+            <span>{{ containerOwner()!.id }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.containerOwner.name">Name</span></dt>
           <dd>
-            <span>{{ containerOwner.name }}</span>
+            <span>{{ containerOwner()!.name }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.containerOwner.phone">Phone</span></dt>
           <dd>
-            <span>{{ containerOwner.phone }}</span>
+            <span>{{ containerOwner()!.phone }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.containerOwner.email">Email</span></dt>
           <dd>
-            <span>{{ containerOwner.email }}</span>
+            <span>{{ containerOwner()!.email }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.containerOwner.address">Address</span></dt>
           <dd>
-            <span>{{ containerOwner.address }}</span>
+            <span>{{ containerOwner()!.address }}</span>
           </dd>
         </dl>
 
@@ -39,7 +39,7 @@
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
         </button>
 
-        <button type="button" [routerLink]="['/container-owner', containerOwner.id, 'edit']" class="btn btn-primary">
+        <button type="button" [routerLink]="['/container-owner', containerOwner()!.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
         </button>
       </div>

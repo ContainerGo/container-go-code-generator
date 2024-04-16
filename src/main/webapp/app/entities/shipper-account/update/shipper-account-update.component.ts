@@ -9,8 +9,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IShipper } from 'app/entities/shipper/shipper.model';
 import { ShipperService } from 'app/entities/shipper/service/shipper.service';
-import { IShipperAccount } from '../shipper-account.model';
+import { ShipperAccountType } from 'app/entities/enumerations/shipper-account-type.model';
 import { ShipperAccountService } from '../service/shipper-account.service';
+import { IShipperAccount } from '../shipper-account.model';
 import { ShipperAccountFormService, ShipperAccountFormGroup } from './shipper-account-form.service';
 
 @Component({
@@ -22,6 +23,7 @@ import { ShipperAccountFormService, ShipperAccountFormGroup } from './shipper-ac
 export class ShipperAccountUpdateComponent implements OnInit {
   isSaving = false;
   shipperAccount: IShipperAccount | null = null;
+  shipperAccountTypeValues = Object.keys(ShipperAccountType);
 
   shippersSharedCollection: IShipper[] = [];
 

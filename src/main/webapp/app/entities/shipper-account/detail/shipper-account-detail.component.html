@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    @if (shipperAccount) {
+    @if (shipperAccount()) {
       <div>
         <h2 data-cy="shipperAccountDetailsHeading">
           <span jhiTranslate="containerGoServerApp.shipperAccount.detail.title">Shipper Account</span>
@@ -15,29 +15,23 @@
         <dl class="row-md jh-entity-details">
           <dt><span jhiTranslate="containerGoServerApp.shipperAccount.id">Id</span></dt>
           <dd>
-            <span>{{ shipperAccount.id }}</span>
+            <span>{{ shipperAccount()!.id }}</span>
           </dd>
-          <dt><span jhiTranslate="containerGoServerApp.shipperAccount.name">Name</span></dt>
+          <dt><span jhiTranslate="containerGoServerApp.shipperAccount.balance">Balance</span></dt>
           <dd>
-            <span>{{ shipperAccount.name }}</span>
+            <span>{{ shipperAccount()!.balance }}</span>
           </dd>
-          <dt><span jhiTranslate="containerGoServerApp.shipperAccount.phone">Phone</span></dt>
+          <dt><span jhiTranslate="containerGoServerApp.shipperAccount.accountType">Account Type</span></dt>
           <dd>
-            <span>{{ shipperAccount.phone }}</span>
-          </dd>
-          <dt><span jhiTranslate="containerGoServerApp.shipperAccount.email">Email</span></dt>
-          <dd>
-            <span>{{ shipperAccount.email }}</span>
-          </dd>
-          <dt><span jhiTranslate="containerGoServerApp.shipperAccount.address">Address</span></dt>
-          <dd>
-            <span>{{ shipperAccount.address }}</span>
+            <span [jhiTranslate]="'containerGoServerApp.ShipperAccountType.' + (shipperAccount()!.accountType ?? 'null')">{{
+              { null: '', DEPOSIT: 'DEPOSIT' }[shipperAccount()!.accountType ?? 'null']
+            }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipperAccount.shipper">Shipper</span></dt>
           <dd>
-            @if (shipperAccount.shipper) {
+            @if (shipperAccount()!.shipper) {
               <div>
-                <a [routerLink]="['/shipper', shipperAccount.shipper.id, 'view']">{{ shipperAccount.shipper.id }}</a>
+                <a [routerLink]="['/shipper', shipperAccount()!.shipper?.id, 'view']">{{ shipperAccount()!.shipper?.id }}</a>
               </div>
             }
           </dd>
@@ -47,7 +41,7 @@
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
         </button>
 
-        <button type="button" [routerLink]="['/shipper-account', shipperAccount.id, 'edit']" class="btn btn-primary">
+        <button type="button" [routerLink]="['/shipper-account', shipperAccount()!.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
         </button>
       </div>

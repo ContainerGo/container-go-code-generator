@@ -4,29 +4,21 @@
   },
   "applications": ["containerGoServer"],
   "dto": "mapstruct",
-  "entityTableName": "shipper_account",
   "fields": [
     {
       "fieldName": "id",
-      "fieldType": "Long"
+      "fieldType": "UUID"
     },
     {
-      "fieldName": "name",
-      "fieldType": "String",
+      "fieldName": "balance",
+      "fieldType": "Double",
       "fieldValidateRules": ["required"]
     },
     {
-      "fieldName": "phone",
-      "fieldType": "String",
-      "fieldValidateRules": ["required"]
-    },
-    {
-      "fieldName": "email",
-      "fieldType": "String"
-    },
-    {
-      "fieldName": "address",
-      "fieldType": "String"
+      "fieldName": "accountType",
+      "fieldType": "ShipperAccountType",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "DEPOSIT"
     }
   ],
   "jpaMetamodelFiltering": false,

@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
-import { ASC } from 'app/config/navigation.constants';
 import { ShipperAccountComponent } from './list/shipper-account.component';
 import { ShipperAccountDetailComponent } from './detail/shipper-account-detail.component';
 import { ShipperAccountUpdateComponent } from './update/shipper-account-update.component';
@@ -11,9 +10,7 @@ const shipperAccountRoute: Routes = [
   {
     path: '',
     component: ShipperAccountComponent,
-    data: {
-      defaultSort: 'id,' + ASC,
-    },
+    data: {},
     canActivate: [UserRouteAccessService],
   },
   {

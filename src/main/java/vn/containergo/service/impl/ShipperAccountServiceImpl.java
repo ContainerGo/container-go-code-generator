@@ -1,6 +1,7 @@
 package vn.containergo.service.impl;
 
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -67,13 +68,13 @@ public class ShipperAccountServiceImpl implements ShipperAccountService {
     }
 
     @Override
-    public Optional<ShipperAccountDTO> findOne(Long id) {
+    public Optional<ShipperAccountDTO> findOne(UUID id) {
         log.debug("Request to get ShipperAccount : {}", id);
         return shipperAccountRepository.findById(id).map(shipperAccountMapper::toDto);
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(UUID id) {
         log.debug("Request to delete ShipperAccount : {}", id);
         shipperAccountRepository.deleteById(id);
     }

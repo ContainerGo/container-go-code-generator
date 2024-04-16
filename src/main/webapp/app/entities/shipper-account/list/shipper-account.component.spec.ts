@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed, fakeAsync, inject, tick } from '@angular/cor
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
 import { of, Subject } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -20,11 +19,7 @@ describe('ShipperAccount Management Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule.withRoutes([{ path: 'shipper-account', component: ShipperAccountComponent }]),
-        HttpClientTestingModule,
-        ShipperAccountComponent,
-      ],
+      imports: [HttpClientTestingModule, ShipperAccountComponent],
       providers: [
         {
           provide: ActivatedRoute,
@@ -64,7 +59,7 @@ describe('ShipperAccount Management Component', () => {
       .mockReturnValueOnce(
         of(
           new HttpResponse({
-            body: [{ id: 123 }],
+            body: [{ id: '9fec3727-3421-4967-b213-ba36557ca194' }],
             headers: new HttpHeaders({
               link: '<http://localhost/api/foo?page=1&size=20>; rel="next"',
             }),
@@ -74,7 +69,7 @@ describe('ShipperAccount Management Component', () => {
       .mockReturnValueOnce(
         of(
           new HttpResponse({
-            body: [{ id: 456 }],
+            body: [{ id: '1361f429-3817-4123-8ee3-fdf8943310b2' }],
             headers: new HttpHeaders({
               link: '<http://localhost/api/foo?page=0&size=20>; rel="prev",<http://localhost/api/foo?page=2&size=20>; rel="next"',
             }),
@@ -89,12 +84,12 @@ describe('ShipperAccount Management Component', () => {
 
     // THEN
     expect(service.query).toHaveBeenCalled();
-    expect(comp.shipperAccounts?.[0]).toEqual(expect.objectContaining({ id: 123 }));
+    expect(comp.shipperAccounts?.[0]).toEqual(expect.objectContaining({ id: '9fec3727-3421-4967-b213-ba36557ca194' }));
   });
 
   describe('trackId', () => {
     it('Should forward to shipperAccountService', () => {
-      const entity = { id: 123 };
+      const entity = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(service, 'getShipperAccountIdentifier');
       const id = comp.trackId(0, entity);
       expect(service.getShipperAccountIdentifier).toHaveBeenCalledWith(entity);

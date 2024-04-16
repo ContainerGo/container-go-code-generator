@@ -14,13 +14,13 @@
 
         @if (editForm.controls.id.value !== null) {
           <div class="mb-3">
-            <label class="form-label" jhiTranslate="containerGoServerApp.shipmentHistory.id" for="field_id">Id</label>
+            <label class="form-label" for="field_id" jhiTranslate="containerGoServerApp.shipmentHistory.id">Id</label>
             <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
           </div>
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipmentHistory.event" for="field_event">Event</label>
+          <label class="form-label" for="field_event" jhiTranslate="containerGoServerApp.shipmentHistory.event">Event</label>
           <input type="text" class="form-control" name="event" id="field_event" data-cy="event" formControlName="event" />
           @if (editForm.get('event')!.invalid && (editForm.get('event')!.dirty || editForm.get('event')!.touched)) {
             <div>
@@ -32,7 +32,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipmentHistory.timestamp" for="field_timestamp">Timestamp</label>
+          <label class="form-label" for="field_timestamp" jhiTranslate="containerGoServerApp.shipmentHistory.timestamp">Timestamp</label>
           <div class="d-flex">
             <input
               id="field_timestamp"
@@ -60,7 +60,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipmentHistory.executedBy" for="field_executedBy"
+          <label class="form-label" for="field_executedBy" jhiTranslate="containerGoServerApp.shipmentHistory.executedBy"
             >Executed By</label
           >
           <input
@@ -81,22 +81,22 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipmentHistory.location" for="field_location">Location</label>
+          <label class="form-label" for="field_location" jhiTranslate="containerGoServerApp.shipmentHistory.location">Location</label>
           <input type="text" class="form-control" name="location" id="field_location" data-cy="location" formControlName="location" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipmentHistory.lat" for="field_lat">Lat</label>
+          <label class="form-label" for="field_lat" jhiTranslate="containerGoServerApp.shipmentHistory.lat">Lat</label>
           <input type="number" class="form-control" name="lat" id="field_lat" data-cy="lat" formControlName="lat" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipmentHistory.lng" for="field_lng">Lng</label>
+          <label class="form-label" for="field_lng" jhiTranslate="containerGoServerApp.shipmentHistory.lng">Lng</label>
           <input type="number" class="form-control" name="lng" id="field_lng" data-cy="lng" formControlName="lng" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipmentHistory.container" for="field_container">Container</label>
+          <label class="form-label" for="field_container" jhiTranslate="containerGoServerApp.shipmentHistory.container">Container</label>
           <select
             class="form-control"
             id="field_container"

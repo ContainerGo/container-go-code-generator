@@ -18,10 +18,8 @@
         "title": "Shipper Account"
       },
       "id": "Id",
-      "name": "Name",
-      "phone": "Phone",
-      "email": "Email",
-      "address": "Address",
+      "balance": "Balance",
+      "accountType": "Account Type",
       "shipper": "Shipper"
     }
   }

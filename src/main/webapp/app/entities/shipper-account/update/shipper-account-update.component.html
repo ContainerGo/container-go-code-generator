@@ -14,17 +14,44 @@
 
         @if (editForm.controls.id.value !== null) {
           <div class="mb-3">
-            <label class="form-label" jhiTranslate="containerGoServerApp.shipperAccount.id" for="field_id">Id</label>
-            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+            <label class="form-label" for="field_id" jhiTranslate="containerGoServerApp.shipperAccount.id">Id</label>
+            <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
           </div>
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipperAccount.name" for="field_name">Name</label>
-          <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
-          @if (editForm.get('name')!.invalid && (editForm.get('name')!.dirty || editForm.get('name')!.touched)) {
+          <label class="form-label" for="field_balance" jhiTranslate="containerGoServerApp.shipperAccount.balance">Balance</label>
+          <input type="number" class="form-control" name="balance" id="field_balance" data-cy="balance" formControlName="balance" />
+          @if (editForm.get('balance')!.invalid && (editForm.get('balance')!.dirty || editForm.get('balance')!.touched)) {
             <div>
-              @if (editForm.get('name')?.errors?.required) {
+              @if (editForm.get('balance')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('balance')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Trường này phải là một số.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_accountType" jhiTranslate="containerGoServerApp.shipperAccount.accountType"
+            >Account Type</label
+          >
+          <select class="form-control" name="accountType" formControlName="accountType" id="field_accountType" data-cy="accountType">
+            <option [ngValue]="null">{{ 'containerGoServerApp.ShipperAccountType.null' | translate }}</option>
+            @for (shipperAccountType of shipperAccountTypeValues; track $index) {
+              <option [value]="shipperAccountType">
+                {{ 'containerGoServerApp.ShipperAccountType.' + shipperAccountType | translate }}
+              </option>
+            }
+          </select>
+          @if (editForm.get('accountType')!.invalid && (editForm.get('accountType')!.dirty || editForm.get('accountType')!.touched)) {
+            <div>
+              @if (editForm.get('accountType')?.errors?.required) {
                 <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
               }
             </div>
@@ -32,29 +59,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipperAccount.phone" for="field_phone">Phone</label>
-          <input type="text" class="form-control" name="phone" id="field_phone" data-cy="phone" formControlName="phone" />
-          @if (editForm.get('phone')!.invalid && (editForm.get('phone')!.dirty || editForm.get('phone')!.touched)) {
-            <div>
-              @if (editForm.get('phone')?.errors?.required) {
-                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Trường này bắt buộc phải nhập.</small>
-              }
-            </div>
-          }
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipperAccount.email" for="field_email">Email</label>
-          <input type="text" class="form-control" name="email" id="field_email" data-cy="email" formControlName="email" />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipperAccount.address" for="field_address">Address</label>
-          <input type="text" class="form-control" name="address" id="field_address" data-cy="address" formControlName="address" />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipperAccount.shipper" for="field_shipper">Shipper</label>
+          <label class="form-label" for="field_shipper" jhiTranslate="containerGoServerApp.shipperAccount.shipper">Shipper</label>
           <select
             class="form-control"
             id="field_shipper"

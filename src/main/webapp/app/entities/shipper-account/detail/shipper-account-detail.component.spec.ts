@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
-import { RouterTestingHarness, RouterTestingModule } from '@angular/router/testing';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { of } from 'rxjs';
 
 import { ShipperAccountDetailComponent } from './shipper-account-detail.component';
@@ -11,14 +11,14 @@ describe('ShipperAccount Management Detail Component', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ShipperAccountDetailComponent, RouterTestingModule.withRoutes([], { bindToComponentInputs: true })],
+      imports: [ShipperAccountDetailComponent],
       providers: [
         provideRouter(
           [
             {
               path: '**',
               component: ShipperAccountDetailComponent,
-              resolve: { shipperAccount: () => of({ id: 123 }) },
+              resolve: { shipperAccount: () => of({ id: '9fec3727-3421-4967-b213-ba36557ca194' }) },
             },
           ],
           withComponentInputBinding(),
@@ -40,7 +40,7 @@ describe('ShipperAccount Management Detail Component', () => {
       const instance = await harness.navigateByUrl('/', ShipperAccountDetailComponent);
 
       // THEN
-      expect(instance.shipperAccount).toEqual(expect.objectContaining({ id: 123 }));
+      expect(instance.shipperAccount()).toEqual(expect.objectContaining({ id: '9fec3727-3421-4967-b213-ba36557ca194' }));
     });
   });
 

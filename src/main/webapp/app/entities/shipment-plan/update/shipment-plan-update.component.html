@@ -14,7 +14,7 @@
 
         @if (editForm.controls.id.value !== null) {
           <div class="mb-3">
-            <label class="form-label" jhiTranslate="containerGoServerApp.shipmentPlan.id" for="field_id">Id</label>
+            <label class="form-label" for="field_id" jhiTranslate="containerGoServerApp.shipmentPlan.id">Id</label>
             <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
           </div>
         }
@@ -22,8 +22,8 @@
         <div class="mb-3">
           <label
             class="form-label"
-            jhiTranslate="containerGoServerApp.shipmentPlan.estimatedPickupFromDate"
             for="field_estimatedPickupFromDate"
+            jhiTranslate="containerGoServerApp.shipmentPlan.estimatedPickupFromDate"
             >Estimated Pickup From Date</label
           >
           <div class="d-flex">
@@ -58,8 +58,8 @@
         <div class="mb-3">
           <label
             class="form-label"
-            jhiTranslate="containerGoServerApp.shipmentPlan.estimatedPickupUntilDate"
             for="field_estimatedPickupUntilDate"
+            jhiTranslate="containerGoServerApp.shipmentPlan.estimatedPickupUntilDate"
             >Estimated Pickup Until Date</label
           >
           <div class="d-flex">
@@ -94,8 +94,8 @@
         <div class="mb-3">
           <label
             class="form-label"
-            jhiTranslate="containerGoServerApp.shipmentPlan.estimatedDropoffFromDate"
             for="field_estimatedDropoffFromDate"
+            jhiTranslate="containerGoServerApp.shipmentPlan.estimatedDropoffFromDate"
             >Estimated Dropoff From Date</label
           >
           <div class="d-flex">
@@ -130,8 +130,8 @@
         <div class="mb-3">
           <label
             class="form-label"
-            jhiTranslate="containerGoServerApp.shipmentPlan.estimatedDropoffUntilDate"
             for="field_estimatedDropoffUntilDate"
+            jhiTranslate="containerGoServerApp.shipmentPlan.estimatedDropoffUntilDate"
             >Estimated Dropoff Until Date</label
           >
           <div class="d-flex">
@@ -164,7 +164,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipmentPlan.driverId" for="field_driverId">Driver Id</label>
+          <label class="form-label" for="field_driverId" jhiTranslate="containerGoServerApp.shipmentPlan.driverId">Driver Id</label>
           <input type="text" class="form-control" name="driverId" id="field_driverId" data-cy="driverId" formControlName="driverId" />
           @if (editForm.get('driverId')!.invalid && (editForm.get('driverId')!.dirty || editForm.get('driverId')!.touched)) {
             <div>
@@ -176,7 +176,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipmentPlan.truckId" for="field_truckId">Truck Id</label>
+          <label class="form-label" for="field_truckId" jhiTranslate="containerGoServerApp.shipmentPlan.truckId">Truck Id</label>
           <input type="text" class="form-control" name="truckId" id="field_truckId" data-cy="truckId" formControlName="truckId" />
           @if (editForm.get('truckId')!.invalid && (editForm.get('truckId')!.dirty || editForm.get('truckId')!.touched)) {
             <div>
@@ -188,7 +188,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipmentPlan.container" for="field_container">Container</label>
+          <label class="form-label" for="field_container" jhiTranslate="containerGoServerApp.shipmentPlan.container">Container</label>
           <select
             class="form-control"
             id="field_container"

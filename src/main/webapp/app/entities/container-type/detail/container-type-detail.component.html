@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    @if (containerType) {
+    @if (containerType()) {
       <div>
         <h2 data-cy="containerTypeDetailsHeading">
           <span jhiTranslate="containerGoServerApp.containerType.detail.title">Container Type</span>
@@ -15,19 +15,19 @@
         <dl class="row-md jh-entity-details">
           <dt><span jhiTranslate="containerGoServerApp.containerType.id">Id</span></dt>
           <dd>
-            <span>{{ containerType.id }}</span>
+            <span>{{ containerType()!.id }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.containerType.code">Code</span></dt>
           <dd>
-            <span>{{ containerType.code }}</span>
+            <span>{{ containerType()!.code }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.containerType.name">Name</span></dt>
           <dd>
-            <span>{{ containerType.name }}</span>
+            <span>{{ containerType()!.name }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.containerType.description">Description</span></dt>
           <dd>
-            <span>{{ containerType.description }}</span>
+            <span>{{ containerType()!.description }}</span>
           </dd>
         </dl>
 
@@ -35,7 +35,7 @@
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
         </button>
 
-        <button type="button" [routerLink]="['/container-type', containerType.id, 'edit']" class="btn btn-primary">
+        <button type="button" [routerLink]="['/container-type', containerType()!.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
         </button>
       </div>

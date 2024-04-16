@@ -10,13 +10,13 @@
 
         @if (editForm.controls.id.value !== null) {
           <div class="mb-3">
-            <label class="form-label" jhiTranslate="containerGoServerApp.shipper.id" for="field_id">Id</label>
+            <label class="form-label" for="field_id" jhiTranslate="containerGoServerApp.shipper.id">Id</label>
             <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
           </div>
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipper.code" for="field_code">Code</label>
+          <label class="form-label" for="field_code" jhiTranslate="containerGoServerApp.shipper.code">Code</label>
           <input type="text" class="form-control" name="code" id="field_code" data-cy="code" formControlName="code" />
           @if (editForm.get('code')!.invalid && (editForm.get('code')!.dirty || editForm.get('code')!.touched)) {
             <div>
@@ -28,7 +28,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipper.name" for="field_name">Name</label>
+          <label class="form-label" for="field_name" jhiTranslate="containerGoServerApp.shipper.name">Name</label>
           <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
           @if (editForm.get('name')!.invalid && (editForm.get('name')!.dirty || editForm.get('name')!.touched)) {
             <div>
@@ -40,7 +40,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipper.address" for="field_address">Address</label>
+          <label class="form-label" for="field_address" jhiTranslate="containerGoServerApp.shipper.address">Address</label>
           <input type="text" class="form-control" name="address" id="field_address" data-cy="address" formControlName="address" />
           @if (editForm.get('address')!.invalid && (editForm.get('address')!.dirty || editForm.get('address')!.touched)) {
             <div>
@@ -52,12 +52,12 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipper.taxCode" for="field_taxCode">Tax Code</label>
+          <label class="form-label" for="field_taxCode" jhiTranslate="containerGoServerApp.shipper.taxCode">Tax Code</label>
           <input type="text" class="form-control" name="taxCode" id="field_taxCode" data-cy="taxCode" formControlName="taxCode" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipper.companySize" for="field_companySize">Company Size</label>
+          <label class="form-label" for="field_companySize" jhiTranslate="containerGoServerApp.shipper.companySize">Company Size</label>
           <input
             type="number"
             class="form-control"
@@ -69,7 +69,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipper.paymentType" for="field_paymentType">Payment Type</label>
+          <label class="form-label" for="field_paymentType" jhiTranslate="containerGoServerApp.shipper.paymentType">Payment Type</label>
           <select class="form-control" name="paymentType" formControlName="paymentType" id="field_paymentType" data-cy="paymentType">
             <option [ngValue]="null">{{ 'containerGoServerApp.PaymentType.null' | translate }}</option>
             @for (paymentType of paymentTypeValues; track $index) {
@@ -86,7 +86,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipper.contractType" for="field_contractType">Contract Type</label>
+          <label class="form-label" for="field_contractType" jhiTranslate="containerGoServerApp.shipper.contractType">Contract Type</label>
           <select class="form-control" name="contractType" formControlName="contractType" id="field_contractType" data-cy="contractType">
             <option [ngValue]="null">{{ 'containerGoServerApp.ContractType.null' | translate }}</option>
             @for (contractType of contractTypeValues; track $index) {
@@ -103,7 +103,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipper.contractValidUntil" for="field_contractValidUntil"
+          <label class="form-label" for="field_contractValidUntil" jhiTranslate="containerGoServerApp.shipper.contractValidUntil"
             >Contract Valid Until</label
           >
           <div class="d-flex">
@@ -120,7 +120,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipper.isApproved" for="field_isApproved">Is Approved</label>
+          <label class="form-label" for="field_isApproved" jhiTranslate="containerGoServerApp.shipper.isApproved">Is Approved</label>
           <input
             type="checkbox"
             class="form-check"
@@ -134,8 +134,8 @@
         <div class="mb-3">
           <label
             class="form-label"
-            jhiTranslate="containerGoServerApp.shipper.isBillingInformationComplete"
             for="field_isBillingInformationComplete"
+            jhiTranslate="containerGoServerApp.shipper.isBillingInformationComplete"
             >Is Billing Information Complete</label
           >
           <input
@@ -149,7 +149,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipper.isProfileComplete" for="field_isProfileComplete"
+          <label class="form-label" for="field_isProfileComplete" jhiTranslate="containerGoServerApp.shipper.isProfileComplete"
             >Is Profile Complete</label
           >
           <input

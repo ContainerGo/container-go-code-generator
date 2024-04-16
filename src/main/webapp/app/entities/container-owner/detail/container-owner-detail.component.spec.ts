@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
-import { RouterTestingHarness, RouterTestingModule } from '@angular/router/testing';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { of } from 'rxjs';
 
 import { ContainerOwnerDetailComponent } from './container-owner-detail.component';
@@ -11,7 +11,7 @@ describe('ContainerOwner Management Detail Component', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ContainerOwnerDetailComponent, RouterTestingModule.withRoutes([], { bindToComponentInputs: true })],
+      imports: [ContainerOwnerDetailComponent],
       providers: [
         provideRouter(
           [
@@ -40,7 +40,7 @@ describe('ContainerOwner Management Detail Component', () => {
       const instance = await harness.navigateByUrl('/', ContainerOwnerDetailComponent);
 
       // THEN
-      expect(instance.containerOwner).toEqual(expect.objectContaining({ id: '9fec3727-3421-4967-b213-ba36557ca194' }));
+      expect(instance.containerOwner()).toEqual(expect.objectContaining({ id: '9fec3727-3421-4967-b213-ba36557ca194' }));
     });
   });
 

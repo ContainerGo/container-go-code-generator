@@ -1,29 +1,26 @@
 import { IShipperAccount, NewShipperAccount } from './shipper-account.model';
 
 export const sampleWithRequiredData: IShipperAccount = {
-  id: 24897,
-  name: 'yahoo before',
-  phone: '021 5998 9692',
+  id: 'adcafe62-6a57-43f0-b381-619eece9f379',
+  balance: 25457.08,
+  accountType: 'DEPOSIT',
 };
 
 export const sampleWithPartialData: IShipperAccount = {
-  id: 25425,
-  name: 'model meh furthermore',
-  phone: '022 8023 8376',
-  email: 'ThuDuyen25@hotmail.com',
+  id: 'c988948f-3e38-4a70-a80f-39323d134e5b',
+  balance: 21904.65,
+  accountType: 'DEPOSIT',
 };
 
 export const sampleWithFullData: IShipperAccount = {
-  id: 22383,
-  name: 'needily',
-  phone: '0255 3678 1862',
-  email: '7kacThanh43@yahoo.com',
-  address: 'rumble knavishly sprat',
+  id: 'acdf14a2-0971-4d18-bb88-5ace2db35f7a',
+  balance: 4735.07,
+  accountType: 'DEPOSIT',
 };
 
 export const sampleWithNewData: NewShipperAccount = {
-  name: 'provided whether',
-  phone: '024 1947 7324',
+  balance: 14171.49,
+  accountType: 'DEPOSIT',
   id: null,
 };
 

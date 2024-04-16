@@ -47,10 +47,8 @@ public class ShipperAccountAsserts {
     public static void assertShipperAccountUpdatableFieldsEquals(ShipperAccount expected, ShipperAccount actual) {
         assertThat(expected)
             .as("Verify ShipperAccount relevant properties")
-            .satisfies(e -> assertThat(e.getName()).as("check name").isEqualTo(actual.getName()))
-            .satisfies(e -> assertThat(e.getPhone()).as("check phone").isEqualTo(actual.getPhone()))
-            .satisfies(e -> assertThat(e.getEmail()).as("check email").isEqualTo(actual.getEmail()))
-            .satisfies(e -> assertThat(e.getAddress()).as("check address").isEqualTo(actual.getAddress()));
+            .satisfies(e -> assertThat(e.getBalance()).as("check balance").isEqualTo(actual.getBalance()))
+            .satisfies(e -> assertThat(e.getAccountType()).as("check accountType").isEqualTo(actual.getAccountType()));
     }
 
     /**

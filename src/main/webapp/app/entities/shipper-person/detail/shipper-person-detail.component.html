@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    @if (shipperPerson) {
+    @if (shipperPerson()) {
       <div>
         <h2 data-cy="shipperPersonDetailsHeading">
           <span jhiTranslate="containerGoServerApp.shipperPerson.detail.title">Shipper Person</span>
@@ -15,37 +15,37 @@
         <dl class="row-md jh-entity-details">
           <dt><span jhiTranslate="containerGoServerApp.shipperPerson.id">Id</span></dt>
           <dd>
-            <span>{{ shipperPerson.id }}</span>
+            <span>{{ shipperPerson()!.id }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipperPerson.name">Name</span></dt>
           <dd>
-            <span>{{ shipperPerson.name }}</span>
+            <span>{{ shipperPerson()!.name }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipperPerson.phone">Phone</span></dt>
           <dd>
-            <span>{{ shipperPerson.phone }}</span>
+            <span>{{ shipperPerson()!.phone }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipperPerson.email">Email</span></dt>
           <dd>
-            <span>{{ shipperPerson.email }}</span>
+            <span>{{ shipperPerson()!.email }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipperPerson.address">Address</span></dt>
           <dd>
-            <span>{{ shipperPerson.address }}</span>
+            <span>{{ shipperPerson()!.address }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipperPerson.group">Group</span></dt>
           <dd>
-            @if (shipperPerson.group) {
+            @if (shipperPerson()!.group) {
               <div>
-                <a [routerLink]="['/shipper-person-group', shipperPerson.group.id, 'view']">{{ shipperPerson.group.id }}</a>
+                <a [routerLink]="['/shipper-person-group', shipperPerson()!.group?.id, 'view']">{{ shipperPerson()!.group?.id }}</a>
               </div>
             }
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipperPerson.shipper">Shipper</span></dt>
           <dd>
-            @if (shipperPerson.shipper) {
+            @if (shipperPerson()!.shipper) {
               <div>
-                <a [routerLink]="['/shipper', shipperPerson.shipper.id, 'view']">{{ shipperPerson.shipper.id }}</a>
+                <a [routerLink]="['/shipper', shipperPerson()!.shipper?.id, 'view']">{{ shipperPerson()!.shipper?.id }}</a>
               </div>
             }
           </dd>
@@ -55,7 +55,7 @@
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
         </button>
 
-        <button type="button" [routerLink]="['/shipper-person', shipperPerson.id, 'edit']" class="btn btn-primary">
+        <button type="button" [routerLink]="['/shipper-person', shipperPerson()!.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
         </button>
       </div>

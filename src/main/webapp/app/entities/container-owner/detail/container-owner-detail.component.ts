@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import SharedModule from 'app/shared/shared.module';
@@ -12,7 +12,7 @@ import { IContainerOwner } from '../container-owner.model';
   imports: [SharedModule, RouterModule, DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe],
 })
 export class ContainerOwnerDetailComponent {
-  @Input() containerOwner: IContainerOwner | null = null;
+  containerOwner = input<IContainerOwner | null>(null);
 
   previousState(): void {
     window.history.back();

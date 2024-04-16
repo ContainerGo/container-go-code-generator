@@ -10,18 +10,18 @@
 
         @if (editForm.controls.id.value !== null) {
           <div class="mb-3">
-            <label class="form-label" jhiTranslate="containerGoServerApp.offer.id" for="field_id">Id</label>
+            <label class="form-label" for="field_id" jhiTranslate="containerGoServerApp.offer.id">Id</label>
             <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
           </div>
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.offer.message" for="field_message">Message</label>
+          <label class="form-label" for="field_message" jhiTranslate="containerGoServerApp.offer.message">Message</label>
           <input type="text" class="form-control" name="message" id="field_message" data-cy="message" formControlName="message" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.offer.estimatedPickupFromDate" for="field_estimatedPickupFromDate"
+          <label class="form-label" for="field_estimatedPickupFromDate" jhiTranslate="containerGoServerApp.offer.estimatedPickupFromDate"
             >Estimated Pickup From Date</label
           >
           <div class="d-flex">
@@ -54,7 +54,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.offer.estimatedPickupUntilDate" for="field_estimatedPickupUntilDate"
+          <label class="form-label" for="field_estimatedPickupUntilDate" jhiTranslate="containerGoServerApp.offer.estimatedPickupUntilDate"
             >Estimated Pickup Until Date</label
           >
           <div class="d-flex">
@@ -87,7 +87,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.offer.estimatedDropoffFromDate" for="field_estimatedDropoffFromDate"
+          <label class="form-label" for="field_estimatedDropoffFromDate" jhiTranslate="containerGoServerApp.offer.estimatedDropoffFromDate"
             >Estimated Dropoff From Date</label
           >
           <div class="d-flex">
@@ -122,8 +122,8 @@
         <div class="mb-3">
           <label
             class="form-label"
-            jhiTranslate="containerGoServerApp.offer.estimatedDropoffUntilDate"
             for="field_estimatedDropoffUntilDate"
+            jhiTranslate="containerGoServerApp.offer.estimatedDropoffUntilDate"
             >Estimated Dropoff Until Date</label
           >
           <div class="d-flex">
@@ -156,7 +156,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.offer.state" for="field_state">State</label>
+          <label class="form-label" for="field_state" jhiTranslate="containerGoServerApp.offer.state">State</label>
           <select class="form-control" name="state" formControlName="state" id="field_state" data-cy="state">
             <option [ngValue]="null">{{ 'containerGoServerApp.OfferState.null' | translate }}</option>
             @for (offerState of offerStateValues; track $index) {
@@ -173,7 +173,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.offer.price" for="field_price">Price</label>
+          <label class="form-label" for="field_price" jhiTranslate="containerGoServerApp.offer.price">Price</label>
           <input type="number" class="form-control" name="price" id="field_price" data-cy="price" formControlName="price" />
           @if (editForm.get('price')!.invalid && (editForm.get('price')!.dirty || editForm.get('price')!.touched)) {
             <div>
@@ -188,7 +188,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.offer.carrierId" for="field_carrierId">Carrier Id</label>
+          <label class="form-label" for="field_carrierId" jhiTranslate="containerGoServerApp.offer.carrierId">Carrier Id</label>
           <input type="text" class="form-control" name="carrierId" id="field_carrierId" data-cy="carrierId" formControlName="carrierId" />
           @if (editForm.get('carrierId')!.invalid && (editForm.get('carrierId')!.dirty || editForm.get('carrierId')!.touched)) {
             <div>
@@ -200,12 +200,12 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.offer.truckId" for="field_truckId">Truck Id</label>
+          <label class="form-label" for="field_truckId" jhiTranslate="containerGoServerApp.offer.truckId">Truck Id</label>
           <input type="text" class="form-control" name="truckId" id="field_truckId" data-cy="truckId" formControlName="truckId" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.offer.container" for="field_container">Container</label>
+          <label class="form-label" for="field_container" jhiTranslate="containerGoServerApp.offer.container">Container</label>
           <select
             class="form-control"
             id="field_container"

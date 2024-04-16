@@ -14,13 +14,13 @@
 
         @if (editForm.controls.id.value !== null) {
           <div class="mb-3">
-            <label class="form-label" jhiTranslate="containerGoServerApp.shipperNotification.id" for="field_id">Id</label>
+            <label class="form-label" for="field_id" jhiTranslate="containerGoServerApp.shipperNotification.id">Id</label>
             <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
           </div>
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipperNotification.code" for="field_code">Code</label>
+          <label class="form-label" for="field_code" jhiTranslate="containerGoServerApp.shipperNotification.code">Code</label>
           <input type="text" class="form-control" name="code" id="field_code" data-cy="code" formControlName="code" />
           @if (editForm.get('code')!.invalid && (editForm.get('code')!.dirty || editForm.get('code')!.touched)) {
             <div>
@@ -32,7 +32,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipperNotification.name" for="field_name">Name</label>
+          <label class="form-label" for="field_name" jhiTranslate="containerGoServerApp.shipperNotification.name">Name</label>
           <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
           @if (editForm.get('name')!.invalid && (editForm.get('name')!.dirty || editForm.get('name')!.touched)) {
             <div>
@@ -46,8 +46,8 @@
         <div class="mb-3">
           <label
             class="form-label"
-            jhiTranslate="containerGoServerApp.shipperNotification.isEmailNotificationEnabled"
             for="field_isEmailNotificationEnabled"
+            jhiTranslate="containerGoServerApp.shipperNotification.isEmailNotificationEnabled"
             >Is Email Notification Enabled</label
           >
           <input
@@ -63,8 +63,8 @@
         <div class="mb-3">
           <label
             class="form-label"
-            jhiTranslate="containerGoServerApp.shipperNotification.isSmsNotificationEnabled"
             for="field_isSmsNotificationEnabled"
+            jhiTranslate="containerGoServerApp.shipperNotification.isSmsNotificationEnabled"
             >Is Sms Notification Enabled</label
           >
           <input
@@ -80,8 +80,8 @@
         <div class="mb-3">
           <label
             class="form-label"
-            jhiTranslate="containerGoServerApp.shipperNotification.isAppNotificationEnabled"
             for="field_isAppNotificationEnabled"
+            jhiTranslate="containerGoServerApp.shipperNotification.isAppNotificationEnabled"
             >Is App Notification Enabled</label
           >
           <input
@@ -95,7 +95,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.shipperNotification.person" for="field_person">Person</label>
+          <label class="form-label" for="field_person" jhiTranslate="containerGoServerApp.shipperNotification.person">Person</label>
           <select
             class="form-control"
             id="field_person"

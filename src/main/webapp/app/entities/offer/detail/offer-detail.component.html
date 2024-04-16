@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    @if (offer) {
+    @if (offer()) {
       <div>
         <h2 data-cy="offerDetailsHeading"><span jhiTranslate="containerGoServerApp.offer.detail.title">Offer</span></h2>
 
@@ -13,49 +13,53 @@
         <dl class="row-md jh-entity-details">
           <dt><span jhiTranslate="containerGoServerApp.offer.id">Id</span></dt>
           <dd>
-            <span>{{ offer.id }}</span>
+            <span>{{ offer()!.id }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.offer.message">Message</span></dt>
           <dd>
-            <span>{{ offer.message }}</span>
+            <span>{{ offer()!.message }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.offer.estimatedPickupFromDate">Estimated Pickup From Date</span></dt>
           <dd>
-            <span>{{ offer.estimatedPickupFromDate | formatMediumDatetime }}</span>
+            <span>{{ offer()!.estimatedPickupFromDate | formatMediumDatetime }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.offer.estimatedPickupUntilDate">Estimated Pickup Until Date</span></dt>
           <dd>
-            <span>{{ offer.estimatedPickupUntilDate | formatMediumDatetime }}</span>
+            <span>{{ offer()!.estimatedPickupUntilDate | formatMediumDatetime }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.offer.estimatedDropoffFromDate">Estimated Dropoff From Date</span></dt>
           <dd>
-            <span>{{ offer.estimatedDropoffFromDate | formatMediumDatetime }}</span>
+            <span>{{ offer()!.estimatedDropoffFromDate | formatMediumDatetime }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.offer.estimatedDropoffUntilDate">Estimated Dropoff Until Date</span></dt>
           <dd>
-            <span>{{ offer.estimatedDropoffUntilDate | formatMediumDatetime }}</span>
+            <span>{{ offer()!.estimatedDropoffUntilDate | formatMediumDatetime }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.offer.state">State</span></dt>
           <dd>
-            <span jhiTranslate="{{ 'containerGoServerApp.OfferState.' + offer.state }}">{{ offer.state }}</span>
+            <span [jhiTranslate]="'containerGoServerApp.OfferState.' + (offer()!.state ?? 'null')">{{
+              { null: '', PENDING: 'PENDING', ACCEPTED: 'ACCEPTED', REJECTED: 'REJECTED', EXPIRED: 'EXPIRED', WITHDRAWN: 'WITHDRAWN' }[
+                offer()!.state ?? 'null'
+              ]
+            }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.offer.price">Price</span></dt>
           <dd>
-            <span>{{ offer.price }}</span>
+            <span>{{ offer()!.price }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.offer.carrierId">Carrier Id</span></dt>
           <dd>
-            <span>{{ offer.carrierId }}</span>
+            <span>{{ offer()!.carrierId }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.offer.truckId">Truck Id</span></dt>
           <dd>
-            <span>{{ offer.truckId }}</span>
+            <span>{{ offer()!.truckId }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.offer.container">Container</span></dt>
           <dd>
-            @if (offer.container) {
+            @if (offer()!.container) {
               <div>
-                <a [routerLink]="['/container', offer.container.id, 'view']">{{ offer.container.id }}</a>
+                <a [routerLink]="['/container', offer()!.container?.id, 'view']">{{ offer()!.container?.id }}</a>
               </div>
             }
           </dd>
@@ -65,7 +69,7 @@
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
         </button>
 
-        <button type="button" [routerLink]="['/offer', offer.id, 'edit']" class="btn btn-primary">
+        <button type="button" [routerLink]="['/offer', offer()!.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
         </button>
       </div>

@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    @if (centerPersonGroup) {
+    @if (centerPersonGroup()) {
       <div>
         <h2 data-cy="centerPersonGroupDetailsHeading">
           <span jhiTranslate="containerGoServerApp.centerPersonGroup.detail.title">Center Person Group</span>
@@ -15,11 +15,11 @@
         <dl class="row-md jh-entity-details">
           <dt><span jhiTranslate="containerGoServerApp.centerPersonGroup.id">Id</span></dt>
           <dd>
-            <span>{{ centerPersonGroup.id }}</span>
+            <span>{{ centerPersonGroup()!.id }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.centerPersonGroup.name">Name</span></dt>
           <dd>
-            <span>{{ centerPersonGroup.name }}</span>
+            <span>{{ centerPersonGroup()!.name }}</span>
           </dd>
         </dl>
 
@@ -27,7 +27,7 @@
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
         </button>
 
-        <button type="button" [routerLink]="['/center-person-group', centerPersonGroup.id, 'edit']" class="btn btn-primary">
+        <button type="button" [routerLink]="['/center-person-group', centerPersonGroup()!.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
         </button>
       </div>

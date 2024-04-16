@@ -1,0 +1,8 @@
+{
+  "containerGoServerApp": {
+    "ShipperAccountType": {
+      "null": "",
+      "DEPOSIT": "DEPOSIT"
+    }
+  }
+}

@@ -303,7 +303,37 @@
               <td>{{ container.dropoffLng }}</td>
               <td>{{ container.points }}</td>
               <td>{{ container.dropoffUntilDate | formatMediumDatetime }}</td>
-              <td jhiTranslate="{{ 'containerGoServerApp.ContainerState.' + container.state }}">{{ container.state }}</td>
+              <td [jhiTranslate]="'containerGoServerApp.ContainerState.' + (container.state ?? 'null')">
+                {{
+                  {
+                    null: '',
+                    NEW: 'NEW',
+                    BIDDING: 'BIDDING',
+                    RECEIVED_OFFERS: 'RECEIVED_OFFERS',
+                    CONTAINER_CANCEL: 'CONTAINER_CANCEL',
+                    BIDDING_TIMEUP_WITH_NO_OFFER: 'BIDDING_TIMEUP_WITH_NO_OFFER',
+                    BIDDING_PENDING: 'BIDDING_PENDING',
+                    OFFER_CHOSEN: 'OFFER_CHOSEN',
+                    SHIPMENT_PLAN_SENT: 'SHIPMENT_PLAN_SENT',
+                    OFFER_CANCEL_BY_SHIPPER: 'OFFER_CANCEL_BY_SHIPPER',
+                    SHIPMENT_IN_PROGRESS: 'SHIPMENT_IN_PROGRESS',
+                    PICKUP_SUCCESS: 'PICKUP_SUCCESS',
+                    PICKUP_FAILED: 'PICKUP_FAILED',
+                    PICKUP_CANCEL: 'PICKUP_CANCEL',
+                    DELIVERY_SUCCESS: 'DELIVERY_SUCCESS',
+                    POD_SUCCESS: 'POD_SUCCESS',
+                    POD_APPROVED: 'POD_APPROVED',
+                    DELIVERY_FAILED: 'DELIVERY_FAILED',
+                    WAIT_FOR_CENTER_HANDLE_CONTAINER: 'WAIT_FOR_CENTER_HANDLE_CONTAINER',
+                    REDELIVERY: 'REDELIVERY',
+                    RETURNING: 'RETURNING',
+                    RETURN_SUCCESS: 'RETURN_SUCCESS',
+                    RETURN_FAIL: 'RETURN_FAIL',
+                    BIDDING_TIMEUP_WITH_OFFER: 'BIDDING_TIMEUP_WITH_OFFER',
+                    SHIPMENT_SUCCESS: 'SHIPMENT_SUCCESS'
+                  }[container.state ?? 'null']
+                }}
+              </td>
               <td>{{ container.shipperId }}</td>
               <td>{{ container.carrierId }}</td>
               <td>{{ container.totalWeight }}</td>

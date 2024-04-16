@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    @if (ward) {
+    @if (ward()) {
       <div>
         <h2 data-cy="wardDetailsHeading"><span jhiTranslate="containerGoServerApp.ward.detail.title">Ward</span></h2>
 
@@ -13,19 +13,19 @@
         <dl class="row-md jh-entity-details">
           <dt><span jhiTranslate="containerGoServerApp.ward.id">Id</span></dt>
           <dd>
-            <span>{{ ward.id }}</span>
+            <span>{{ ward()!.id }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.ward.code">Code</span></dt>
           <dd>
-            <span>{{ ward.code }}</span>
+            <span>{{ ward()!.code }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.ward.name">Name</span></dt>
           <dd>
-            <span>{{ ward.name }}</span>
+            <span>{{ ward()!.name }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.ward.description">Description</span></dt>
           <dd>
-            <span>{{ ward.description }}</span>
+            <span>{{ ward()!.description }}</span>
           </dd>
         </dl>
 
@@ -33,7 +33,7 @@
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
         </button>
 
-        <button type="button" [routerLink]="['/ward', ward.id, 'edit']" class="btn btn-primary">
+        <button type="button" [routerLink]="['/ward', ward()!.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
         </button>
       </div>

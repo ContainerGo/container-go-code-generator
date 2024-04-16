@@ -3,6 +3,8 @@ package vn.containergo.service.dto;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
+import vn.containergo.domain.enumeration.ShipperAccountType;
 
 /**
  * A DTO for the {@link vn.containergo.domain.ShipperAccount} entity.
@@ -10,59 +12,39 @@ import java.util.Objects;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class ShipperAccountDTO implements Serializable {
 
-    private Long id;
+    private UUID id;
 
     @NotNull
-    private String name;
+    private Double balance;
 
     @NotNull
-    private String phone;
-
-    private String email;
-
-    private String address;
+    private ShipperAccountType accountType;
 
     @NotNull
     private ShipperDTO shipper;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Double getBalance() {
+        return balance;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setBalance(Double balance) {
+        this.balance = balance;
     }
 
-    public String getPhone() {
-        return phone;
+    public ShipperAccountType getAccountType() {
+        return accountType;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAccountType(ShipperAccountType accountType) {
+        this.accountType = accountType;
     }
 
     public ShipperDTO getShipper() {
@@ -98,11 +80,9 @@ public class ShipperAccountDTO implements Serializable {
     @Override
     public String toString() {
         return "ShipperAccountDTO{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", phone='" + getPhone() + "'" +
-            ", email='" + getEmail() + "'" +
-            ", address='" + getAddress() + "'" +
+            "id='" + getId() + "'" +
+            ", balance=" + getBalance() +
+            ", accountType='" + getAccountType() + "'" +
             ", shipper=" + getShipper() +
             "}";
     }
