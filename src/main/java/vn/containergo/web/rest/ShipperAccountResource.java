@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,6 +62,7 @@ public class ShipperAccountResource {
         if (shipperAccountDTO.getId() != null) {
             throw new BadRequestAlertException("A new shipperAccount cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        shipperAccountDTO.setId(UUID.randomUUID());
         shipperAccountDTO = shipperAccountService.save(shipperAccountDTO);
         return ResponseEntity.created(new URI("/api/shipper-accounts/" + shipperAccountDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, shipperAccountDTO.getId().toString()))
@@ -79,7 +81,7 @@ public class ShipperAccountResource {
      */
     @PutMapping("/{id}")
     public ResponseEntity<ShipperAccountDTO> updateShipperAccount(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @Valid @RequestBody ShipperAccountDTO shipperAccountDTO
     ) throws URISyntaxException {
         log.debug("REST request to update ShipperAccount : {}, {}", id, shipperAccountDTO);
@@ -113,7 +115,7 @@ public class ShipperAccountResource {
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<ShipperAccountDTO> partialUpdateShipperAccount(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final UUID id,
         @NotNull @RequestBody ShipperAccountDTO shipperAccountDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update ShipperAccount partially : {}, {}", id, shipperAccountDTO);
@@ -159,7 +161,7 @@ public class ShipperAccountResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the shipperAccountDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ShipperAccountDTO> getShipperAccount(@PathVariable("id") Long id) {
+    public ResponseEntity<ShipperAccountDTO> getShipperAccount(@PathVariable("id") UUID id) {
         log.debug("REST request to get ShipperAccount : {}", id);
         Optional<ShipperAccountDTO> shipperAccountDTO = shipperAccountService.findOne(id);
         return ResponseUtil.wrapOrNotFound(shipperAccountDTO);
@@ -172,7 +174,7 @@ public class ShipperAccountResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteShipperAccount(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteShipperAccount(@PathVariable("id") UUID id) {
         log.debug("REST request to delete ShipperAccount : {}", id);
         shipperAccountService.delete(id);
         return ResponseEntity.noContent()

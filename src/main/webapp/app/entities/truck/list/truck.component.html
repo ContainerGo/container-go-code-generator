@@ -146,7 +146,17 @@
               <td>{{ truck.manufacturer }}</td>
               <td>{{ truck.year }}</td>
               <td>{{ truck.capacity }}</td>
-              <td jhiTranslate="{{ 'containerGoServerApp.TruckStatus.' + truck.status }}">{{ truck.status }}</td>
+              <td [jhiTranslate]="'containerGoServerApp.TruckStatus.' + (truck.status ?? 'null')">
+                {{
+                  {
+                    null: '',
+                    AVAILABLE: 'AVAILABLE',
+                    IN_TRANSIT: 'IN_TRANSIT',
+                    UNDER_MAINTENANCE: 'UNDER_MAINTENANCE',
+                    OUT_OF_SERVICE: 'OUT_OF_SERVICE'
+                  }[truck.status ?? 'null']
+                }}
+              </td>
               <td>{{ truck.mileage }}</td>
               <td>{{ truck.numberPlate }}</td>
               <td>{{ truck.lat }}</td>

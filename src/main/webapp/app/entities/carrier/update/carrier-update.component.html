@@ -10,13 +10,13 @@
 
         @if (editForm.controls.id.value !== null) {
           <div class="mb-3">
-            <label class="form-label" jhiTranslate="containerGoServerApp.carrier.id" for="field_id">Id</label>
+            <label class="form-label" for="field_id" jhiTranslate="containerGoServerApp.carrier.id">Id</label>
             <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
           </div>
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.carrier.code" for="field_code">Code</label>
+          <label class="form-label" for="field_code" jhiTranslate="containerGoServerApp.carrier.code">Code</label>
           <input type="text" class="form-control" name="code" id="field_code" data-cy="code" formControlName="code" />
           @if (editForm.get('code')!.invalid && (editForm.get('code')!.dirty || editForm.get('code')!.touched)) {
             <div>
@@ -28,7 +28,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.carrier.name" for="field_name">Name</label>
+          <label class="form-label" for="field_name" jhiTranslate="containerGoServerApp.carrier.name">Name</label>
           <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
           @if (editForm.get('name')!.invalid && (editForm.get('name')!.dirty || editForm.get('name')!.touched)) {
             <div>
@@ -40,7 +40,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.carrier.address" for="field_address">Address</label>
+          <label class="form-label" for="field_address" jhiTranslate="containerGoServerApp.carrier.address">Address</label>
           <input type="text" class="form-control" name="address" id="field_address" data-cy="address" formControlName="address" />
           @if (editForm.get('address')!.invalid && (editForm.get('address')!.dirty || editForm.get('address')!.touched)) {
             <div>
@@ -52,12 +52,12 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.carrier.taxCode" for="field_taxCode">Tax Code</label>
+          <label class="form-label" for="field_taxCode" jhiTranslate="containerGoServerApp.carrier.taxCode">Tax Code</label>
           <input type="text" class="form-control" name="taxCode" id="field_taxCode" data-cy="taxCode" formControlName="taxCode" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.carrier.bankAccount" for="field_bankAccount">Bank Account</label>
+          <label class="form-label" for="field_bankAccount" jhiTranslate="containerGoServerApp.carrier.bankAccount">Bank Account</label>
           <input
             type="text"
             class="form-control"
@@ -69,12 +69,12 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.carrier.bankName" for="field_bankName">Bank Name</label>
+          <label class="form-label" for="field_bankName" jhiTranslate="containerGoServerApp.carrier.bankName">Bank Name</label>
           <input type="text" class="form-control" name="bankName" id="field_bankName" data-cy="bankName" formControlName="bankName" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.carrier.accountName" for="field_accountName">Account Name</label>
+          <label class="form-label" for="field_accountName" jhiTranslate="containerGoServerApp.carrier.accountName">Account Name</label>
           <input
             type="text"
             class="form-control"
@@ -86,7 +86,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.carrier.branchName" for="field_branchName">Branch Name</label>
+          <label class="form-label" for="field_branchName" jhiTranslate="containerGoServerApp.carrier.branchName">Branch Name</label>
           <input
             type="text"
             class="form-control"
@@ -98,7 +98,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.carrier.companySize" for="field_companySize">Company Size</label>
+          <label class="form-label" for="field_companySize" jhiTranslate="containerGoServerApp.carrier.companySize">Company Size</label>
           <input
             type="number"
             class="form-control"
@@ -110,7 +110,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.carrier.isApproved" for="field_isApproved">Is Approved</label>
+          <label class="form-label" for="field_isApproved" jhiTranslate="containerGoServerApp.carrier.isApproved">Is Approved</label>
           <input
             type="checkbox"
             class="form-check"
@@ -122,12 +122,12 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.carrier.vehicles" for="field_vehicles">Vehicles</label>
+          <label class="form-label" for="field_vehicles" jhiTranslate="containerGoServerApp.carrier.vehicles">Vehicles</label>
           <input type="number" class="form-control" name="vehicles" id="field_vehicles" data-cy="vehicles" formControlName="vehicles" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.carrier.shipmentsLeftForDay" for="field_shipmentsLeftForDay"
+          <label class="form-label" for="field_shipmentsLeftForDay" jhiTranslate="containerGoServerApp.carrier.shipmentsLeftForDay"
             >Shipments Left For Day</label
           >
           <input
@@ -141,7 +141,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.carrier.verifiedSince" for="field_verifiedSince"
+          <label class="form-label" for="field_verifiedSince" jhiTranslate="containerGoServerApp.carrier.verifiedSince"
             >Verified Since</label
           >
           <div class="d-flex">

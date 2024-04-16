@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    @if (containerStatus) {
+    @if (containerStatus()) {
       <div>
         <h2 data-cy="containerStatusDetailsHeading">
           <span jhiTranslate="containerGoServerApp.containerStatus.detail.title">Container Status</span>
@@ -15,25 +15,25 @@
         <dl class="row-md jh-entity-details">
           <dt><span jhiTranslate="containerGoServerApp.containerStatus.id">Id</span></dt>
           <dd>
-            <span>{{ containerStatus.id }}</span>
+            <span>{{ containerStatus()!.id }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.containerStatus.code">Code</span></dt>
           <dd>
-            <span>{{ containerStatus.code }}</span>
+            <span>{{ containerStatus()!.code }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.containerStatus.name">Name</span></dt>
           <dd>
-            <span>{{ containerStatus.name }}</span>
+            <span>{{ containerStatus()!.name }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.containerStatus.description">Description</span></dt>
           <dd>
-            <span>{{ containerStatus.description }}</span>
+            <span>{{ containerStatus()!.description }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.containerStatus.group">Group</span></dt>
           <dd>
-            @if (containerStatus.group) {
+            @if (containerStatus()!.group) {
               <div>
-                <a [routerLink]="['/container-status-group', containerStatus.group.id, 'view']">{{ containerStatus.group.id }}</a>
+                <a [routerLink]="['/container-status-group', containerStatus()!.group?.id, 'view']">{{ containerStatus()!.group?.id }}</a>
               </div>
             }
           </dd>
@@ -43,7 +43,7 @@
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
         </button>
 
-        <button type="button" [routerLink]="['/container-status', containerStatus.id, 'edit']" class="btn btn-primary">
+        <button type="button" [routerLink]="['/container-status', containerStatus()!.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
         </button>
       </div>

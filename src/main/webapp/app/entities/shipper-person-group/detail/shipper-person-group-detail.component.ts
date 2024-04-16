@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import SharedModule from 'app/shared/shared.module';
@@ -12,7 +12,7 @@ import { IShipperPersonGroup } from '../shipper-person-group.model';
   imports: [SharedModule, RouterModule, DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe],
 })
 export class ShipperPersonGroupDetailComponent {
-  @Input() shipperPersonGroup: IShipperPersonGroup | null = null;
+  shipperPersonGroup = input<IShipperPersonGroup | null>(null);
 
   previousState(): void {
     window.history.back();

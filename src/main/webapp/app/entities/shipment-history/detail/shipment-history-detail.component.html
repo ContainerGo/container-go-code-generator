@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    @if (shipmentHistory) {
+    @if (shipmentHistory()) {
       <div>
         <h2 data-cy="shipmentHistoryDetailsHeading">
           <span jhiTranslate="containerGoServerApp.shipmentHistory.detail.title">Shipment History</span>
@@ -15,37 +15,37 @@
         <dl class="row-md jh-entity-details">
           <dt><span jhiTranslate="containerGoServerApp.shipmentHistory.id">Id</span></dt>
           <dd>
-            <span>{{ shipmentHistory.id }}</span>
+            <span>{{ shipmentHistory()!.id }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipmentHistory.event">Event</span></dt>
           <dd>
-            <span>{{ shipmentHistory.event }}</span>
+            <span>{{ shipmentHistory()!.event }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipmentHistory.timestamp">Timestamp</span></dt>
           <dd>
-            <span>{{ shipmentHistory.timestamp | formatMediumDatetime }}</span>
+            <span>{{ shipmentHistory()!.timestamp | formatMediumDatetime }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipmentHistory.executedBy">Executed By</span></dt>
           <dd>
-            <span>{{ shipmentHistory.executedBy }}</span>
+            <span>{{ shipmentHistory()!.executedBy }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipmentHistory.location">Location</span></dt>
           <dd>
-            <span>{{ shipmentHistory.location }}</span>
+            <span>{{ shipmentHistory()!.location }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipmentHistory.lat">Lat</span></dt>
           <dd>
-            <span>{{ shipmentHistory.lat }}</span>
+            <span>{{ shipmentHistory()!.lat }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipmentHistory.lng">Lng</span></dt>
           <dd>
-            <span>{{ shipmentHistory.lng }}</span>
+            <span>{{ shipmentHistory()!.lng }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipmentHistory.container">Container</span></dt>
           <dd>
-            @if (shipmentHistory.container) {
+            @if (shipmentHistory()!.container) {
               <div>
-                <a [routerLink]="['/container', shipmentHistory.container.id, 'view']">{{ shipmentHistory.container.id }}</a>
+                <a [routerLink]="['/container', shipmentHistory()!.container?.id, 'view']">{{ shipmentHistory()!.container?.id }}</a>
               </div>
             }
           </dd>
@@ -55,7 +55,7 @@
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
         </button>
 
-        <button type="button" [routerLink]="['/shipment-history', shipmentHistory.id, 'edit']" class="btn btn-primary">
+        <button type="button" [routerLink]="['/shipment-history', shipmentHistory()!.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
         </button>
       </div>

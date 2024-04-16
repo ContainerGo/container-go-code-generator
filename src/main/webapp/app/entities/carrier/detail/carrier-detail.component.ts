@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import SharedModule from 'app/shared/shared.module';
@@ -12,7 +12,7 @@ import { ICarrier } from '../carrier.model';
   imports: [SharedModule, RouterModule, DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe],
 })
 export class CarrierDetailComponent {
-  @Input() carrier: ICarrier | null = null;
+  carrier = input<ICarrier | null>(null);
 
   previousState(): void {
     window.history.back();

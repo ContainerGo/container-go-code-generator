@@ -3,7 +3,6 @@ import { HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
 import { of, Subject, from } from 'rxjs';
 
 import { IShipper } from 'app/entities/shipper/shipper.model';
@@ -24,7 +23,7 @@ describe('ShipperAccount Management Update Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), ShipperAccountUpdateComponent],
+      imports: [HttpClientTestingModule, ShipperAccountUpdateComponent],
       providers: [
         FormBuilder,
         {
@@ -49,7 +48,7 @@ describe('ShipperAccount Management Update Component', () => {
 
   describe('ngOnInit', () => {
     it('Should call Shipper query and add missing value', () => {
-      const shipperAccount: IShipperAccount = { id: 456 };
+      const shipperAccount: IShipperAccount = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
       const shipper: IShipper = { id: '7e3d4a7e-c583-432d-bf44-ed5f03d49989' };
       shipperAccount.shipper = shipper;
 
@@ -71,7 +70,7 @@ describe('ShipperAccount Management Update Component', () => {
     });
 
     it('Should update editForm', () => {
-      const shipperAccount: IShipperAccount = { id: 456 };
+      const shipperAccount: IShipperAccount = { id: '1361f429-3817-4123-8ee3-fdf8943310b2' };
       const shipper: IShipper = { id: '0bb58ee7-453f-46aa-9367-0b03b1070ec0' };
       shipperAccount.shipper = shipper;
 
@@ -87,7 +86,7 @@ describe('ShipperAccount Management Update Component', () => {
     it('Should call update service on save for existing entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IShipperAccount>>();
-      const shipperAccount = { id: 123 };
+      const shipperAccount = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(shipperAccountFormService, 'getShipperAccount').mockReturnValue(shipperAccount);
       jest.spyOn(shipperAccountService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -110,7 +109,7 @@ describe('ShipperAccount Management Update Component', () => {
     it('Should call create service on save for new entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IShipperAccount>>();
-      const shipperAccount = { id: 123 };
+      const shipperAccount = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(shipperAccountFormService, 'getShipperAccount').mockReturnValue({ id: null });
       jest.spyOn(shipperAccountService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -133,7 +132,7 @@ describe('ShipperAccount Management Update Component', () => {
     it('Should set isSaving to false on error', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IShipperAccount>>();
-      const shipperAccount = { id: 123 };
+      const shipperAccount = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
       jest.spyOn(shipperAccountService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ shipperAccount });

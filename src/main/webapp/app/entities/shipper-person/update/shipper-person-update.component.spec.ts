@@ -3,7 +3,6 @@ import { HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
 import { of, Subject, from } from 'rxjs';
 
 import { IShipperPersonGroup } from 'app/entities/shipper-person-group/shipper-person-group.model';
@@ -27,7 +26,7 @@ describe('ShipperPerson Management Update Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), ShipperPersonUpdateComponent],
+      imports: [HttpClientTestingModule, ShipperPersonUpdateComponent],
       providers: [
         FormBuilder,
         {

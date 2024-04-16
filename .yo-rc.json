@@ -44,7 +44,7 @@
     ],
     "gitCompany": "",
     "jhiPrefix": "jhi",
-    "jhipsterVersion": "8.2.1",
+    "jhipsterVersion": "8.3.0",
     "jwtSecretKey": "MWM2NjIyNzRlMzgyNjYxODM2OGU5YThlY2Y0NWIwN2FiOGQwNjE4NTk5NTE2Mjk2ZDRhMWFlMzllNGFiOTY3YTc5MDkyNjZjMjBjNzI5YzQzMzJlYzc3MzU5NWE1MzcyZTA1ZTE3MTYyODg3YzM2ODQyODU4MjJiMmMwMGU2MzY=",
     "languages": ["vi", "en"],
     "lastLiquibaseTimestamp": 1712550360000,

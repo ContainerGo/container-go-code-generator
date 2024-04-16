@@ -20,10 +20,8 @@ describe('ShipperAccount Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            name: expect.any(Object),
-            phone: expect.any(Object),
-            email: expect.any(Object),
-            address: expect.any(Object),
+            balance: expect.any(Object),
+            accountType: expect.any(Object),
             shipper: expect.any(Object),
           }),
         );
@@ -35,10 +33,8 @@ describe('ShipperAccount Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            name: expect.any(Object),
-            phone: expect.any(Object),
-            email: expect.any(Object),
-            address: expect.any(Object),
+            balance: expect.any(Object),
+            accountType: expect.any(Object),
             shipper: expect.any(Object),
           }),
         );

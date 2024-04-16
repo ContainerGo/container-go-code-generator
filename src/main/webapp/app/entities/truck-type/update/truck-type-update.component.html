@@ -14,13 +14,13 @@
 
         @if (editForm.controls.id.value !== null) {
           <div class="mb-3">
-            <label class="form-label" jhiTranslate="containerGoServerApp.truckType.id" for="field_id">Id</label>
+            <label class="form-label" for="field_id" jhiTranslate="containerGoServerApp.truckType.id">Id</label>
             <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
           </div>
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truckType.code" for="field_code">Code</label>
+          <label class="form-label" for="field_code" jhiTranslate="containerGoServerApp.truckType.code">Code</label>
           <input type="text" class="form-control" name="code" id="field_code" data-cy="code" formControlName="code" />
           @if (editForm.get('code')!.invalid && (editForm.get('code')!.dirty || editForm.get('code')!.touched)) {
             <div>
@@ -32,7 +32,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truckType.name" for="field_name">Name</label>
+          <label class="form-label" for="field_name" jhiTranslate="containerGoServerApp.truckType.name">Name</label>
           <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
           @if (editForm.get('name')!.invalid && (editForm.get('name')!.dirty || editForm.get('name')!.touched)) {
             <div>
@@ -44,37 +44,37 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truckType.category" for="field_category">Category</label>
+          <label class="form-label" for="field_category" jhiTranslate="containerGoServerApp.truckType.category">Category</label>
           <input type="text" class="form-control" name="category" id="field_category" data-cy="category" formControlName="category" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truckType.height" for="field_height">Height</label>
+          <label class="form-label" for="field_height" jhiTranslate="containerGoServerApp.truckType.height">Height</label>
           <input type="number" class="form-control" name="height" id="field_height" data-cy="height" formControlName="height" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truckType.length" for="field_length">Length</label>
+          <label class="form-label" for="field_length" jhiTranslate="containerGoServerApp.truckType.length">Length</label>
           <input type="number" class="form-control" name="length" id="field_length" data-cy="length" formControlName="length" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truckType.maxSpeed" for="field_maxSpeed">Max Speed</label>
+          <label class="form-label" for="field_maxSpeed" jhiTranslate="containerGoServerApp.truckType.maxSpeed">Max Speed</label>
           <input type="number" class="form-control" name="maxSpeed" id="field_maxSpeed" data-cy="maxSpeed" formControlName="maxSpeed" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truckType.type" for="field_type">Type</label>
+          <label class="form-label" for="field_type" jhiTranslate="containerGoServerApp.truckType.type">Type</label>
           <input type="text" class="form-control" name="type" id="field_type" data-cy="type" formControlName="type" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truckType.weight" for="field_weight">Weight</label>
+          <label class="form-label" for="field_weight" jhiTranslate="containerGoServerApp.truckType.weight">Weight</label>
           <input type="number" class="form-control" name="weight" id="field_weight" data-cy="weight" formControlName="weight" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truckType.width" for="field_width">Width</label>
+          <label class="form-label" for="field_width" jhiTranslate="containerGoServerApp.truckType.width">Width</label>
           <input type="number" class="form-control" name="width" id="field_width" data-cy="width" formControlName="width" />
         </div>
       </div>

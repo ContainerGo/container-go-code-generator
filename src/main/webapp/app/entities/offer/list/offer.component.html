@@ -125,7 +125,13 @@
               <td>{{ offer.estimatedPickupUntilDate | formatMediumDatetime }}</td>
               <td>{{ offer.estimatedDropoffFromDate | formatMediumDatetime }}</td>
               <td>{{ offer.estimatedDropoffUntilDate | formatMediumDatetime }}</td>
-              <td jhiTranslate="{{ 'containerGoServerApp.OfferState.' + offer.state }}">{{ offer.state }}</td>
+              <td [jhiTranslate]="'containerGoServerApp.OfferState.' + (offer.state ?? 'null')">
+                {{
+                  { null: '', PENDING: 'PENDING', ACCEPTED: 'ACCEPTED', REJECTED: 'REJECTED', EXPIRED: 'EXPIRED', WITHDRAWN: 'WITHDRAWN' }[
+                    offer.state ?? 'null'
+                  ]
+                }}
+              </td>
               <td>{{ offer.price }}</td>
               <td>{{ offer.carrierId }}</td>
               <td>{{ offer.truckId }}</td>

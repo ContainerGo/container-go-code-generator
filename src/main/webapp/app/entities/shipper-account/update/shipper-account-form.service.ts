@@ -18,10 +18,8 @@ type ShipperAccountFormDefaults = Pick<NewShipperAccount, 'id'>;
 
 type ShipperAccountFormGroupContent = {
   id: FormControl<IShipperAccount['id'] | NewShipperAccount['id']>;
-  name: FormControl<IShipperAccount['name']>;
-  phone: FormControl<IShipperAccount['phone']>;
-  email: FormControl<IShipperAccount['email']>;
-  address: FormControl<IShipperAccount['address']>;
+  balance: FormControl<IShipperAccount['balance']>;
+  accountType: FormControl<IShipperAccount['accountType']>;
   shipper: FormControl<IShipperAccount['shipper']>;
 };
 
@@ -42,14 +40,12 @@ export class ShipperAccountFormService {
           validators: [Validators.required],
         },
       ),
-      name: new FormControl(shipperAccountRawValue.name, {
+      balance: new FormControl(shipperAccountRawValue.balance, {
         validators: [Validators.required],
       }),
-      phone: new FormControl(shipperAccountRawValue.phone, {
+      accountType: new FormControl(shipperAccountRawValue.accountType, {
         validators: [Validators.required],
       }),
-      email: new FormControl(shipperAccountRawValue.email),
-      address: new FormControl(shipperAccountRawValue.address),
       shipper: new FormControl(shipperAccountRawValue.shipper, {
         validators: [Validators.required],
       }),

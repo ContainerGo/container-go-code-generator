@@ -10,13 +10,13 @@
 
         @if (editForm.controls.id.value !== null) {
           <div class="mb-3">
-            <label class="form-label" jhiTranslate="containerGoServerApp.truck.id" for="field_id">Id</label>
+            <label class="form-label" for="field_id" jhiTranslate="containerGoServerApp.truck.id">Id</label>
             <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
           </div>
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truck.code" for="field_code">Code</label>
+          <label class="form-label" for="field_code" jhiTranslate="containerGoServerApp.truck.code">Code</label>
           <input type="text" class="form-control" name="code" id="field_code" data-cy="code" formControlName="code" />
           @if (editForm.get('code')!.invalid && (editForm.get('code')!.dirty || editForm.get('code')!.touched)) {
             <div>
@@ -28,7 +28,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truck.name" for="field_name">Name</label>
+          <label class="form-label" for="field_name" jhiTranslate="containerGoServerApp.truck.name">Name</label>
           <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
           @if (editForm.get('name')!.invalid && (editForm.get('name')!.dirty || editForm.get('name')!.touched)) {
             <div>
@@ -40,12 +40,12 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truck.model" for="field_model">Model</label>
+          <label class="form-label" for="field_model" jhiTranslate="containerGoServerApp.truck.model">Model</label>
           <input type="text" class="form-control" name="model" id="field_model" data-cy="model" formControlName="model" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truck.manufacturer" for="field_manufacturer">Manufacturer</label>
+          <label class="form-label" for="field_manufacturer" jhiTranslate="containerGoServerApp.truck.manufacturer">Manufacturer</label>
           <input
             type="text"
             class="form-control"
@@ -57,17 +57,17 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truck.year" for="field_year">Year</label>
+          <label class="form-label" for="field_year" jhiTranslate="containerGoServerApp.truck.year">Year</label>
           <input type="number" class="form-control" name="year" id="field_year" data-cy="year" formControlName="year" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truck.capacity" for="field_capacity">Capacity</label>
+          <label class="form-label" for="field_capacity" jhiTranslate="containerGoServerApp.truck.capacity">Capacity</label>
           <input type="number" class="form-control" name="capacity" id="field_capacity" data-cy="capacity" formControlName="capacity" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truck.status" for="field_status">Status</label>
+          <label class="form-label" for="field_status" jhiTranslate="containerGoServerApp.truck.status">Status</label>
           <select class="form-control" name="status" formControlName="status" id="field_status" data-cy="status">
             <option [ngValue]="null">{{ 'containerGoServerApp.TruckStatus.null' | translate }}</option>
             @for (truckStatus of truckStatusValues; track $index) {
@@ -84,12 +84,12 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truck.mileage" for="field_mileage">Mileage</label>
+          <label class="form-label" for="field_mileage" jhiTranslate="containerGoServerApp.truck.mileage">Mileage</label>
           <input type="number" class="form-control" name="mileage" id="field_mileage" data-cy="mileage" formControlName="mileage" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truck.numberPlate" for="field_numberPlate">Number Plate</label>
+          <label class="form-label" for="field_numberPlate" jhiTranslate="containerGoServerApp.truck.numberPlate">Number Plate</label>
           <input
             type="text"
             class="form-control"
@@ -108,17 +108,17 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truck.lat" for="field_lat">Lat</label>
+          <label class="form-label" for="field_lat" jhiTranslate="containerGoServerApp.truck.lat">Lat</label>
           <input type="number" class="form-control" name="lat" id="field_lat" data-cy="lat" formControlName="lat" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truck.lng" for="field_lng">Lng</label>
+          <label class="form-label" for="field_lng" jhiTranslate="containerGoServerApp.truck.lng">Lng</label>
           <input type="number" class="form-control" name="lng" id="field_lng" data-cy="lng" formControlName="lng" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truck.type" for="field_type">Type</label>
+          <label class="form-label" for="field_type" jhiTranslate="containerGoServerApp.truck.type">Type</label>
           <select class="form-control" id="field_type" data-cy="type" name="type" formControlName="type" [compareWith]="compareTruckType">
             @if (!editForm.get('type')!.value) {
               <option [ngValue]="null" selected></option>
@@ -137,7 +137,7 @@
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.truck.carrier" for="field_carrier">Carrier</label>
+          <label class="form-label" for="field_carrier" jhiTranslate="containerGoServerApp.truck.carrier">Carrier</label>
           <select
             class="form-control"
             id="field_carrier"

@@ -2,7 +2,6 @@ import { TestBed } from '@angular/core/testing';
 import { HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ActivatedRouteSnapshot, ActivatedRoute, Router, convertToParamMap } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
 import { IShipperAccount } from '../shipper-account.model';
@@ -18,7 +17,7 @@ describe('ShipperAccount routing resolve service', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([])],
+      imports: [HttpClientTestingModule],
       providers: [
         {
           provide: ActivatedRoute,
@@ -41,7 +40,7 @@ describe('ShipperAccount routing resolve service', () => {
     it('should return IShipperAccount returned by find', () => {
       // GIVEN
       service.find = jest.fn(id => of(new HttpResponse({ body: { id } })));
-      mockActivatedRouteSnapshot.params = { id: 123 };
+      mockActivatedRouteSnapshot.params = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
 
       // WHEN
       TestBed.runInInjectionContext(() => {
@@ -53,8 +52,8 @@ describe('ShipperAccount routing resolve service', () => {
       });
 
       // THEN
-      expect(service.find).toBeCalledWith(123);
-      expect(resultShipperAccount).toEqual({ id: 123 });
+      expect(service.find).toBeCalledWith('9fec3727-3421-4967-b213-ba36557ca194');
+      expect(resultShipperAccount).toEqual({ id: '9fec3727-3421-4967-b213-ba36557ca194' });
     });
 
     it('should return null if id is not provided', () => {
@@ -79,7 +78,7 @@ describe('ShipperAccount routing resolve service', () => {
     it('should route to 404 page if data not found in server', () => {
       // GIVEN
       jest.spyOn(service, 'find').mockReturnValue(of(new HttpResponse<IShipperAccount>({ body: null })));
-      mockActivatedRouteSnapshot.params = { id: 123 };
+      mockActivatedRouteSnapshot.params = { id: '9fec3727-3421-4967-b213-ba36557ca194' };
 
       // WHEN
       TestBed.runInInjectionContext(() => {
@@ -91,7 +90,7 @@ describe('ShipperAccount routing resolve service', () => {
       });
 
       // THEN
-      expect(service.find).toBeCalledWith(123);
+      expect(service.find).toBeCalledWith('9fec3727-3421-4967-b213-ba36557ca194');
       expect(resultShipperAccount).toEqual(undefined);
       expect(mockRouter.navigate).toHaveBeenCalledWith(['404']);
     });

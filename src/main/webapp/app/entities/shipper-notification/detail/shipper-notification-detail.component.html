@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    @if (shipperNotification) {
+    @if (shipperNotification()) {
       <div>
         <h2 data-cy="shipperNotificationDetailsHeading">
           <span jhiTranslate="containerGoServerApp.shipperNotification.detail.title">Shipper Notification</span>
@@ -15,35 +15,35 @@
         <dl class="row-md jh-entity-details">
           <dt><span jhiTranslate="containerGoServerApp.shipperNotification.id">Id</span></dt>
           <dd>
-            <span>{{ shipperNotification.id }}</span>
+            <span>{{ shipperNotification()!.id }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipperNotification.code">Code</span></dt>
           <dd>
-            <span>{{ shipperNotification.code }}</span>
+            <span>{{ shipperNotification()!.code }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipperNotification.name">Name</span></dt>
           <dd>
-            <span>{{ shipperNotification.name }}</span>
+            <span>{{ shipperNotification()!.name }}</span>
           </dd>
           <dt>
             <span jhiTranslate="containerGoServerApp.shipperNotification.isEmailNotificationEnabled">Is Email Notification Enabled</span>
           </dt>
           <dd>
-            <span>{{ shipperNotification.isEmailNotificationEnabled }}</span>
+            <span>{{ shipperNotification()!.isEmailNotificationEnabled }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipperNotification.isSmsNotificationEnabled">Is Sms Notification Enabled</span></dt>
           <dd>
-            <span>{{ shipperNotification.isSmsNotificationEnabled }}</span>
+            <span>{{ shipperNotification()!.isSmsNotificationEnabled }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipperNotification.isAppNotificationEnabled">Is App Notification Enabled</span></dt>
           <dd>
-            <span>{{ shipperNotification.isAppNotificationEnabled }}</span>
+            <span>{{ shipperNotification()!.isAppNotificationEnabled }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.shipperNotification.person">Person</span></dt>
           <dd>
-            @if (shipperNotification.person) {
+            @if (shipperNotification()!.person) {
               <div>
-                <a [routerLink]="['/shipper-person', shipperNotification.person.id, 'view']">{{ shipperNotification.person.id }}</a>
+                <a [routerLink]="['/shipper-person', shipperNotification()!.person?.id, 'view']">{{ shipperNotification()!.person?.id }}</a>
               </div>
             }
           </dd>
@@ -53,7 +53,7 @@
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
         </button>
 
-        <button type="button" [routerLink]="['/shipper-notification', shipperNotification.id, 'edit']" class="btn btn-primary">
+        <button type="button" [routerLink]="['/shipper-notification', shipperNotification()!.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
         </button>
       </div>

@@ -8,8 +8,7 @@ import static vn.containergo.domain.ShipperAccountAsserts.*;
 import static vn.containergo.web.rest.TestUtil.createUpdateProxyForBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import vn.containergo.IntegrationTest;
 import vn.containergo.domain.Shipper;
 import vn.containergo.domain.ShipperAccount;
+import vn.containergo.domain.enumeration.ShipperAccountType;
 import vn.containergo.repository.ShipperAccountRepository;
 import vn.containergo.service.dto.ShipperAccountDTO;
 import vn.containergo.service.mapper.ShipperAccountMapper;
@@ -32,23 +32,14 @@ import vn.containergo.service.mapper.ShipperAccountMapper;
 @WithMockUser
 class ShipperAccountResourceIT {
 
-    private static final String DEFAULT_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_NAME = "BBBBBBBBBB";
+    private static final Double DEFAULT_BALANCE = 1D;
+    private static final Double UPDATED_BALANCE = 2D;
 
-    private static final String DEFAULT_PHONE = "AAAAAAAAAA";
-    private static final String UPDATED_PHONE = "BBBBBBBBBB";
-
-    private static final String DEFAULT_EMAIL = "AAAAAAAAAA";
-    private static final String UPDATED_EMAIL = "BBBBBBBBBB";
-
-    private static final String DEFAULT_ADDRESS = "AAAAAAAAAA";
-    private static final String UPDATED_ADDRESS = "BBBBBBBBBB";
+    private static final ShipperAccountType DEFAULT_ACCOUNT_TYPE = ShipperAccountType.DEPOSIT;
+    private static final ShipperAccountType UPDATED_ACCOUNT_TYPE = ShipperAccountType.DEPOSIT;
 
     private static final String ENTITY_API_URL = "/api/shipper-accounts";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
-
-    private static Random random = new Random();
-    private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private ObjectMapper om;
@@ -71,11 +62,7 @@ class ShipperAccountResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static ShipperAccount createEntity() {
-        ShipperAccount shipperAccount = new ShipperAccount()
-            .name(DEFAULT_NAME)
-            .phone(DEFAULT_PHONE)
-            .email(DEFAULT_EMAIL)
-            .address(DEFAULT_ADDRESS);
+        ShipperAccount shipperAccount = new ShipperAccount().balance(DEFAULT_BALANCE).accountType(DEFAULT_ACCOUNT_TYPE);
         // Add required entity
         Shipper shipper;
         shipper = ShipperResourceIT.createEntity();
@@ -91,11 +78,7 @@ class ShipperAccountResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static ShipperAccount createUpdatedEntity() {
-        ShipperAccount shipperAccount = new ShipperAccount()
-            .name(UPDATED_NAME)
-            .phone(UPDATED_PHONE)
-            .email(UPDATED_EMAIL)
-            .address(UPDATED_ADDRESS);
+        ShipperAccount shipperAccount = new ShipperAccount().balance(UPDATED_BALANCE).accountType(UPDATED_ACCOUNT_TYPE);
         // Add required entity
         Shipper shipper;
         shipper = ShipperResourceIT.createUpdatedEntity();
@@ -134,7 +117,7 @@ class ShipperAccountResourceIT {
     @Test
     void createShipperAccountWithExistingId() throws Exception {
         // Create the ShipperAccount with an existing ID
-        shipperAccount.setId(1L);
+        shipperAccount.setId(UUID.randomUUID());
         ShipperAccountDTO shipperAccountDTO = shipperAccountMapper.toDto(shipperAccount);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
@@ -149,10 +132,10 @@ class ShipperAccountResourceIT {
     }
 
     @Test
-    void checkNameIsRequired() throws Exception {
+    void checkBalanceIsRequired() throws Exception {
         long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
-        shipperAccount.setName(null);
+        shipperAccount.setBalance(null);
 
         // Create the ShipperAccount, which fails.
         ShipperAccountDTO shipperAccountDTO = shipperAccountMapper.toDto(shipperAccount);
@@ -165,10 +148,10 @@ class ShipperAccountResourceIT {
     }
 
     @Test
-    void checkPhoneIsRequired() throws Exception {
+    void checkAccountTypeIsRequired() throws Exception {
         long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
-        shipperAccount.setPhone(null);
+        shipperAccount.setAccountType(null);
 
         // Create the ShipperAccount, which fails.
         ShipperAccountDTO shipperAccountDTO = shipperAccountMapper.toDto(shipperAccount);
@@ -183,6 +166,7 @@ class ShipperAccountResourceIT {
     @Test
     void getAllShipperAccounts() throws Exception {
         // Initialize the database
+        shipperAccount.setId(UUID.randomUUID());
         shipperAccountRepository.save(shipperAccount);
 
         // Get all the shipperAccountList
@@ -190,16 +174,15 @@ class ShipperAccountResourceIT {
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(shipperAccount.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
-            .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE)))
-            .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
-            .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)));
+            .andExpect(jsonPath("$.[*].id").value(hasItem(shipperAccount.getId().toString())))
+            .andExpect(jsonPath("$.[*].balance").value(hasItem(DEFAULT_BALANCE.doubleValue())))
+            .andExpect(jsonPath("$.[*].accountType").value(hasItem(DEFAULT_ACCOUNT_TYPE.toString())));
     }
 
     @Test
     void getShipperAccount() throws Exception {
         // Initialize the database
+        shipperAccount.setId(UUID.randomUUID());
         shipperAccountRepository.save(shipperAccount);
 
         // Get the shipperAccount
@@ -207,29 +190,28 @@ class ShipperAccountResourceIT {
             .perform(get(ENTITY_API_URL_ID, shipperAccount.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(shipperAccount.getId().intValue()))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
-            .andExpect(jsonPath("$.phone").value(DEFAULT_PHONE))
-            .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
-            .andExpect(jsonPath("$.address").value(DEFAULT_ADDRESS));
+            .andExpect(jsonPath("$.id").value(shipperAccount.getId().toString()))
+            .andExpect(jsonPath("$.balance").value(DEFAULT_BALANCE.doubleValue()))
+            .andExpect(jsonPath("$.accountType").value(DEFAULT_ACCOUNT_TYPE.toString()));
     }
 
     @Test
     void getNonExistingShipperAccount() throws Exception {
         // Get the shipperAccount
-        restShipperAccountMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
+        restShipperAccountMockMvc.perform(get(ENTITY_API_URL_ID, UUID.randomUUID().toString())).andExpect(status().isNotFound());
     }
 
     @Test
     void putExistingShipperAccount() throws Exception {
         // Initialize the database
+        shipperAccount.setId(UUID.randomUUID());
         shipperAccountRepository.save(shipperAccount);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the shipperAccount
         ShipperAccount updatedShipperAccount = shipperAccountRepository.findById(shipperAccount.getId()).orElseThrow();
-        updatedShipperAccount.name(UPDATED_NAME).phone(UPDATED_PHONE).email(UPDATED_EMAIL).address(UPDATED_ADDRESS);
+        updatedShipperAccount.balance(UPDATED_BALANCE).accountType(UPDATED_ACCOUNT_TYPE);
         ShipperAccountDTO shipperAccountDTO = shipperAccountMapper.toDto(updatedShipperAccount);
 
         restShipperAccountMockMvc
@@ -248,7 +230,7 @@ class ShipperAccountResourceIT {
     @Test
     void putNonExistingShipperAccount() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipperAccount.setId(longCount.incrementAndGet());
+        shipperAccount.setId(UUID.randomUUID());
 
         // Create the ShipperAccount
         ShipperAccountDTO shipperAccountDTO = shipperAccountMapper.toDto(shipperAccount);
@@ -269,7 +251,7 @@ class ShipperAccountResourceIT {
     @Test
     void putWithIdMismatchShipperAccount() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipperAccount.setId(longCount.incrementAndGet());
+        shipperAccount.setId(UUID.randomUUID());
 
         // Create the ShipperAccount
         ShipperAccountDTO shipperAccountDTO = shipperAccountMapper.toDto(shipperAccount);
@@ -277,7 +259,7 @@ class ShipperAccountResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restShipperAccountMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                put(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(om.writeValueAsBytes(shipperAccountDTO))
             )
@@ -290,7 +272,7 @@ class ShipperAccountResourceIT {
     @Test
     void putWithMissingIdPathParamShipperAccount() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipperAccount.setId(longCount.incrementAndGet());
+        shipperAccount.setId(UUID.randomUUID());
 
         // Create the ShipperAccount
         ShipperAccountDTO shipperAccountDTO = shipperAccountMapper.toDto(shipperAccount);
@@ -307,6 +289,7 @@ class ShipperAccountResourceIT {
     @Test
     void partialUpdateShipperAccountWithPatch() throws Exception {
         // Initialize the database
+        shipperAccount.setId(UUID.randomUUID());
         shipperAccountRepository.save(shipperAccount);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -315,7 +298,7 @@ class ShipperAccountResourceIT {
         ShipperAccount partialUpdatedShipperAccount = new ShipperAccount();
         partialUpdatedShipperAccount.setId(shipperAccount.getId());
 
-        partialUpdatedShipperAccount.phone(UPDATED_PHONE);
+        partialUpdatedShipperAccount.accountType(UPDATED_ACCOUNT_TYPE);
 
         restShipperAccountMockMvc
             .perform(
@@ -337,6 +320,7 @@ class ShipperAccountResourceIT {
     @Test
     void fullUpdateShipperAccountWithPatch() throws Exception {
         // Initialize the database
+        shipperAccount.setId(UUID.randomUUID());
         shipperAccountRepository.save(shipperAccount);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
@@ -345,7 +329,7 @@ class ShipperAccountResourceIT {
         ShipperAccount partialUpdatedShipperAccount = new ShipperAccount();
         partialUpdatedShipperAccount.setId(shipperAccount.getId());
 
-        partialUpdatedShipperAccount.name(UPDATED_NAME).phone(UPDATED_PHONE).email(UPDATED_EMAIL).address(UPDATED_ADDRESS);
+        partialUpdatedShipperAccount.balance(UPDATED_BALANCE).accountType(UPDATED_ACCOUNT_TYPE);
 
         restShipperAccountMockMvc
             .perform(
@@ -364,7 +348,7 @@ class ShipperAccountResourceIT {
     @Test
     void patchNonExistingShipperAccount() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipperAccount.setId(longCount.incrementAndGet());
+        shipperAccount.setId(UUID.randomUUID());
 
         // Create the ShipperAccount
         ShipperAccountDTO shipperAccountDTO = shipperAccountMapper.toDto(shipperAccount);
@@ -385,7 +369,7 @@ class ShipperAccountResourceIT {
     @Test
     void patchWithIdMismatchShipperAccount() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipperAccount.setId(longCount.incrementAndGet());
+        shipperAccount.setId(UUID.randomUUID());
 
         // Create the ShipperAccount
         ShipperAccountDTO shipperAccountDTO = shipperAccountMapper.toDto(shipperAccount);
@@ -393,7 +377,7 @@ class ShipperAccountResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restShipperAccountMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                patch(ENTITY_API_URL_ID, UUID.randomUUID())
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(shipperAccountDTO))
             )
@@ -406,7 +390,7 @@ class ShipperAccountResourceIT {
     @Test
     void patchWithMissingIdPathParamShipperAccount() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        shipperAccount.setId(longCount.incrementAndGet());
+        shipperAccount.setId(UUID.randomUUID());
 
         // Create the ShipperAccount
         ShipperAccountDTO shipperAccountDTO = shipperAccountMapper.toDto(shipperAccount);
@@ -423,6 +407,7 @@ class ShipperAccountResourceIT {
     @Test
     void deleteShipperAccount() throws Exception {
         // Initialize the database
+        shipperAccount.setId(UUID.randomUUID());
         shipperAccountRepository.save(shipperAccount);
 
         long databaseSizeBeforeDelete = getRepositoryCount();

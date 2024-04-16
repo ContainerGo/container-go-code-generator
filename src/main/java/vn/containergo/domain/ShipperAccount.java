@@ -3,10 +3,12 @@ package vn.containergo.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
+import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import vn.containergo.domain.enumeration.ShipperAccountType;
 
 /**
  * A ShipperAccount.
@@ -18,21 +20,15 @@ public class ShipperAccount implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private Long id;
+    private UUID id;
 
     @NotNull
-    @Field("name")
-    private String name;
+    @Field("balance")
+    private Double balance;
 
     @NotNull
-    @Field("phone")
-    private String phone;
-
-    @Field("email")
-    private String email;
-
-    @Field("address")
-    private String address;
+    @Field("account_type")
+    private ShipperAccountType accountType;
 
     @DBRef
     @Field("shipper")
@@ -41,69 +37,43 @@ public class ShipperAccount implements Serializable {
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
-    public Long getId() {
+    public UUID getId() {
         return this.id;
     }
 
-    public ShipperAccount id(Long id) {
+    public ShipperAccount id(UUID id) {
         this.setId(id);
         return this;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public String getName() {
-        return this.name;
+    public Double getBalance() {
+        return this.balance;
     }
 
-    public ShipperAccount name(String name) {
-        this.setName(name);
+    public ShipperAccount balance(Double balance) {
+        this.setBalance(balance);
         return this;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setBalance(Double balance) {
+        this.balance = balance;
     }
 
-    public String getPhone() {
-        return this.phone;
+    public ShipperAccountType getAccountType() {
+        return this.accountType;
     }
 
-    public ShipperAccount phone(String phone) {
-        this.setPhone(phone);
+    public ShipperAccount accountType(ShipperAccountType accountType) {
+        this.setAccountType(accountType);
         return this;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getEmail() {
-        return this.email;
-    }
-
-    public ShipperAccount email(String email) {
-        this.setEmail(email);
-        return this;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getAddress() {
-        return this.address;
-    }
-
-    public ShipperAccount address(String address) {
-        this.setAddress(address);
-        return this;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAccountType(ShipperAccountType accountType) {
+        this.accountType = accountType;
     }
 
     public Shipper getShipper() {
@@ -143,10 +113,8 @@ public class ShipperAccount implements Serializable {
     public String toString() {
         return "ShipperAccount{" +
             "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", phone='" + getPhone() + "'" +
-            ", email='" + getEmail() + "'" +
-            ", address='" + getAddress() + "'" +
+            ", balance=" + getBalance() +
+            ", accountType='" + getAccountType() + "'" +
             "}";
     }
 }

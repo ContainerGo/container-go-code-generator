@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    @if (containerStatusGroup) {
+    @if (containerStatusGroup()) {
       <div>
         <h2 data-cy="containerStatusGroupDetailsHeading">
           <span jhiTranslate="containerGoServerApp.containerStatusGroup.detail.title">Container Status Group</span>
@@ -15,19 +15,19 @@
         <dl class="row-md jh-entity-details">
           <dt><span jhiTranslate="containerGoServerApp.containerStatusGroup.id">Id</span></dt>
           <dd>
-            <span>{{ containerStatusGroup.id }}</span>
+            <span>{{ containerStatusGroup()!.id }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.containerStatusGroup.code">Code</span></dt>
           <dd>
-            <span>{{ containerStatusGroup.code }}</span>
+            <span>{{ containerStatusGroup()!.code }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.containerStatusGroup.name">Name</span></dt>
           <dd>
-            <span>{{ containerStatusGroup.name }}</span>
+            <span>{{ containerStatusGroup()!.name }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.containerStatusGroup.description">Description</span></dt>
           <dd>
-            <span>{{ containerStatusGroup.description }}</span>
+            <span>{{ containerStatusGroup()!.description }}</span>
           </dd>
         </dl>
 
@@ -35,7 +35,7 @@
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
         </button>
 
-        <button type="button" [routerLink]="['/container-status-group', containerStatusGroup.id, 'edit']" class="btn btn-primary">
+        <button type="button" [routerLink]="['/container-status-group', containerStatusGroup()!.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
         </button>
       </div>

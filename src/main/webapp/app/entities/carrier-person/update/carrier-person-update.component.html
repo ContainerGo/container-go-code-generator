@@ -14,13 +14,13 @@
 
         @if (editForm.controls.id.value !== null) {
           <div class="mb-3">
-            <label class="form-label" jhiTranslate="containerGoServerApp.carrierPerson.id" for="field_id">Id</label>
+            <label class="form-label" for="field_id" jhiTranslate="containerGoServerApp.carrierPerson.id">Id</label>
             <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
           </div>
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.carrierPerson.name" for="field_name">Name</label>
+          <label class="form-label" for="field_name" jhiTranslate="containerGoServerApp.carrierPerson.name">Name</label>
           <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
           @if (editForm.get('name')!.invalid && (editForm.get('name')!.dirty || editForm.get('name')!.touched)) {
             <div>
@@ -32,7 +32,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.carrierPerson.phone" for="field_phone">Phone</label>
+          <label class="form-label" for="field_phone" jhiTranslate="containerGoServerApp.carrierPerson.phone">Phone</label>
           <input type="text" class="form-control" name="phone" id="field_phone" data-cy="phone" formControlName="phone" />
           @if (editForm.get('phone')!.invalid && (editForm.get('phone')!.dirty || editForm.get('phone')!.touched)) {
             <div>
@@ -44,17 +44,17 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.carrierPerson.email" for="field_email">Email</label>
+          <label class="form-label" for="field_email" jhiTranslate="containerGoServerApp.carrierPerson.email">Email</label>
           <input type="text" class="form-control" name="email" id="field_email" data-cy="email" formControlName="email" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.carrierPerson.address" for="field_address">Address</label>
+          <label class="form-label" for="field_address" jhiTranslate="containerGoServerApp.carrierPerson.address">Address</label>
           <input type="text" class="form-control" name="address" id="field_address" data-cy="address" formControlName="address" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.carrierPerson.group" for="field_group">Group</label>
+          <label class="form-label" for="field_group" jhiTranslate="containerGoServerApp.carrierPerson.group">Group</label>
           <select
             class="form-control"
             id="field_group"
@@ -80,7 +80,7 @@
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.carrierPerson.carrier" for="field_carrier">Carrier</label>
+          <label class="form-label" for="field_carrier" jhiTranslate="containerGoServerApp.carrierPerson.carrier">Carrier</label>
           <select
             class="form-control"
             id="field_carrier"

@@ -1,11 +1,10 @@
 import { IShipper } from 'app/entities/shipper/shipper.model';
+import { ShipperAccountType } from 'app/entities/enumerations/shipper-account-type.model';
 
 export interface IShipperAccount {
-  id: number;
-  name?: string | null;
-  phone?: string | null;
-  email?: string | null;
-  address?: string | null;
+  id: string;
+  balance?: number | null;
+  accountType?: keyof typeof ShipperAccountType | null;
   shipper?: Pick<IShipper, 'id'> | null;
 }
 

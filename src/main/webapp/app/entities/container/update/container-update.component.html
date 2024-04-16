@@ -14,13 +14,13 @@
 
         @if (editForm.controls.id.value !== null) {
           <div class="mb-3">
-            <label class="form-label" jhiTranslate="containerGoServerApp.container.id" for="field_id">Id</label>
+            <label class="form-label" for="field_id" jhiTranslate="containerGoServerApp.container.id">Id</label>
             <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
           </div>
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.contNo" for="field_contNo">Cont No</label>
+          <label class="form-label" for="field_contNo" jhiTranslate="containerGoServerApp.container.contNo">Cont No</label>
           <input type="text" class="form-control" name="contNo" id="field_contNo" data-cy="contNo" formControlName="contNo" />
           @if (editForm.get('contNo')!.invalid && (editForm.get('contNo')!.dirty || editForm.get('contNo')!.touched)) {
             <div>
@@ -32,7 +32,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.estimatedPrice" for="field_estimatedPrice"
+          <label class="form-label" for="field_estimatedPrice" jhiTranslate="containerGoServerApp.container.estimatedPrice"
             >Estimated Price</label
           >
           <input
@@ -61,7 +61,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.distance" for="field_distance">Distance</label>
+          <label class="form-label" for="field_distance" jhiTranslate="containerGoServerApp.container.distance">Distance</label>
           <input type="number" class="form-control" name="distance" id="field_distance" data-cy="distance" formControlName="distance" />
           @if (editForm.get('distance')!.invalid && (editForm.get('distance')!.dirty || editForm.get('distance')!.touched)) {
             <div>
@@ -79,7 +79,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.desiredPrice" for="field_desiredPrice"
+          <label class="form-label" for="field_desiredPrice" jhiTranslate="containerGoServerApp.container.desiredPrice"
             >Desired Price</label
           >
           <input
@@ -106,7 +106,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.additionalRequirements" for="field_additionalRequirements"
+          <label class="form-label" for="field_additionalRequirements" jhiTranslate="containerGoServerApp.container.additionalRequirements"
             >Additional Requirements</label
           >
           <input
@@ -120,7 +120,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.pickupContact" for="field_pickupContact"
+          <label class="form-label" for="field_pickupContact" jhiTranslate="containerGoServerApp.container.pickupContact"
             >Pickup Contact</label
           >
           <input
@@ -141,7 +141,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.pickupContactPhone" for="field_pickupContactPhone"
+          <label class="form-label" for="field_pickupContactPhone" jhiTranslate="containerGoServerApp.container.pickupContactPhone"
             >Pickup Contact Phone</label
           >
           <input
@@ -165,7 +165,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.pickupAddress" for="field_pickupAddress"
+          <label class="form-label" for="field_pickupAddress" jhiTranslate="containerGoServerApp.container.pickupAddress"
             >Pickup Address</label
           >
           <input
@@ -186,7 +186,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.pickupLat" for="field_pickupLat">Pickup Lat</label>
+          <label class="form-label" for="field_pickupLat" jhiTranslate="containerGoServerApp.container.pickupLat">Pickup Lat</label>
           <input type="number" class="form-control" name="pickupLat" id="field_pickupLat" data-cy="pickupLat" formControlName="pickupLat" />
           @if (editForm.get('pickupLat')!.invalid && (editForm.get('pickupLat')!.dirty || editForm.get('pickupLat')!.touched)) {
             <div>
@@ -204,7 +204,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.pickupLng" for="field_pickupLng">Pickup Lng</label>
+          <label class="form-label" for="field_pickupLng" jhiTranslate="containerGoServerApp.container.pickupLng">Pickup Lng</label>
           <input type="number" class="form-control" name="pickupLng" id="field_pickupLng" data-cy="pickupLng" formControlName="pickupLng" />
           @if (editForm.get('pickupLng')!.invalid && (editForm.get('pickupLng')!.dirty || editForm.get('pickupLng')!.touched)) {
             <div>
@@ -222,7 +222,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.pickupFromDate" for="field_pickupFromDate"
+          <label class="form-label" for="field_pickupFromDate" jhiTranslate="containerGoServerApp.container.pickupFromDate"
             >Pickup From Date</label
           >
           <div class="d-flex">
@@ -254,7 +254,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffContact" for="field_dropoffContact"
+          <label class="form-label" for="field_dropoffContact" jhiTranslate="containerGoServerApp.container.dropoffContact"
             >Dropoff Contact</label
           >
           <input
@@ -268,7 +268,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffContactPhone" for="field_dropoffContactPhone"
+          <label class="form-label" for="field_dropoffContactPhone" jhiTranslate="containerGoServerApp.container.dropoffContactPhone"
             >Dropoff Contact Phone</label
           >
           <input
@@ -282,7 +282,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffAddress" for="field_dropoffAddress"
+          <label class="form-label" for="field_dropoffAddress" jhiTranslate="containerGoServerApp.container.dropoffAddress"
             >Dropoff Address</label
           >
           <input
@@ -305,7 +305,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffLat" for="field_dropoffLat">Dropoff Lat</label>
+          <label class="form-label" for="field_dropoffLat" jhiTranslate="containerGoServerApp.container.dropoffLat">Dropoff Lat</label>
           <input
             type="number"
             class="form-control"
@@ -317,7 +317,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffLng" for="field_dropoffLng">Dropoff Lng</label>
+          <label class="form-label" for="field_dropoffLng" jhiTranslate="containerGoServerApp.container.dropoffLng">Dropoff Lng</label>
           <input
             type="number"
             class="form-control"
@@ -329,12 +329,12 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.points" for="field_points">Points</label>
+          <label class="form-label" for="field_points" jhiTranslate="containerGoServerApp.container.points">Points</label>
           <input type="text" class="form-control" name="points" id="field_points" data-cy="points" formControlName="points" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffUntilDate" for="field_dropoffUntilDate"
+          <label class="form-label" for="field_dropoffUntilDate" jhiTranslate="containerGoServerApp.container.dropoffUntilDate"
             >Dropoff Until Date</label
           >
           <div class="d-flex">
@@ -351,7 +351,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.state" for="field_state">State</label>
+          <label class="form-label" for="field_state" jhiTranslate="containerGoServerApp.container.state">State</label>
           <select class="form-control" name="state" formControlName="state" id="field_state" data-cy="state">
             <option [ngValue]="null">{{ 'containerGoServerApp.ContainerState.null' | translate }}</option>
             @for (containerState of containerStateValues; track $index) {
@@ -368,7 +368,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.shipperId" for="field_shipperId">Shipper Id</label>
+          <label class="form-label" for="field_shipperId" jhiTranslate="containerGoServerApp.container.shipperId">Shipper Id</label>
           <input type="text" class="form-control" name="shipperId" id="field_shipperId" data-cy="shipperId" formControlName="shipperId" />
           @if (editForm.get('shipperId')!.invalid && (editForm.get('shipperId')!.dirty || editForm.get('shipperId')!.touched)) {
             <div>
@@ -380,12 +380,12 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.carrierId" for="field_carrierId">Carrier Id</label>
+          <label class="form-label" for="field_carrierId" jhiTranslate="containerGoServerApp.container.carrierId">Carrier Id</label>
           <input type="text" class="form-control" name="carrierId" id="field_carrierId" data-cy="carrierId" formControlName="carrierId" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.totalWeight" for="field_totalWeight">Total Weight</label>
+          <label class="form-label" for="field_totalWeight" jhiTranslate="containerGoServerApp.container.totalWeight">Total Weight</label>
           <input
             type="number"
             class="form-control"
@@ -410,7 +410,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.biddingFromDate" for="field_biddingFromDate"
+          <label class="form-label" for="field_biddingFromDate" jhiTranslate="containerGoServerApp.container.biddingFromDate"
             >Bidding From Date</label
           >
           <div class="d-flex">
@@ -427,7 +427,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.biddingUntilDate" for="field_biddingUntilDate"
+          <label class="form-label" for="field_biddingUntilDate" jhiTranslate="containerGoServerApp.container.biddingUntilDate"
             >Bidding Until Date</label
           >
           <div class="d-flex">
@@ -444,7 +444,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.pickupProvice" for="field_pickupProvice"
+          <label class="form-label" for="field_pickupProvice" jhiTranslate="containerGoServerApp.container.pickupProvice"
             >Pickup Provice</label
           >
           <select
@@ -474,7 +474,7 @@
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.pickupDistrict" for="field_pickupDistrict"
+          <label class="form-label" for="field_pickupDistrict" jhiTranslate="containerGoServerApp.container.pickupDistrict"
             >Pickup District</label
           >
           <select
@@ -505,7 +505,7 @@
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.pickupWard" for="field_pickupWard">Pickup Ward</label>
+          <label class="form-label" for="field_pickupWard" jhiTranslate="containerGoServerApp.container.pickupWard">Pickup Ward</label>
           <select
             class="form-control"
             id="field_pickupWard"
@@ -531,7 +531,7 @@
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffProvice" for="field_dropoffProvice"
+          <label class="form-label" for="field_dropoffProvice" jhiTranslate="containerGoServerApp.container.dropoffProvice"
             >Dropoff Provice</label
           >
           <select
@@ -562,7 +562,7 @@
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffDistrict" for="field_dropoffDistrict"
+          <label class="form-label" for="field_dropoffDistrict" jhiTranslate="containerGoServerApp.container.dropoffDistrict"
             >Dropoff District</label
           >
           <select
@@ -593,7 +593,7 @@
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.dropoffWard" for="field_dropoffWard">Dropoff Ward</label>
+          <label class="form-label" for="field_dropoffWard" jhiTranslate="containerGoServerApp.container.dropoffWard">Dropoff Ward</label>
           <select
             class="form-control"
             id="field_dropoffWard"
@@ -610,7 +610,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.type" for="field_type">Type</label>
+          <label class="form-label" for="field_type" jhiTranslate="containerGoServerApp.container.type">Type</label>
           <select
             class="form-control"
             id="field_type"
@@ -636,7 +636,7 @@
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.status" for="field_status">Status</label>
+          <label class="form-label" for="field_status" jhiTranslate="containerGoServerApp.container.status">Status</label>
           <select
             class="form-control"
             id="field_status"
@@ -662,7 +662,7 @@
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.truckType" for="field_truckType">Truck Type</label>
+          <label class="form-label" for="field_truckType" jhiTranslate="containerGoServerApp.container.truckType">Truck Type</label>
           <select
             class="form-control"
             id="field_truckType"
@@ -679,7 +679,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.truck" for="field_truck">Truck</label>
+          <label class="form-label" for="field_truck" jhiTranslate="containerGoServerApp.container.truck">Truck</label>
           <select class="form-control" id="field_truck" data-cy="truck" name="truck" formControlName="truck" [compareWith]="compareTruck">
             <option [ngValue]="null"></option>
             @for (truckOption of trucksSharedCollection; track $index) {
@@ -689,7 +689,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="containerGoServerApp.container.owner" for="field_owner">Owner</label>
+          <label class="form-label" for="field_owner" jhiTranslate="containerGoServerApp.container.owner">Owner</label>
           <select
             class="form-control"
             id="field_owner"

@@ -133,8 +133,12 @@
               <td>{{ shipper.address }}</td>
               <td>{{ shipper.taxCode }}</td>
               <td>{{ shipper.companySize }}</td>
-              <td jhiTranslate="{{ 'containerGoServerApp.PaymentType.' + shipper.paymentType }}">{{ shipper.paymentType }}</td>
-              <td jhiTranslate="{{ 'containerGoServerApp.ContractType.' + shipper.contractType }}">{{ shipper.contractType }}</td>
+              <td [jhiTranslate]="'containerGoServerApp.PaymentType.' + (shipper.paymentType ?? 'null')">
+                {{ { null: '', CASH_ON_DELIVERY: 'CASH_ON_DELIVERY', END_OF_MONTH: 'END_OF_MONTH' }[shipper.paymentType ?? 'null'] }}
+              </td>
+              <td [jhiTranslate]="'containerGoServerApp.ContractType.' + (shipper.contractType ?? 'null')">
+                {{ { null: '', SIGNED_CONTRACT: 'SIGNED_CONTRACT', INDIVIDUAL: 'INDIVIDUAL' }[shipper.contractType ?? 'null'] }}
+              </td>
               <td>{{ shipper.contractValidUntil | formatMediumDatetime }}</td>
               <td>{{ shipper.isApproved }}</td>
               <td>{{ shipper.isBillingInformationComplete }}</td>

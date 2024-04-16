@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    @if (provice) {
+    @if (provice()) {
       <div>
         <h2 data-cy="proviceDetailsHeading"><span jhiTranslate="containerGoServerApp.provice.detail.title">Provice</span></h2>
 
@@ -13,19 +13,19 @@
         <dl class="row-md jh-entity-details">
           <dt><span jhiTranslate="containerGoServerApp.provice.id">Id</span></dt>
           <dd>
-            <span>{{ provice.id }}</span>
+            <span>{{ provice()!.id }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.provice.code">Code</span></dt>
           <dd>
-            <span>{{ provice.code }}</span>
+            <span>{{ provice()!.code }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.provice.name">Name</span></dt>
           <dd>
-            <span>{{ provice.name }}</span>
+            <span>{{ provice()!.name }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.provice.description">Description</span></dt>
           <dd>
-            <span>{{ provice.description }}</span>
+            <span>{{ provice()!.description }}</span>
           </dd>
         </dl>
 
@@ -33,7 +33,7 @@
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
         </button>
 
-        <button type="button" [routerLink]="['/provice', provice.id, 'edit']" class="btn btn-primary">
+        <button type="button" [routerLink]="['/provice', provice()!.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
         </button>
       </div>

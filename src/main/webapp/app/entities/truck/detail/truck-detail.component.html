@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    @if (truck) {
+    @if (truck()) {
       <div>
         <h2 data-cy="truckDetailsHeading"><span jhiTranslate="containerGoServerApp.truck.detail.title">Truck</span></h2>
 
@@ -13,65 +13,73 @@
         <dl class="row-md jh-entity-details">
           <dt><span jhiTranslate="containerGoServerApp.truck.id">Id</span></dt>
           <dd>
-            <span>{{ truck.id }}</span>
+            <span>{{ truck()!.id }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.truck.code">Code</span></dt>
           <dd>
-            <span>{{ truck.code }}</span>
+            <span>{{ truck()!.code }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.truck.name">Name</span></dt>
           <dd>
-            <span>{{ truck.name }}</span>
+            <span>{{ truck()!.name }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.truck.model">Model</span></dt>
           <dd>
-            <span>{{ truck.model }}</span>
+            <span>{{ truck()!.model }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.truck.manufacturer">Manufacturer</span></dt>
           <dd>
-            <span>{{ truck.manufacturer }}</span>
+            <span>{{ truck()!.manufacturer }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.truck.year">Year</span></dt>
           <dd>
-            <span>{{ truck.year }}</span>
+            <span>{{ truck()!.year }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.truck.capacity">Capacity</span></dt>
           <dd>
-            <span>{{ truck.capacity }}</span>
+            <span>{{ truck()!.capacity }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.truck.status">Status</span></dt>
           <dd>
-            <span jhiTranslate="{{ 'containerGoServerApp.TruckStatus.' + truck.status }}">{{ truck.status }}</span>
+            <span [jhiTranslate]="'containerGoServerApp.TruckStatus.' + (truck()!.status ?? 'null')">{{
+              {
+                null: '',
+                AVAILABLE: 'AVAILABLE',
+                IN_TRANSIT: 'IN_TRANSIT',
+                UNDER_MAINTENANCE: 'UNDER_MAINTENANCE',
+                OUT_OF_SERVICE: 'OUT_OF_SERVICE'
+              }[truck()!.status ?? 'null']
+            }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.truck.mileage">Mileage</span></dt>
           <dd>
-            <span>{{ truck.mileage }}</span>
+            <span>{{ truck()!.mileage }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.truck.numberPlate">Number Plate</span></dt>
           <dd>
-            <span>{{ truck.numberPlate }}</span>
+            <span>{{ truck()!.numberPlate }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.truck.lat">Lat</span></dt>
           <dd>
-            <span>{{ truck.lat }}</span>
+            <span>{{ truck()!.lat }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.truck.lng">Lng</span></dt>
           <dd>
-            <span>{{ truck.lng }}</span>
+            <span>{{ truck()!.lng }}</span>
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.truck.type">Type</span></dt>
           <dd>
-            @if (truck.type) {
+            @if (truck()!.type) {
               <div>
-                <a [routerLink]="['/truck-type', truck.type.id, 'view']">{{ truck.type.id }}</a>
+                <a [routerLink]="['/truck-type', truck()!.type?.id, 'view']">{{ truck()!.type?.id }}</a>
               </div>
             }
           </dd>
           <dt><span jhiTranslate="containerGoServerApp.truck.carrier">Carrier</span></dt>
           <dd>
-            @if (truck.carrier) {
+            @if (truck()!.carrier) {
               <div>
-                <a [routerLink]="['/carrier', truck.carrier.id, 'view']">{{ truck.carrier.id }}</a>
+                <a [routerLink]="['/carrier', truck()!.carrier?.id, 'view']">{{ truck()!.carrier?.id }}</a>
               </div>
             }
           </dd>
@@ -81,7 +89,7 @@
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Quay lại</span>
         </button>
 
-        <button type="button" [routerLink]="['/truck', truck.id, 'edit']" class="btn btn-primary">
+        <button type="button" [routerLink]="['/truck', truck()!.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Sửa</span>
         </button>
       </div>
